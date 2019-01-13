@@ -1,0 +1,80 @@
+<div class="container-fluid" style="width:100%;min-height: 700px">
+
+    <div class="register-logo">
+        <a href="#"><b>Registered</b>Customers</a>
+    </div>
+    {{# if customer}}
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-sm-offset-1">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-2 ">
+                            <strong>email</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>name</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>contact</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>isActive</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>address</strong>
+                        </div>
+                        <div class="col-md-1 pull-center">
+                            <strong>Total Order</strong>
+                        </div>
+                        <div class="col-md-1 pull-center">
+                            <strong>action</strong>
+                        </div>
+                        
+                    </div>
+                </li>
+                {{# each customer}}
+
+                <li class="list-group-item">
+
+                    <div class="row">
+                        <div class="col-md-2 ">
+                            <strong>{{this.email}}</strong>
+                        </div>
+                       
+                        <div class="col-md-2 ">
+                            <strong>{{this.profile.name}}</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>{{this.contact}}</strong>
+                        </div>
+                         <div class="col-md-2 ">
+                            <strong>{{this.isActive}}</strong>
+                        </div>
+                        <div class="col-md-2 ">
+                            <strong>{{this.address.address1}}</strong>
+                        </div>
+                        <div class="col-md-1 ">
+                            <strong>{{this.orders.length}}</strong>
+                        </div>
+                        <div class="col-md-1 ">
+                            <a href="/#"> <button class="btn btn-default " type="button">Delete</button></a>
+                        </div>
+                       
+                    </div>
+
+                </li>
+                {{/each }}
+
+            </ul>
+        </div>
+    </div>
+    {{ else }}
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
+        </div>
+    </div>
+    {{/if}}
+    
+</div>

@@ -1,0 +1,138 @@
+<div class="box">
+
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-md-offset-3 col-sm-offset-3">
+                <div class="well">
+
+                    <form method="POST" action="/category/addAll">
+                    
+                        <h3 class="text-center">Category Registration</h3>
+                        <div class="form-group">
+                            <label for="cat">Category</label>
+                            <input type="text" name="cat" list="cats" class="form-control">
+                            <datalist id="cats">
+                                {{# each cat}}
+                                <option value="{{this.name}}">
+                                    {{/each}}
+                            </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brand">brand</label>
+                            <input type="text" name="brand" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subCat">Sub Category</label>
+                            <input type="text" name="subCat" class="form-control">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+                </div>
+
+                <div class="well">
+                    <h3 class="text-center">Product Registration</h3>
+                    <form action="/products/regiSave/{{category}}/{{num_feature}}" method="POST" enctype="multipart/form-data">
+
+                        <div class="dropdown">
+                            <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary"
+                                data-target="hash" href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
+                            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                {{# each S_categories}}
+
+                                {{# if this.sub}}
+                                <li class="dropdown-submenu pull-right1">
+                                    <a tabindex="-1" href="#">{{this.name}}</a>
+                                    <ul class="dropdown-menu">
+                                        {{# each this.sub}}
+                                        <li>
+                                            <a href="/products/showfields/{{name}}">{{name}}</a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                                {{else}}
+                                <li class="dropdown-submenu">
+                                    <a tabindex="1" href="#" data-list-option="all" data-func="list-functions">{{this.name}}</a>
+                                </li>
+                                {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div><br>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <input type="text" name="category" class="form-control" value="{{category}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="Example-">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brand">Brand</label>
+                            <input type="text" name="brand" list="brands" class="form-control">
+                            <datalist id="brands">
+                                {{# each brand}}
+                                <option value="{{this.name}}">
+                                    {{/each}}
+                            </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <input type="text" name="model" class="form-control" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="color">Color</label>
+                            <input type="text" name="color" class="form-control" placeholder="">
+                        </div>
+
+                        {{!-- {{# if features}}
+                        <input type="hidden" id="features" value="1">
+                        {{# each features}}
+                        <div class="form-group">
+                            <input type="hidden" name="feature{{@index}}_label" value="{{this}}">
+                            <label for="feature{{@index}}_value">{{this}}</label>
+                            <input type="text" name="feature{{@index}}_value" class="form-control" placeholder="">
+                        </div>
+                        
+                        {{/each}}
+                        {{/else}}
+                         <input type="hidden" id="features" value="0">
+                        {{/if}} --}}
+
+
+                        <div class="form-group">
+                            <label for="warranty">Warranty</label>
+                            <input type="text" name="warranty" class="form-control" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea type="text" name="description" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="shippingInfo">Shipping Info</label>
+                            <textarea type="text" name="shippingInfo" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagePath">Image</label>
+                            <input type="file" name="imagePath" accept="image/png, image/jpeg">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

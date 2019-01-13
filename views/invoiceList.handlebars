@@ -1,0 +1,71 @@
+<div class="container-fluid" style="width:100%;min-height: 700px">
+    <div class="register-logo">
+        <a href="#"><b>Invoices</a>
+    </div>
+
+   
+
+    {{!-- {{# if products}} --}}
+    <div style="background-color: white">
+        <table style="width:100%" class="table table-hover">
+            <tr>
+                <th>Invoice Number </th>
+                <th>Invoice Date</th>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>total</th>
+                
+                
+            </tr>
+          
+            <tr>
+                <td>
+                    <a href="/orders/orderDetails" data-toggle="tooltip" data-placement="top"
+                        title="Edit" style="padding: 0%" class="btn btn-primary"><img src="https://img.icons8.com/ios/20/ffffff/visible.png"></a>
+                    <a href="/products/Edit/{{this.subcategory._id}}/{{this._id}}" data-toggle="tooltip" data-placement="top"
+                        title="Edit" style="padding: 0%" class="btn btn-primary">
+                        <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
+                    </a>
+                    <strong>001</strong>
+                </td>
+
+                <td>
+                    <strong>10/01/2019</strong>
+                </td>
+
+                <td>
+                    <strong>123</strong>
+                </td>
+
+                <td>
+                   <strong>01/01/2019</strong>
+                </td>
+
+                <td>
+                    <strong>Md. Ali</strong>
+                </td>
+
+                <td>
+                    <strong></strong>
+                </td>
+                <td>
+                    <strong>10,000 TK</strong>
+                </td>
+               
+            </tr>
+            {{!-- each product --}}
+            {{!-- {{/each}} --}}
+        </table>
+
+    </div>
+    {{!-- {{ else }} --}}
+    {{!-- <div class="row">
+        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
+        </div>
+    </div> --}}
+    {{!-- {{/if}} --}}
+
+</div>

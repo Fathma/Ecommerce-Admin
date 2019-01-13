@@ -1,0 +1,69 @@
+<div class="box">
+    <div class="register-logo">
+        <a href="#"><b>Add</b>NewLot</a>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-md-offset-3 col-sm-offset-3">
+                <div class="well">
+
+                    <form action="/products/stockEdit/{{product.id}}" method="POST">
+
+                        <div class="dropdown">
+                            <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary"
+                                data-target="hash" href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
+                            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                {{# each S_categories}}
+                                {{# if this.sub}}
+                                <li class="dropdown-submenu pull-right1">
+                                    <a tabindex="-1" href="#">{{this.name}}</a>
+                                    <ul class="dropdown-menu">
+                                        {{# each this.sub}}
+                                        <li>
+                                            <a href="/products/getProduct/{{id}}">{{name}}</a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
+                                {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <br>
+                            <select id="model" class="btn btn-secondary dropdown-toggle">
+                                {{# each product}}
+                                <option value="{{this._id}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lot_number">Lot Number</label>
+                            <input type="number" name="lot_number" class="form-control" value="{{product.quantity.lot_number}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="purchase_price">Purchase Price</label>
+                            <input type="number" name="purchase_price" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" name="quantity" class="form-control" value="{{product.quantity.stock}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="serial">Serial Number</label>
+                            <textarea type="text" name="serial" class="form-control"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

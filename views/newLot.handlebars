@@ -1,0 +1,41 @@
+<div class="box">
+    <div class="register-logo">
+        <a href="#"><b>Product</b>Serial</a>
+    </div>
+
+    <div class="box-body">
+        <p class="login-box-msg">Add Serial numbers</p>
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-md-offset-3 col-sm-offset-3">
+                <div class="well">
+
+                    <h3 class="text-center">Add Product Serial</h3>
+                    {{!-- start general --}}
+                    <form action="/products/saveSerial/{{product.id}}" method="POST" >
+
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" class="form-control" value="{{product.name}}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <input type="text" name="model" class="form-control" value="{{product.model}}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            
+                            <label for="color">Color</label>
+                            <input type="text" name="color" class="form-control" value="{{product.color}}" >
+                        </div>
+                        <div class="form-group">
+                            <label for="serial">Serial</label>
+                            <input type="text" name="serial" class="form-control" >
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

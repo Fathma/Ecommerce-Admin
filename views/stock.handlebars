@@ -1,0 +1,77 @@
+<div class="container-fluid" style="width:100%;min-height: 700px">
+
+    <div class="register-logo">
+        <a href="#"><b>Stock</b>Info</a>
+    </div>
+    {{# if products}}
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1 col-sm-offset-1">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-2 pull-center">
+                            <strong>Image</strong>
+                        </div>
+                        <div class="col-sm-2 pull-center">
+                            <strong>Title</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <strong>Stock</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <strong>Live</strong>
+                        </div>
+                        <div class="col-sm-3 pull-center">
+                            <strong>last update</strong>
+                        </div>
+                        <div class="col-sm-2 pull-center">
+                            <strong>Editor</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <strong>Action</strong>
+                        </div>
+                    </div>
+                </li>
+                {{# each products}}
+
+                <li class="list-group-item">
+
+                    <div class="row">
+                        <a href="/products/singleProduct/{{ this._id }}">
+                        <div class="col-sm-2 ">
+                            <img style="height: 50px" class="img-responsive" src="data:image/png;base64,{{ this.image }}"
+                                alt="{{ this.title}}">
+                        </div>
+                        <div class="col-sm-2 pull-center" >
+                            <strong>{{this.name}}</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <strong>{{this.quantity.stock}}</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <strong>{{this.quantity.storeLive}}</strong>
+                        </div>
+                        <div class="col-sm-3 pull-center">
+                            <strong>{{this.quantity.stock_last_update}}</strong>
+                        </div>
+                        <div class="col-sm-2 pull-center">
+                            <strong>{{this.quantity.userID.name}}</strong>
+                        </div>
+                        <div class="col-sm-1 pull-center">
+                            <a href="/products/stockEditPage/{{this._id}}"> <button class="btn btn-default " type="button">Edit</button></a>
+                        </div>
+                        </a>
+                    </div>
+                </li>
+                {{/each }}
+            </ul>
+        </div>
+    </div>
+    {{ else }}
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
+        </div>
+    </div>
+    {{/if}}
+</div>
