@@ -5,6 +5,8 @@ const Text = require('../node_modules/text/lib/text');
 
 var CategorySchema = new Schema({
     name: { type: Text, es_type: 'text', unique: true },
+    subCategories:[{ type: Schema.Types.ObjectId, ref: 'SubCategory'}],
+    Brands:[{ type: Schema.Types.ObjectId, ref: 'Brand' }],
     created: { type: Date, default: Date.now }
 });
 module.exports = mongoose.model('Category', CategorySchema, 'categories');

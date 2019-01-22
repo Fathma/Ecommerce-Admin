@@ -31,23 +31,29 @@
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
+            {{# if user}}
             <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>DB</span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Admin</b>Dashboard</span>
             </a>
+            {{else}}
+             <a href="#" class="logo">
+               
+                <span class="logo-lg">ECL</span>
+            </a>
+            {{/if}}
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top">
+                {{# if user}}
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
+                {{/if}}
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <li class="nav-item">
-                            <a href="/about" class="nav-link">About</a>
-                        </li>
                         {{#if user}}
                         <li class="nav-item">
                             <a href="/users/register" class="nav-link">Register</a>
@@ -68,6 +74,7 @@
         </header>
 
         <!-- Left side column. contains the logo and sidebar -->
+        {{#if user}}
         <aside class="main-sidebar">
             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
@@ -110,9 +117,8 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/products/showfields"><i class="fa fa-circle-o"></i>New Product</a></li>
+                            <li><a href="/category/Entry"><i class="fa fa-circle-o"></i>New Product</a></li>
                             <li><a href="/products/view"><i class="fa fa-circle-o"></i>All Products</a></li>
-                            
                         </ul>
                     </li>
                     
@@ -132,11 +138,30 @@
                                 <a href="/invoice/invoiceList"><i class="fa fa-circle-o"></i>Invoice</a>
                             </li>
                             <li>
+                                <a href="/returns/returnList"><i class="fa fa-circle-o"></i>Returns</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-folder"></i>
+                            <span>Reports</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li>
+                                <a href="#"><i class="fa fa-circle-o"></i>Orders</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-circle-o"></i>Invoice</a>
+                            </li>
+                            <li>
                                 <a href="#"><i class="fa fa-circle-o"></i>Returns</a>
                             </li>
                         </ul>
                     </li>
-
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-folder"></i>
@@ -175,6 +200,9 @@
             </section>
             <!-- /.sidebar -->
         </aside>
+        {{else}}
+        <aside class="main-sidebar" style="background-color: #ecf0f5"></aside>
+           {{/if}}
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <section class="content-header">

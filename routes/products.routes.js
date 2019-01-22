@@ -11,6 +11,8 @@ const Grid = require('gridfs-stream');
 const mongoose = require('mongoose');
 var mongo = require('mongodb');
 var Brand = require("../models/brand.model")
+var Feature = require("../models/features.model")
+var Cat = require("../models/category.model")
 
 const product_controller = require('../controllers/product.controller');
 
@@ -50,8 +52,9 @@ const upload = multer({ storage });
 
 router.get("/view", ensureAuthenticated, product_controller.getAllProducts);
 router.get("/delete/:id", ensureAuthenticated, product_controller.deleteProduct);
-router.get("/showfields/:cat", ensureAuthenticated, product_controller.showProductRegistrationFields);
-router.get("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFieldspage);
+// router.get("/showfields/:cat", ensureAuthenticated, product_controller.showProductRegistrationFields);
+// router.get("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFieldspage);
+
 router.get("/singleProduct/:id", product_controller.singleProduct);
 router.get("/Edit/:category/:id", product_controller.getEditpage);
 router.get("/stock", product_controller.getAllProductStock);
@@ -71,6 +74,9 @@ router.get("/newLot", product_controller.newLot);
 router.get("/getProduct/:sub_cat", product_controller.getProduct);
 router.post("/Discount/:id", product_controller.addDiscount);
 router.post("/saveSerial/:id", product_controller.saveSerial);
+
+// new
+router.post("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFields);
 
 // update product information
 router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) => {
@@ -211,51 +217,98 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
   })
 
 });
+
 //saves product details
-router.post("/regiSave/:category/:num", upload.single("imagePath"), (req, res) => {
-  
+router.post("/regiSave/:brand/:num",upload.single("imagePath"), (req, res) => {
+  var obj ;
   var num = parseInt(req.params.num, 10);
+  console.log(req.params.num);
   var data = [];
   if (num > 0) {
-    data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
+    if(req.body.feature0_value === ""){}else{
+      data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
+    }
     if (num > 1) {
-      data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
+      if(req.body.feature1_value === ""){}else{
+        data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
+      }
       if (num > 2) {
-        data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
+        if(req.body.feature2_value === ""){}else{
+          data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
+        }
         if (num > 3) {
-          data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
+          if(req.body.feature3_value === ""){}else{
+            data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
+          }
           if (num > 4) {
-            data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
+            if(req.body.feature4_value === ""){}else{
+              data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
+            }
             if (num > 5) {
-              data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
+              if(req.body.feature5_value === ""){}else{
+                data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
+              }
               if (num > 6) {
-                data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
+                if(req.body.feature6_value === ""){}else{
+                  data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
+                }
                 if (num > 7) {
-                  data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
+                  if(req.body.feature7_value === ""){}else{
+                    data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
+                  }
                   if (num > 8) {
-                    data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
+                    if(req.body.feature8_value === ""){}else{
+                      data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
+                    }
                     if (num > 9) {
-                      data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
+                      if(req.body.feature9_value === ""){}else{
+                        data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
+                      }
                       if (num > 10) {
-                        data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
+                        if(req.body.feature10_value === ""){}else{
+                          data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
+                        }
+                        
                         if (num > 11) {
-                          data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
+                          if(req.body.feature11_value === ""){}else{
+                            data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
+                          }
                           if (num > 12) {
-                            data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
+                            if(req.body.feature12_value === ""){}else{
+                              data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
+                            }
                             if (num > 13) {
-                              data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
+                              if(req.body.feature13_value === ""){}else{
+                                data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
+                              }
                               if (num > 14) {
-                                data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
+                                if(req.body.feature14_value === ""){}else{
+                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
+                                }
                                 if (num > 15) {
-                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
+                                  if(req.body.feature15_value === ""){}else{
+                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
+                                  }
+                                  
                                   if (num > 16) {
-                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
+                                    if(req.body.feature16_value === ""){}else{
+                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
+                                    }
+                                   
                                     if (num > 17) {
-                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
+                                      if(req.body.feature17_value === ""){}else{
+                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
+                                      }
                                       if (num > 18) {
-                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
+                                        if(req.body.feature18_value === ""){}else{
+                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
+                                        }
+                                        
                                         if (num > 19) {
-                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
+                                          if(req.body.feature19_value === ""){}else{
+                                            data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
+                                          }
+                                          
                                         }
                                       }
                                     }
@@ -276,62 +329,222 @@ router.post("/regiSave/:category/:num", upload.single("imagePath"), (req, res) =
       }
     }
   }
-  var pro = new Promise(function (resolve, reject) {
+ 
+ var pro = new Promise(function (resolve, reject) {
     const readstream = gfs.createReadStream(req.file.filename);
     readstream.on('data', (chunk) => {
       arr = chunk.toString('base64');
       resolve();
     })
   })
+  
+  pro.then(()=>{
+    if( req.body.sub === "null"){
+    
+      obj =[
+        {category: req.body.catt},
+        {brand:req.params.brand
+      }]
+    }else{
+      obj =[
+        {category: req.body.catt},
+        {subcategory: req.body.sub},
+        {brand:req.params.brand
+      }]
+    }
+      
+  })
+  pro.then(()=>{
+    if(req.body.new_feat > 0){
+      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_1 + "\",\"value\":\"" + req.body.v1 + "\"}"));
+      Feature.update({$and:obj},{
+        $addToSet:{
+          "feature":req.body.new_feat_1
+        }},{ upsert: true },function(err, docs){
+          if(err){ console.log(err)}
+          if(req.body.new_feat > 1){
+            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_2 + "\",\"value\":\"" + req.body.v2 + "\"}"));
+            Feature.update({$and:obj},{
+              $addToSet:{
+                "feature":req.body.new_feat_2
+              }},{ upsert: true },function(err, docs){
+                if(err){ console.log(err)}
+                if(req.body.new_feat > 2){
+                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_3 + "\",\"value\":\"" + req.body.v3 + "\"}"));
+                  Feature.update({$and:obj},{
+                    $addToSet:{
+                      "feature":req.body.new_feat_3
+                    }},{ upsert: true },function(err, docs){
+                      if(err){ console.log(err)}
+                      if(req.body.new_feat > 3){
+                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_4 + "\",\"value\":\"" + req.body.v4 + "\"}"));
+                        Feature.update({$and:obj},{
+                          $addToSet:{
+                            "feature":req.body.new_feat_4
+                          }},{ upsert: true },function(err, docs){
+                            if(err){ console.log(err)}
+                            if(req.body.new_feat > 4){
+                              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_5 + "\",\"value\":\"" + req.body.v5 + "\"}"));
+                              Feature.update({$and:obj},{
+                                $addToSet:{
+                                  "feature":req.body.new_feat_5
+                                }},{ upsert: true },function(err, docs){
+                                  if(err){ console.log(err)}
+                                  if(req.body.new_feat > 5){
+                                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_6 + "\",\"value\":\"" + req.body.v6 + "\"}"));
+                                    Feature.update({$and:obj},{
+                                      $addToSet:{
+                                        "feature":req.body.new_feat_6
+                                      }},{ upsert: true },function(err, docs){
+                                        if(err){ console.log(err)}
+                                        if(req.body.new_feat > 6){
+                                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_7 + "\",\"value\":\"" + req.body.v7 + "\"}"));
+                                          Feature.update({$and:obj},{
+                                            $addToSet:{
+                                              "feature":req.body.new_feat_7
+                                            }},{ upsert: true },function(err, docs){
+                                              if(err){ console.log(err)}
+                                              if(req.body.new_feat > 7){
+                                                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_8 + "\",\"value\":\"" + req.body.v8 + "\"}"));
+                                                Feature.update({$and:obj},{
+                                                  $addToSet:{
+                                                    "feature":req.body.new_feat_8
+                                                  }},{ upsert: true },function(err, docs){
+                                                    if(err){ console.log(err)}
+                                                    if(req.body.new_feat > 8){
+                                                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_9 + "\",\"value\":\"" + req.body.v9 + "\"}"));
+                                                      Feature.update({$and:obj},{
+                                                        $addToSet:{
+                                                          "feature":req.body.new_feat_9
+                                                        }},{ upsert: true },function(err, docs){
+                                                          if(err){ console.log(err)}
+                                                          if(req.body.new_feat > 9){
+                                                            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
+                                                            Feature.update({$and:obj},{
+                                                              $addToSet:{
+                                                                "feature":req.body.new_feat_10
+                                                              }},{ upsert: true },function(err, docs){
+                                                                if(err){ console.log(err)}
+                                                               
+                                                              }
+                                                            ) 
+                                                          }
+                                                        }
+                                                      ) 
+                                                    }
+                                                  }
+                                                ) 
+                                              }
+                                            }
+                                          ) 
+                                        }
+                                      }
+                                    ) 
+                                  }
+                                }
+                              ) 
+                            }
+                          }
+                        ) 
+                      }
+                    }
+                  ) 
+                }
+              }
+            ) 
+          }
+        }
+      ) 
+    }
+  })
   pro.then(() => {
-
-    SubCategory.findOne({ name: req.params.category }, function (err, ncategory) {
-
-      if (err) return next(err);
-      Brand.findOne({ name: req.body.brand }, function (err, nbrand) {
-
-        newProduct = {
-          name: req.body.title,
-          subcategory: ncategory._id,
-          category: ncategory.category,
-          productPrice: {
-            listPrice: 0,
-            salePrice: null,
-            wholeSalePrice: 0
-          },
-          serial:[],
-          image: arr,
-          owner: req.user.id,
-          brand: nbrand._id,
-          model: req.body.model,
-          color: req.body.color,
-          warranty: req.body.warranty,
-          description: req.body.description,
-          shippingInfo: req.body.shippingInfo,
-          isActive: false,
-          onSale: false,
-          features: data,
-          quantity: {
-            stock: 0,
-            storeLive: 0
-          },
-          pinned: "",
-          home: ""
-        };
+    if( req.body.sub === "null"){
+      newProduct = {
+        name: req.body.title,
+        category: req.body.catt,
+        productPrice: {
+          listPrice: req.body.list_price,
+          salePrice: req.body.salePrice,
+          wholeSalePrice: req.body.wholeSalePrice
+        },
+        image: arr,
+        owner: req.user.id,
+        brand: req.params.brand,
+        model: req.body.model,
+        warranty: req.body.warranty,
+        description: req.body.description,
+        shippingInfo: req.body.shippingInfo,
+        features: data,
+        quantity: {
+          stock: 0,
+          storeLive: 0
+        },
+        pinned: "",
+        home: ""
+      };
+    }else{
+      newProduct = {
+        name: req.body.title,
+        subcategory: req.body.sub,
+        category: req.body.catt,
+        productPrice: {
+          listPrice: req.body.list_price,
+          salePrice: req.body.salePrice,
+          wholeSalePrice: req.body.wholeSalePrice
+        },
+        image: arr,
+        owner: req.user.id,
+        brand: req.params.brand,
+        model: req.body.model,
+        warranty: req.body.warranty,
+        description: req.body.description,
+        shippingInfo: req.body.shippingInfo,
+        features: data,
+        quantity: {
+          stock: 0,
+          storeLive: 0
+        },
+        pinned: "",
+        home: ""
+      };
+    }
+        
         new Product(newProduct).save().then(product => {
-          req.flash("success_msg", "Product added.");
-          res.redirect("/products/view");
-        });
-      })
-    })
 
+          Cat.update(
+          { _id: req.body.catt },
+          { $addToSet: { Brands: req.params.brand } },
+          { upsert: true },
+          function(err, docs) {
+            if (err) {
+            }
+            if (req.body.sub != "null") {
+              SubCategory.update(
+                { _id: req.body.sub },
+                { $addToSet: { brand: req.params.brand } },
+                { upsert: true },
+                function(err, docs) {
+                  if (err) {
+                    res.send(err);
+                  }
+                 
+                }
+              );
+            } 
+          }
+        );
+          
+        });
   })
   pro.then(() => {
     gfs.remove({ filename: req.file.filename }, (err) => {
       if (err) console.log(err)
+      req.flash("success_msg", "Product added.");
+      res.redirect("/category/Entry");
     })
   })
 });
+
 
 
 module.exports = router;

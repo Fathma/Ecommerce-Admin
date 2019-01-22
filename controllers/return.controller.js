@@ -2,17 +2,24 @@ const express = require("express");
 
 const returns = require("../models/return.model");
 
-// view list of customers
+// view list of Returns
 exports.showReturnList = (req, res, next) => {
    
     res.render("return/returns");
    
 };
 
-// view list of customers
-exports.showOrderDetails = (req, res, next) => {
+// view return details
+exports.showReturnDetails = (req, res, next) => {
    
-    res.render("orderDetails");
+    res.render("return/editReturn");
+   
+};
+
+// view 
+exports.addReturnPage = (req, res, next) => {
+   
+    res.render("return/addReturn");
    
 };
 

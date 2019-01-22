@@ -27,6 +27,7 @@ const usersRoutes = require("./routes/users.routes");
 const productsRoutes = require("./routes/products.routes");
 const customerRoutes = require("./routes/customer.routes");
 const invoiceRoutes = require("./routes/invoice.routes");
+const returnsRoutes = require("./routes/return.routes");
 
 // Passport config
 require("./config/passport")(passport);
@@ -190,6 +191,7 @@ app.get("/about", (req, res) => {
 app.use("/category",ensureAuthenticated, Super, categoryRoutes);
 app.use("/users", usersRoutes);
 app.use("/orders", ordersRoutes);
+app.use("/returns", returnsRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/customers", customerRoutes);
 app.use("/products",ensureAuthenticated,SuperPublisher, productsRoutes);

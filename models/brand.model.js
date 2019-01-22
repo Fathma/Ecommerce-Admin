@@ -4,7 +4,7 @@ const Text = require('../node_modules/text/lib/text');
 
 
 var BrandSchema = new Schema({
-    name: { type: String, es_type: 'text', unique: true },
+    name: { type: String, es_type: 'text'},
     created: { type: Date, default: Date.now }
 });
 

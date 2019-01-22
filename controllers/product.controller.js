@@ -1,7 +1,10 @@
 //Imports
 var mongo = require("mongodb");
 const Product = require("../models/Product");
+const Brand = require("../models/brand.model");
 const SubCategory = require("../models/subCategory.model");
+const Feature = require("../models/features.model");
+
 
 exports.newLot= (req, res, next) => {
   find({_id: req.params.id}, function(rs){
@@ -11,8 +14,6 @@ exports.newLot= (req, res, next) => {
 };
 
 exports.saveSerial= (req, res, next) => {
-  console.log(req.body.serial)
-  
   var ob={
     color: req.body.color,
     serial: req.body.serial
@@ -22,7 +23,6 @@ exports.saveSerial= (req, res, next) => {
       "serial":ob
     }},{ upsert: true },function(err, docs){
       if(err){ console.log("dsfajhh")}
-      console.log(req.body.serial)
       res.render("products/reg");
     }
   )
@@ -76,7 +76,6 @@ exports.singleProduct = (req, res) => {
     .exec(function(err, product) {
       resultArray = product;
       var obj = resultArray.features;
-      console.log(resultArray);
       res.render("single", {
         title: "Single",
         product: resultArray,
@@ -335,16 +334,58 @@ exports.deleteProduct = (req, res, next) => {
     }
   });
 };
-
 // shows the number of fields user wants
 exports.showProductRegistrationFields = (req, res, next) => {
-  SubCategory.find({ name: req.params.cat },function(err, docs1) {
-    res.render("products/reg", {
-      category: req.params.cat,
-      features: docs1[0].features,
-      num_feature: docs1[0].features.length,
-      title: "Registration"
-    });
+  if (req.body.subCategg != "null") {
+    var obj=[
+      {category: req.body.categg},
+      {subcategory: req.body.subCategg},
+      {brand: req.body.brandg}
+    ]
+    var sub=req.body.subCategg
+    
+  }else{
+    var obj=[
+      {category: req.body.categg},
+      {brand: req.body.brandg}
+    ]
+    var sub="null"
+  }
+  console.log(obj)
+  Feature.find({$and:obj},function(err, docs1) {
+    console.log(docs1)
+    if(docs1.length === 0){
+      res.render("products/reg", {
+        num: 0,
+        title: "Registration",
+        brands:req.body.brandg,
+        catt:req.body.categg,
+        sub:sub,
+        status:"notexist"
+      });
+    }else{
+      res.render("products/reg", {
+        features: docs1[0].feature,
+        num: docs1[0].feature.length,
+        title: "Registration",
+        brands:req.body.brandg,
+        catt:req.body.categg,
+        sub:sub,
+        status:"exist"
+      });
+    }
+    
   });
 };
+// // shows the number of fields user wants
+// exports.showProductRegistrationFields = (req, res, next) => {
+//   SubCategory.find({ name: req.params.cat },function(err, docs1) {
+//     res.render("products/reg", {
+//       category: req.params.cat,
+//       features: docs1[0].features,
+//       num_feature: docs1[0].features.length,
+//       title: "Registration"
+//     });
+//   });
+// };
 
