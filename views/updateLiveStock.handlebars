@@ -13,41 +13,42 @@
                         <div class="well">
                             <h4>Select Serial numbers</h4>
                             <div class="btn-group-vertical">
-                                <button type="button" class="btn btn-secondary">1</button>
-                                <button type="button" class="btn btn-secondary">2</button>
-                                <button type="button" class="btn btn-secondary">3</button>
-                                <button type="button" class="btn btn-secondary">4</button>
+                                {{# each inventory.serial}}
+                                <a class="btn" type="button" id="serial{{@index}}"  onclick="set_disable(this.id)" class="btn btn-secondary">
+                                     {{this.number}}
+                                </a>
+                                {{/each}}
+                                
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-8">
                         <div class="well">
-                            <form action="/products/saveSerial/{{product.id}}" method="POST">
+                            <form action="/products/saveLive/{{inventory.product_id._id}}" method="POST">
 
                                 <div class="form-group">
                             <label for="model">Model</label>
-                            <input type="text" name="model" class="form-control" value="{{product.model}}" readonly>
+                            <input type="text" name="model" class="form-control" value="{{inventory.product_id.model}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="lot_number">Lot Number</label>
-                            <input type="number" name="lot_number" class="form-control" value="3245" readonly>
+                            <input type="text" name="lot_number" class="form-control" value="{{inventory._id}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="purchase_price">Purchase Price</label>
-                            <input type="number" name="purchase_price" class="form-control" value="20000" readonly>
+                            <input type="text" name="purchase_price" class="form-control" value="{{inventory.purchasePrice}}" readonly>
                         </div>
                          <div class="form-group">
-                            <label for="quantity">Unit/Selling Price</label>
-                            <input type="number" name="quantity" class="form-control" value="" >
+                            <label for="unit_price">Unit/Selling Price</label>
+                            <input type="number" name="unit_price" class="form-control" value="" required>
                         </div>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="number" name="quantity" class="form-control" value="" >
+                            <input type="text" name="quantity"  id="quantity" class="form-control" value="" >
                         </div>
                         <div class="form-group">
                             <label for="serial">Serial Number</label>
-                            <textarea type="text" name="serial" class="form-control"  ></textarea>
-                            <p>Select serial numbers from sidebar </p>
+                            <input type="text" name="serial" id="serial" class="form-control"></input>
                         </div>
 
                                 <button type="submit" class="btn btn-primary">Update</button>

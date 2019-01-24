@@ -79,52 +79,11 @@ app.use(flash());
 
 
 app.use(function (req, res, next) {
-    var All_categories=[];
-   var sub_arr = [];
-   Category.find({},function (err, categories) {
+   Category.find()
+   .populate("subCategories")
+   .exec(function (err, categories) {
        if (err) return next(err);
-       var cat=[];
-      
-       var pro = new Promise(function (resolve, reject) {
-           categories.map((rs) => {
-               var arr = [];
-               SubCategory.find({category: rs._id}, function (err, docs) {
-                   if (err) {
-                       res.send(err);
-                   } else {
-                       cat.push(rs);
-                       docs.map((result) => {
-                           
-                           arr.push({
-                               name: result.name,
-                               id: result._id
-                           })
-                       })
-                   }
-                   if(arr.length === 0){
-                    var new_obj={
-                        name: rs.name,
-                        _id: rs._id,
-                        
-                    }
-                   }else{
-                    var new_obj={
-                        name: rs.name,
-                        _id: rs._id,
-                        sub: arr
-                    }
-                   }
-                   All_categories.push(new_obj);
-                   sub_arr.push(arr);
-                   if(sub_arr.length === categories.length){
-                       resolve()
-                   }
-               })
-           })
-       })
-       pro.then(() => {
-           res.locals.S_categories = All_categories;
-       })
+       res.locals.S_categories = categories;
        next();
    });
 });
@@ -178,8 +137,6 @@ app.get("/", (req, res) => {
   }else{
     res.redirect('/users/login');
   }
- 
-
 });
 
 // About route

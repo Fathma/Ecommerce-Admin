@@ -5,6 +5,10 @@ var ProductSchema = new Schema({
     subcategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
     brand: { type: Schema.Types.ObjectId, ref: 'Brand' },
+
+    categoryName: { type: String },
+    subcategoryName: { type: String },
+    brandName: { type: String },
     name: { type: String },
     model: { type: String, required: false },
     features: { type: Array, required: false },
@@ -12,30 +16,36 @@ var ProductSchema = new Schema({
     description: { type: String, default: 'None'},
     shippingInfo: {type:String, default:'None'},
     image: String,
-    
-    owner: { type: Schema.Types.ObjectId, ref: 'users' },
-    
-    pinned: { type: String, required: false },
-    home: { type: String, required: false },
-    
-    quantity: {
-      stock: { type: Number, default: 0},
-      storeLive: { type: Number, default: 0 },
-      stock_last_update: {type:Date, default:Date.now},
-      userID:{ type: Schema.Types.ObjectId, ref: 'users' },
+    live:{
+        status:{ type: Boolean, required: false },
+        inventory:[
+            { type: Schema.Types.ObjectId, ref: 'inventory' }
+        ]
     },
-    serial:{ type: Array},
-    productPrice: {
-        listPrice: { type: Number, default: 0},
-        salePrice: { type: Number, default: 0},
-        wholeSalePrice: { type: Number, default: 0}
-    },
+    
+    admin: { type: Schema.Types.ObjectId, ref: 'users' },
+    
+    // pinned: { type: String, required: false },
+    // home: { type: String, required: false },
+    
+    // quantity: {
+    //   stock: { type: Number, default: 0},
+    //   storeLive: { type: Number, default: 0 },
+    //   stock_last_update: {type:Date, default:Date.now},
+    //   userID:{ type: Schema.Types.ObjectId, ref: 'users' },
+    // },
+    // serial:{ type: Array},
+    // productPrice: {
+    //     listPrice: { type: Number, default: 0},
+    //     salePrice: { type: Number, default: 0},
+    //     wholeSalePrice: { type: Number, default: 0}
+    // },
     isActive: Boolean,
-    onSale: Boolean,
+    // onSale: Boolean,
     
     created: { type: Date, default: Date.now },
 
-    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    // reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
 
 
 });

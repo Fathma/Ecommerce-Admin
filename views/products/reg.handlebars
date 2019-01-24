@@ -13,7 +13,7 @@
 
                     <div class="form-group">
                         <label for="cat">Category</label>
-                        <input type="text" name="cat" placeholder="Enter Category" class="form-control">
+                        <input type="text" name="cat" placeholder="Enter New Category" class="form-control" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label for="cate">Category<span style="color: red">*</span></label>
 
-                        <select class="form-control" name="cate">
+                        <select class="form-control" name="cate" required>
                             {{# each cat}}
                             <option value="{{this._id}}">{{this.name}}</option>
                             {{/each}}
@@ -37,7 +37,7 @@
 
                     <div class="form-group">
                         <label for="subCat">Sub Category</label>
-                        <input type="text" name="subCat" placeholder="Enter Sub Category" class="form-control">
+                        <input type="text" name="subCat" placeholder="Enter New Sub Category" class="form-control" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -51,33 +51,13 @@
                 <form method="POST" action="/category/addBrand">
 
                     <div class="form-group">
-                        <label for="catee">Category<span style="color: red">*</span></label>
-                        <select class="form-control" name="catee">
-                            {{# each cat}}
-                            <option value="{{this._id}}">{{this.name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subCate">Sub Category(optional)</label>
-                        <select class="form-control" name="subCate">
-                            <option value="null">select one</option>
-                            {{# each categories}}
-                            <option value="{{this._id}}">{{this.name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="brand">brand<span style="color: red">*</span></label>
-                        <input type="text" name="brand" class="form-control">
+                        <label for="brand">Brand<span style="color: red">*</span></label>
+                        <input type="text" name="brand" class="form-control" placeholder="Enter New Brand" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
-
 
             {{!-- Product Registration --}}
             <div class="well">
@@ -87,45 +67,50 @@
                         <div class="form-group">
                             <label for="categg">Category<span style="color: red">*</span></label>
 
-                            <select class="form-control" name="categg">
+                            <select class="form-control" name="categg" id="categg" required>
 
                                 {{# each cat}}
-                                <option value="{{this._id}}">{{this.name}}</option>
+                                <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
                                 {{/each}}
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="subCategg">Sub Category(optional)</label>
-                            <select class="form-control" name="subCategg">
+                            <select class="form-control" name="subCategg" id="subCategg">
                                 <option value="null">select one</option>
                                 {{# each categories}}
-                                <option value="{{this._id}}">{{this.name}}</option>
+                                <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
                                 {{/each}}
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="brandg">Brand<span style="color: red">*</span></label>
-                            <select class="form-control" name="brandg">
+                            <select class="form-control" name="brandg" required>
                                 {{# each brand}}
-                                <option value="{{this._id}}">{{this.name}}</option>
+                                <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
                                 {{/each}}
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary pull-right">Submit</button> <br>
+                        <button type="submit" class="btn btn-danger ">Submit</button> <br>
+                        <p style="color:red; float:left"> Submit the form before filling up the product Information</p>
                     </form>
                 </div>
-                <form action="/products/regiSave/{{brands}}/{{num}}" method="POST" enctype="multipart/form-data">
-                    <input type="text" name="catt" value="{{catt}}">
-                    <input type="text" name="sub" value="{{sub}}">
-                    <input type="text" name="status" value="{{status}}">
+
+                <form action="/products/regiSave" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="num" value="{{num}}">
+                    <input type="hidden" name="brand" value="{{brands}}">
+                    <input type="hidden" name="catt" value="{{catt}}">
+                    <input type="hidden" name="sub" value="{{sub}}">
+                    <input type="hidden" name="status" value="{{status}}">
+                    <input type="hidden" name="cattN" value="{{cattN}}">
+                    <input type="hidden" name="subN" value="{{subN}}">
+                    <input type="hidden" name="brandN" value="{{brandN}}">
+
                     <div class="form-group">
-
-                        <label for="title">Title
-
-                        </label>
+                        <label for="title">Title</label>
                         <input type="text" name="title" class="form-control" placeholder="Enter Title">
                     </div>
 
@@ -145,13 +130,20 @@
 
                     <div id="add">
                         {{!-- New feature will be added here --}}
-                    </div>
+                    </div><br>
+
                     {{!-- Adding new feature --}}
-                    <div>
-                        <input type="hidden" id="new_feat" name="new_feat" value="0">
-                        <input type="text" id="new_feat_label" name="new_feat_label" placeholder="write a new feature name">
-                        <a onclick="setvisible()" class="btn ">New Feature</a>
-                    </div>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="hidden" id="new_feat" name="new_feat" value="0">
+                            <input type="text" id="new_feat_label" name="new_feat_label" class="form-control" placeholder="write a new feature name">
+                        </div>
+                        <div class="col-sm-2">
+                            <a onclick="setvisible()" class="btn btn-success">Add New Feature</a>
+                        </div>
+
+
+                    </div><br>
 
                     <div class="form-group">
                         <label for="warranty">Warranty</label>
@@ -169,8 +161,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="imagePath">Image</label>
-                        <input type="file" name="imagePath" accept="image/png, image/jpeg">
+                        <label for="imagePath">Image<span style="color: red">*</span></label>
+                        <input type="file" name="imagePath" accept="image/png, image/jpeg" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Submit</button>

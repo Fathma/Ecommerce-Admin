@@ -4,10 +4,302 @@ const Product = require("../models/Product");
 const Brand = require("../models/brand.model");
 const SubCategory = require("../models/subCategory.model");
 const Feature = require("../models/features.model");
+const Inventory = require("../models/inventory.model");
+const Category = require("../models/category.model");
+const Live = require("../models/live.model");
+const multer = require("multer");
+const mongoose = require('mongoose');
+const path = require('path');
+const crypto = require('crypto');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
+const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
+
+const conn = mongoose.createConnection(mongoo);
+let gfs;
+conn.once('open', function () {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('fs');
+})
+var filename;
+// create storage engine
+const storage = new GridFsStorage(
+  {
+    url: mongoo,
+    file: (req, file) => {
+      return new Promise((resolve, reject) => {
+        crypto.randomBytes(16, (err, buf) => {
+          if (err) {
+            return reject(err);
+          }
+          filename = buf.toString('hex') + path.extname(file.originalname);
+          const fileInfo = {
+            filename: filename,
+            bucketName: 'fs'
+          };
+          resolve(fileInfo);
+        });
+      });
+    }
+  });
+const upload = multer({ storage });
+
+// function for updateting new feature in feature table
+function update_feature(condition, values, cb){
+  Feature.update(condition,{ $addToSet:{ "feature": { $each: values }}},{ upsert: true },function(err, docs){
+      if(err){ console.log(err)}
+    }
+  ) 
+}
+// function for updateting category table
+function update_category(condition, values, cb){
+  Category.update(condition,values,{ upsert: true },function(err, docs){
+      if(err){ console.log(err)}
+    }
+  ) 
+}
+
+
+//saves product details
+exports.SaveProduct= (req, res, next) => {
+
+  var selected_brand= req.body.brand;
+  var selected_category= req.body.catt;
+
+  // checking whether first form has submitted or not
+  if(req.body.catt != "" && selected_brand != ""){
+    var selected_subCategory = req.body.sub;
+    var num = parseInt(req.body.num, 10);
+    var data = [];
+    var features_new = [];
+    var obj=[
+      {category:selected_category},
+      {brand:selected_brand}
+    ] ;
+    // getting previously added feature and corresponding values
+    if (num > 0) {
+      if(req.body.feature0_value === ""){}else{
+        data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
+      }
+      if (num > 1) {
+        if(req.body.feature1_value === ""){}else{
+          data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
+        }
+        if (num > 2) {
+          if(req.body.feature2_value === ""){}else{
+            data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
+          }
+          if (num > 3) {
+            if(req.body.feature3_value === ""){}else{
+              data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
+            }
+            if (num > 4) {
+              if(req.body.feature4_value === ""){}else{
+                data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
+              }
+              if (num > 5) {
+                if(req.body.feature5_value === ""){}else{
+                  data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
+                }
+                if (num > 6) {
+                  if(req.body.feature6_value === ""){}else{
+                    data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
+                  }
+                  if (num > 7) {
+                    if(req.body.feature7_value === ""){}else{
+                      data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
+                    }
+                    if (num > 8) {
+                      if(req.body.feature8_value === ""){}else{
+                        data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
+                      }
+                      if (num > 9) {
+                        if(req.body.feature9_value === ""){}else{
+                          data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
+                        }
+                        if (num > 10) {
+                          if(req.body.feature10_value === ""){}else{
+                            data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
+                          }
+                          
+                          if (num > 11) {
+                            if(req.body.feature11_value === ""){}else{
+                              data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
+                            }
+                            if (num > 12) {
+                              if(req.body.feature12_value === ""){}else{
+                                data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
+                              }
+                              if (num > 13) {
+                                if(req.body.feature13_value === ""){}else{
+                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
+                                }
+                                if (num > 14) {
+                                  if(req.body.feature14_value === ""){}else{
+                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
+                                  }
+                                  if (num > 15) {
+                                    if(req.body.feature15_value === ""){}else{
+                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
+                                    }
+                                    if (num > 16) {
+                                      if(req.body.feature16_value === ""){}else{
+                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
+                                      }
+                                      if (num > 17) {
+                                        if(req.body.feature17_value === ""){}else{
+                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
+                                        }
+                                        if (num > 18) {
+                                          if(req.body.feature18_value === ""){}else{
+                                            data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
+                                          }
+                                          if (num > 19) {
+                                            if(req.body.feature19_value === ""){}else{
+                                              data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  var pro = new Promise(function (resolve, reject) {
+      const readstream = gfs.createReadStream(req.file.filename);
+      readstream.on('data', (chunk) => {
+        arr = chunk.toString('base64');
+        resolve();
+      })
+  })
+  pro.then(()=>{
+    if( selected_subCategory != "null"){
+      obj.push({subcategory: selected_subCategory})
+    } 
+  })
+  pro.then(()=>{
+    // getting newly added features and updating to feature collection and the feature 
+    // and value is being stored in data[] whic will be added in product collection
+    if(req.body.new_feat > 0){
+      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_1 + "\",\"value\":\"" + req.body.v1 + "\"}"));
+      features_new.push(req.body.new_feat_1);
+        if(req.body.new_feat > 1){
+          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_2 + "\",\"value\":\"" + req.body.v2 + "\"}"));
+          features_new.push(req.body.new_feat_2);
+          if(req.body.new_feat > 2){
+            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_3 + "\",\"value\":\"" + req.body.v3 + "\"}"));
+            features_new.push(req.body.new_feat_3);
+            if(req.body.new_feat > 3){
+              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_4 + "\",\"value\":\"" + req.body.v4 + "\"}"));
+              features_new.push(req.body.new_feat_4);
+              if(req.body.new_feat > 4){
+                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_5 + "\",\"value\":\"" + req.body.v5 + "\"}"));
+                features_new.push(req.body.new_feat_5);
+                if(req.body.new_feat > 5){
+                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_6 + "\",\"value\":\"" + req.body.v6 + "\"}"));
+                  features_new.push(req.body.new_feat_6);
+                  if(req.body.new_feat > 6){
+                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_7 + "\",\"value\":\"" + req.body.v7 + "\"}"));
+                    features_new.push(req.body.new_feat_7);
+                    if(req.body.new_feat > 7){
+                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_8 + "\",\"value\":\"" + req.body.v8 + "\"}"));
+                      features_new.push(req.body.new_feat_8);
+                      if(req.body.new_feat > 8){
+                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_9 + "\",\"value\":\"" + req.body.v9 + "\"}"));
+                        features_new.push(req.body.new_feat_9);
+                        if(req.body.new_feat > 9){
+                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
+                          features_new.push(req.body.new_feat_10);                                     
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }) 
+  pro.then(() => {
+    update_feature({$and:obj},features_new,(rs)=>{})
+  })           
+  pro.then(() => {
+    var newProduct = {
+      name: req.body.title,
+      category: selected_category,
+      image: arr,
+      admin: req.user.id,
+      brand: selected_brand,
+      model: req.body.model,
+      warranty: req.body.warranty,
+      description: req.body.description,
+      shippingInfo: req.body.shippingInfo,
+      features: data,
+      categoryName: req.body.cattN,
+      subcategoryName:  req.body.subN,
+      brandName: req.body.brandN,
+    };
+    if( selected_subCategory != "null"){
+      newProduct.subcategory= selected_subCategory
+    }
+    new Product(newProduct).save().then(product => {
+    Category.update(
+      { _id: selected_category },
+      { $addToSet: { brands: selected_brand} },
+      { upsert: true },
+      function(err, docs) {
+        if (err) {
+        }
+        if (selected_subCategory != "null") {
+          SubCategory.update(
+            { _id: selected_subCategory },
+            { $addToSet: { brands: selected_brand}, category: selected_category  },
+            { upsert: true },
+            function(err, docs) {
+              if (err) {
+                res.send(err);
+              }
+            
+            }
+          );
+        } 
+      }
+    );
+  });
+  })
+  pro.then(() => {
+    gfs.remove({ filename: req.file.filename }, (err) => {
+      if (err) console.log(err)
+      req.flash("success_msg", "Product added.");
+      res.redirect("/category/Entry");
+    })
+  })
+  }else{
+    req.flash("error_msg", "please submit the form with category,sub category and brand before filling product info!");
+    res.redirect("/category/Entry");
+  }
+};
+
+// testing arrangement
 
 exports.newLot= (req, res, next) => {
   find({_id: req.params.id}, function(rs){
+    console.log(rs)
     res.render("addNewLot", {product:rs[0]});
   })
   
@@ -28,9 +320,31 @@ exports.saveSerial= (req, res, next) => {
   )
  
 };
+function find_inventory(obj,cb){
+  Inventory.find(obj)
+  .sort({ "created": 1 })
+  .populate("product_id")
+  .exec(function(err, docs) {
+    if (err) {
+      res.send(err);
+    }
+  })
+}
 
 exports.getLiveStockEditpage= (req, res, next) => {
-  res.render("updateLiveStock");
+  var obj ={_id:req.params.id};
+  Inventory.find(obj)
+  .populate("product_id")
+  .exec(function(err, docs) {
+    if (err) {
+      res.send(err);
+    }
+    res.render("updateLiveStock", {
+      title: "All Product",
+      inventory: docs[0]
+    });
+  })
+  
 };
 
 exports.showProductRegistrationFieldspage= (req, res, next) => {
@@ -43,22 +357,17 @@ exports.addLotPage= (req, res, next) => {
 
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
-    var resultArray = [];
-    Product.find()
+    
+    Inventory.find()
       .sort({ "created": 1 })
-      .populate("subcategory")
+      .populate("product_id")
       .exec(function(err, docs) {
         if (err) {
           res.send(err);
-        } else {
-          for (var i = docs.length - 1; i > -1; i -= 1) {
-            resultArray.push(docs[i]);
-          }
         }
-
         res.render("products/allProductView", {
           title: "All Product",
-          products: resultArray
+          products: docs
         });
       });
 };
@@ -99,7 +408,7 @@ exports.getEditpage = (req, res, next) => {
         res.render("products/update", {
           title: "Update Product",
           product: docs[0],
-          num_feature: docs[0].subcategory.features.length
+          num_feature: docs[0].features.length
         });
       }
     });
@@ -197,11 +506,14 @@ exports.getEditStock = (req, res, next) => {
 // returns Edit stock page
 exports.getEditStockPage = (req, res, next) => {
 
-  Product.find({ _id: mongo.ObjectID(req.params.id) }, function(err, docs) {
+  Inventory.find({ _id: mongo.ObjectID(req.params.id) })
+  .populate("product_id")
+  .exec( function(err, docs) {
 
     if (err) {
       res.send(err);
     }
+    console.log(docs)
     res.render("editStockInfo", {
       title: "Update Stock Info",
       product: docs[0]
@@ -250,9 +562,16 @@ function find(obj, cb) {
     });
 }
 
-exports.getProduct = (req, res, next)=>{
-  find({subcategory: req.params.sub_cat},function(rs){
+// getting models by Category
+exports.getProductByCat = (req, res, next)=>{
+  find({category: req.params.cat},function(rs){
     console.log(rs);
+    res.render("addNewLot", {product:rs});
+  })
+}
+// getting models by Sub category
+exports.getProductBySubcat = (req, res, next)=>{
+  find({subcategory: req.params.sub_cat},function(rs){
     res.render("addNewLot", {product:rs});
   })
 }
@@ -336,18 +655,23 @@ exports.deleteProduct = (req, res, next) => {
 };
 // shows the number of fields user wants
 exports.showProductRegistrationFields = (req, res, next) => {
+
+  var category=(req.body.categg).split(",");
+  var subcategory=(req.body.subCategg).split(",");
+  var brand=(req.body.brandg).split(",");
+
   if (req.body.subCategg != "null") {
     var obj=[
-      {category: req.body.categg},
-      {subcategory: req.body.subCategg},
-      {brand: req.body.brandg}
+      {category: category[0]},
+      {subcategory: subcategory[0]},
+      {brand: brand[0]}
     ]
-    var sub=req.body.subCategg
+    var sub= subcategory[0];
     
   }else{
     var obj=[
-      {category: req.body.categg},
-      {brand: req.body.brandg}
+      {category: category[0]},
+      {brand: brand[0]}
     ]
     var sub="null"
   }
@@ -358,9 +682,12 @@ exports.showProductRegistrationFields = (req, res, next) => {
       res.render("products/reg", {
         num: 0,
         title: "Registration",
-        brands:req.body.brandg,
-        catt:req.body.categg,
+        brands:brand[0],
+        catt:category[0],
         sub:sub,
+        brandN:brand[1],
+        cattN:category[1],
+        subN:subcategory[1],
         status:"notexist"
       });
     }else{
@@ -368,9 +695,12 @@ exports.showProductRegistrationFields = (req, res, next) => {
         features: docs1[0].feature,
         num: docs1[0].feature.length,
         title: "Registration",
-        brands:req.body.brandg,
-        catt:req.body.categg,
+        brands:brand[0],
+        catt:category[0],
         sub:sub,
+        brandN:brand[1],
+        cattN:category[1],
+        subN:subcategory[1],
         status:"exist"
       });
     }
@@ -389,3 +719,64 @@ exports.showProductRegistrationFields = (req, res, next) => {
 //   });
 // };
 
+exports.saveLive = (req, res, next) => {
+  console.log("dfsjkhfkh")
+  var serials= (req.body.serial).split(",");
+  var serial_obj=[];
+  serials.map((rs)=>{
+    serial_obj.push(rs)
+  })
+  var live = {
+    product_id:req.params.id,
+    quantity:req.body.quantity,
+    purchasePrice: req.body.purchase_price,
+    serial: serial_obj,
+    unitPrice:req.body.unit_price,
+    inventory:req.body.lot_number,
+    admin: req.user._id
+    
+  }
+  
+  new Live(live).save().then(live => {
+    Product.update({_id:req.params.id},{ $addToSet:{ "live.inventory": req.body.lot_number}},{ upsert: true },function(err, docs){
+      if(err){ console.log(err)}
+      Inventory.update({_id:req.body.lot_number},{ "unitPrice":req.body.unit_price, "live":req.body.quantity},{ upsert: true },function(err, docs){
+        if(err){ console.log(err)}
+        req.flash("success_msg", "Live Product Added");
+        res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
+      })
+     
+    }
+  ) 
+    
+});
+
+ 
+};
+// Save Inventory
+exports.saveInventory = (req, res, next) => {
+  var serials= (req.body.serial).split(",");
+  var serial_obj=[];
+  serials.map((rs)=>{
+    var obj = {
+      number:rs,
+      status:"inStock"
+    }
+    serial_obj.push(obj)
+  })
+  var inventory = {
+    product_id:req.body.model,
+    stockQuantity:req.body.quantity,
+    purchasePrice: req.body.purchase_price,
+    remaining: req.body.quantity,
+    serial: serial_obj,
+    admin: req.user._id,
+  }
+  
+  new Inventory(inventory).save().then(inventory => {
+    req.flash("success_msg", "Lot added");
+    res.redirect("/Products/newLot");
+});
+
+ 
+};

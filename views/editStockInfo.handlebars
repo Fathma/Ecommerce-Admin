@@ -12,23 +12,26 @@
                     <form action="/products/stockEdit/{{product.id}}" method="POST" >
                         <div class="form-group">
                             <label for="model">Model</label>
-                            <input type="text" name="model" class="form-control" value="{{product.model}}" readonly>
+                            <input type="text" name="model" class="form-control" value="{{product.product_id.model}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="lot_number">Lot Number</label>
-                            <input type="number" name="lot_number" class="form-control" value="3245" readonly>
+                            <input type="text" name="lot_number" class="form-control" value="{{product._id}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="purchase_price">Purchase Price</label>
-                            <input type="number" name="purchase_price" class="form-control" value="20000" readonly>
+                            <input type="number" name="purchase_price" class="form-control" value="{{product.purchasePrice}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="number" name="quantity" class="form-control" value="5" >
+                            <input type="number" name="quantity" class="form-control" value="{{product.stockQuantity}}" >
                         </div>
                         <div class="form-group">
                             <label for="serial">Serial Number</label>
-                            <textarea type="text" name="serial" class="form-control"  >1,2,3,4,5</textarea>
+                            <textarea type="text" name="serial" class="form-control"  >{{# each product.serial}}
+                                {{product.serial.number}}
+                                {{/each}}
+                            </textarea>
                         </div>
                         <button type="submit" class="btn btn-primary"> Update</button>
                     </form>

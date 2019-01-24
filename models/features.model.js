@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Text = require('../node_modules/text/lib/text');
 
 
-var BrandSchema = new Schema({
+var FeatureSchema = new Schema({
     brand: { type: Schema.Types.ObjectId, ref: 'Brand' },
     category:{ type: Schema.Types.ObjectId, ref: 'Category' },
     subcategory:{ type: Schema.Types.ObjectId, ref: 'SubCategory' },
@@ -11,4 +11,4 @@ var BrandSchema = new Schema({
     created: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Features', BrandSchema, 'features');
+module.exports = mongoose.model('Features', FeatureSchema, 'features');
