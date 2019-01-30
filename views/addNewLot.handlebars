@@ -3,43 +3,56 @@
         <a href="#"><b>Add</b>NewLot</a>
     </div>
     <div class="box-body">
+
+
         <div class="row">
+            {{!-- <div>
+                <form onsubmit="get_serial()">
+                    <div class="form-group">
+                        <label for="serial_single">Enter Serial One By One</label>
+                        <input type="text" name="serial_single" id="serial_single" class="form-control">
+                    </div>
+                </form>
+                <div id="new_serials"></div>
+            </div> --}}
             <div class="col-sm-12 col-md-6 col-md-offset-3 col-sm-offset-3">
                 <div class="well">
+                    <input type="hidden" name="check" id="check" value="0">
+                    {{!-- action="/products/SaveInventory" --}}
+                    <div class="dropdown">
+                        <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary" data-target="hash"
+                            href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
+                        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                            {{# each S_categories}}
+                            {{# if this.subCategories}}
+                            <li class="dropdown-submenu pull-right1">
+                                <a tabindex="-1" href="#">{{this.name}}</a>
+                                <ul class="dropdown-menu">
+                                    {{# each this.subCategories}}
+                                    <li>
+                                        <a href="/products/getProductBySubcat/{{id}}">{{name}}</a>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                            {{else}}
+                            <li>
+                                <a href="/products/getProductByCat/{{this._id}}">{{this.name}}</a>
+                            </li>
+                            {{/if}}
+                            {{/each}}
+                        </ul>
+                    </div>
 
-                    <form action="/products/SaveInventory" method="POST">
+                    <form id="save" method="POST">
 
-                        <div class="dropdown">
-                            <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary"
-                                data-target="hash" href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
-                            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-                                {{# each S_categories}}
-                                {{# if this.subCategories}}
-                                <li class="dropdown-submenu pull-right1">
-                                    <a tabindex="-1" href="#">{{this.name}}</a>
-                                    <ul class="dropdown-menu">
-                                        {{# each this.subCategories}}
-                                        <li>
-                                            <a href="/products/getProductBySubcat/{{id}}">{{name}}</a>
-                                        </li>
-                                        {{/each}}
-                                    </ul>
-                                </li>
-                                {{else}}
-                                <li>
-                                    <a href="/products/getProductByCat/{{this.id}}">{{this.name}}</a>
-                                </li>
-                                {{/if}}
-                                {{/each}}
-                            </ul>
-                        </div>
 
                         <div class="form-group">
                             <label for="model">Model</label>
                             <br>
                             <select id="model" name="model" class="btn btn-secondary dropdown-toggle">
                                 {{# each product}}
-                                    <option value="{{this._id}}">{{this.model}}</option>
+                                <option value="{{this._id}}">{{this.model}}</option>
                                 {{/each}}
                             </select>
                         </div>
@@ -48,24 +61,31 @@
                             <label for="lot_number">Lot Number</label>
                             <input type="number" name="lot_number" class="form-control" value="{{product.quantity.lot_number}}">
                         </div> --}}
-
                         <div class="form-group">
                             <label for="purchase_price">Purchase Price</label>
-                            <input type="number" name="purchase_price" class="form-control">
+                            <input type="number" name="purchase_price" id="purchase_price" class="form-control"
+                                required>
                         </div>
-                        <div class="form-group">
-                            <label for="serial">Serial Number</label>
-                            <textarea type="text" name="serial" id="serial" class="form-control" onblur="checkValidityy()"></textarea>
-                            {{!-- <p type="hidden" id="error">error</p> --}}
-                        </div>
+
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control" >
+                            <input type="number" name="quantity" id="quantity" onblur="createtextfields()" class="form-control"
+                                required>
                         </div>
+                        <div id="space">
+                           
+                        </div>
+                        {{!-- <input type="text" name="valueless" class="form-control" required> --}}
+                        {{!-- <div class="form-group">
+                            <label for="serial">Serial Number</label>
+                            <textarea type="text" name="serial" id="serial" class="form-control" onblur="checkValidityy()"
+                                required></textarea>
+                            <p type="hidden" id="error"></p>
+                        </div> --}}
 
-                       
 
                         <button type="submit" class="btn btn-primary">Submit</button>
+
                     </form>
                 </div>
             </div>

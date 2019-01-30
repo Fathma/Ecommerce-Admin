@@ -14,42 +14,49 @@
                             <h4>Select Serial numbers</h4>
                             <div class="btn-group-vertical">
                                 {{# each inventory.serial}}
-                                <a class="btn" type="button" id="serial{{@index}}"  onclick="set_disable(this.id)" class="btn btn-secondary">
-                                     {{this.number}}
+                                <a class="btn" type="button" id="serial{{@index}}" onclick="set_disable(this.id)" class="btn btn-secondary">
+                                    {{this}}
                                 </a>
                                 {{/each}}
-                                
+
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-8">
+
                         <div class="well">
                             <form action="/products/saveLive/{{inventory.product_id._id}}" method="POST">
+                                <input type="hidden" name="remaining" value="{{inventory.remaining}}">
+                                <div class="form-group">
+                                    <label for="model">Model</label>
+                                    <input type="text" name="model" class="form-control" value="{{inventory.product_id.model}}"
+                                        readonly>
+                                </div>
 
                                 <div class="form-group">
-                            <label for="model">Model</label>
-                            <input type="text" name="model" class="form-control" value="{{inventory.product_id.model}}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="lot_number">Lot Number</label>
-                            <input type="text" name="lot_number" class="form-control" value="{{inventory._id}}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="purchase_price">Purchase Price</label>
-                            <input type="text" name="purchase_price" class="form-control" value="{{inventory.purchasePrice}}" readonly>
-                        </div>
-                         <div class="form-group">
-                            <label for="unit_price">Unit/Selling Price</label>
-                            <input type="number" name="unit_price" class="form-control" value="" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity">Quantity</label>
-                            <input type="text" name="quantity"  id="quantity" class="form-control" value="" >
-                        </div>
-                        <div class="form-group">
-                            <label for="serial">Serial Number</label>
-                            <input type="text" name="serial" id="serial" class="form-control"></input>
-                        </div>
+                                    <label for="lot_number">Lot Number</label>
+                                    <input type="text" name="lot_number" class="form-control" value="{{inventory._id}}"
+                                        readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price</label>
+                                    <input type="text" name="purchase_price" class="form-control" value="{{inventory.purchasePrice}}"
+                                        readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="unit_price">Unit/Selling Price</label>
+                                    <input type="number" name="unit_price" class="form-control" value="{{inventory.unitPrice}}"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity">Quantity</label>
+                                    <input type="text" name="quantity" id="quantity" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="serial">Serial Number</label>
+                                    <input type="text" name="serial" id="serial" class="form-control"></input>
+                                </div>
 
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </form>

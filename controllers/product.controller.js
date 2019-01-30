@@ -7,6 +7,7 @@ const Feature = require("../models/features.model");
 const Inventory = require("../models/inventory.model");
 const Category = require("../models/category.model");
 const Live = require("../models/live.model");
+// const Temporary_serials = require("../models/temporary.model");
 const multer = require("multer");
 const mongoose = require('mongoose');
 const path = require('path');
@@ -45,6 +46,7 @@ const storage = new GridFsStorage(
   });
 const upload = multer({ storage });
 
+
 // function for updateting new feature in feature table
 function update_feature(condition, values, cb){
   Feature.update(condition,{ $addToSet:{ "feature": { $each: values }}},{ upsert: true },function(err, docs){
@@ -52,18 +54,27 @@ function update_feature(condition, values, cb){
     }
   ) 
 }
-// function for updateting category table
-function update_category(condition, values, cb){
-  Category.update(condition,values,{ upsert: true },function(err, docs){
-      if(err){ console.log(err)}
-    }
-  ) 
-}
 
+// // function for updateting category table
+// function update_category(condition, values, cb){
+//   Category.update(condition,values,{ upsert: true },function(err, docs){
+//       if(err){ console.log(err)}
+//     }
+//   ) 
+// }
+// function update_subcategory(condition, values, cb){
+//   Category.update(condition,values,{ upsert: true },function(err, docs){
+//       if(err){ console.log(err)}
+//     }
+//   ) 
+// }
+
+exports.TemporarySerials= (req, res, next) => {
+
+}
 
 //saves product details
 exports.SaveProduct= (req, res, next) => {
-
   var selected_brand= req.body.brand;
   var selected_category= req.body.catt;
 
@@ -180,6 +191,7 @@ exports.SaveProduct= (req, res, next) => {
       }
     }
   var pro = new Promise(function (resolve, reject) {
+       // getting saved image and converting into base64 String 
       const readstream = gfs.createReadStream(req.file.filename);
       readstream.on('data', (chunk) => {
         arr = chunk.toString('base64');
@@ -187,7 +199,7 @@ exports.SaveProduct= (req, res, next) => {
       })
   })
   pro.then(()=>{
-    if( selected_subCategory != "null"){
+    if( selected_subCategory != "0"){
       obj.push({subcategory: selected_subCategory})
     } 
   })
@@ -254,8 +266,9 @@ exports.SaveProduct= (req, res, next) => {
       subcategoryName:  req.body.subN,
       brandName: req.body.brandN,
     };
-    if( selected_subCategory != "null"){
-      newProduct.subcategory= selected_subCategory
+    
+    if( req.body.sub != "0"){
+      newProduct.subcategory= req.body.sub
     }
     new Product(newProduct).save().then(product => {
     Category.update(
@@ -265,18 +278,16 @@ exports.SaveProduct= (req, res, next) => {
       function(err, docs) {
         if (err) {
         }
-        if (selected_subCategory != "null") {
+        if (req.body.sub != "0") {
           SubCategory.update(
-            { _id: selected_subCategory },
+            { _id: req.body.sub },
             { $addToSet: { brands: selected_brand}, category: selected_category  },
             { upsert: true },
             function(err, docs) {
               if (err) {
                 res.send(err);
               }
-            
-            }
-          );
+          });
         } 
       }
     );
@@ -305,46 +316,43 @@ exports.newLot= (req, res, next) => {
   
 };
 
-exports.saveSerial= (req, res, next) => {
-  var ob={
-    color: req.body.color,
-    serial: req.body.serial
-  }
-  Product.update({_id: req.params.id},{
-    $addToSet:{
-      "serial":ob
-    }},{ upsert: true },function(err, docs){
-      if(err){ console.log("dsfajhh")}
-      res.render("products/reg");
-    }
-  )
- 
-};
-function find_inventory(obj,cb){
-  Inventory.find(obj)
-  .sort({ "created": 1 })
-  .populate("product_id")
-  .exec(function(err, docs) {
-    if (err) {
-      res.send(err);
-    }
-  })
-}
+// exports.saveSerial= (req, res, next) => {
+//   var ob={
+//     color: req.body.color,
+//     serial: req.body.serial
+//   }
+//   Product.update({_id: req.params.id},{
+//     $addToSet:{
+//       "serial":ob
+//     }},{ upsert: true },function(err, docs){
+//       if(err){ console.log("dsfajhh")}
+//       res.render("products/reg");
+//     }
+//   )
+// };
+
+// function find_inventory(obj,cb){
+//   Inventory.find(obj)
+//   .sort({ "created": 1 })
+//   .populate("product_id")
+//   .exec(function(err, docs) {
+//     if (err) {
+//       res.send(err);
+//     }
+//   })
+// }
 
 exports.getLiveStockEditpage= (req, res, next) => {
   var obj ={_id:req.params.id};
   Inventory.find(obj)
   .populate("product_id")
   .exec(function(err, docs) {
-    if (err) {
-      res.send(err);
-    }
+    if (err) { res.send(err); }
     res.render("updateLiveStock", {
       title: "All Product",
       inventory: docs[0]
     });
   })
-  
 };
 
 exports.showProductRegistrationFieldspage= (req, res, next) => {
@@ -359,12 +367,14 @@ exports.addLotPage= (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
     
     Inventory.find()
-      .sort({ "created": 1 })
+      .sort({ "product_id": 1 })
       .populate("product_id")
+      .populate("live_id")
       .exec(function(err, docs) {
         if (err) {
           res.send(err);
         }
+        console.log(docs)
         res.render("products/allProductView", {
           title: "All Product",
           products: docs
@@ -431,18 +441,6 @@ function changeStatus(req, res, object) {
   );
 }
 
-// returns Remove product sale
-exports.removeFromSale = (req, res, next) => {
-
-  var obj = { 
-
-    onSale: false,
-    'productPrice.salePrice': null
-  };
-  changeStatus(req, res, obj);
-  res.redirect("/products/view");
-
-};
 
 // returns product offline stock
 exports.makeNotActive = (req, res, next) => {
@@ -453,14 +451,7 @@ exports.makeNotActive = (req, res, next) => {
 
 };
 
-// adds to the sale list
-exports.makeOnSale = (req, res, next) => {
 
-  var obj = { onSale: true };
-  changeStatus(req, res, obj);
-  res.redirect("/products/Online/" + req.params.cid);
-
-};
 
 // makes product online
 exports.makeActive = (req, res, next) => {
@@ -496,11 +487,8 @@ exports.getEditStock = (req, res, next) => {
         res.redirect("/products/stock");
 
       }
-
     }
-
   );
-
 };
 
 // returns Edit stock page
@@ -523,30 +511,6 @@ exports.getEditStockPage = (req, res, next) => {
 
 };
 
-// returns all product with stock info page
-exports.getAllProductStock = (req, res, next) => {
-
-  var resultArray = [];
-  Product.find()
-  .sort({ "quantity.stock": -1 })
-  .populate("subcategory")
-  .populate("quantity.userID")
-  .exec(function(err, docs) {
-    if (err) {
-      res.send(err);
-    } else {
-      for (var i = docs.length - 1; i > -1; i -= 1) {
-        resultArray.push(docs[i]);
-      }
-    }
-    res.render("stock", {
-      title: "Stock",
-      products: resultArray
-    });
-  });
-
-};
-
 //find fuction
 function find(obj, cb) {
   var resultArray = [];
@@ -565,12 +529,12 @@ function find(obj, cb) {
 // getting models by Category
 exports.getProductByCat = (req, res, next)=>{
   find({category: req.params.cat},function(rs){
-    console.log(rs);
     res.render("addNewLot", {product:rs});
   })
 }
 // getting models by Sub category
 exports.getProductBySubcat = (req, res, next)=>{
+  console.log(req.params.sub_cat)
   find({subcategory: req.params.sub_cat},function(rs){
     res.render("addNewLot", {product:rs});
   })
@@ -599,60 +563,53 @@ exports.addDiscount = (req, res, next)=>{
       res.redirect('/products/view');
 
     }else{
-
       var obj = {'productPrice.salePrice': Number((with_discount).toFixed(0)), onSale:true };
       changeStatus(req, res, obj);
       res.redirect('/products/view');
-      
     }
   })
 
 }
 
-// returns Offline Product page
-exports.getOfflineProductsPage = (req, res, next) => {
-  var obj = { isActive: false };
-  find(obj, function(rs) {
+// get inventory list by filter
+function get_inventory_list(condition,sort_obj, populate_obj, cb){
+  Inventory.find(condition)
+  .sort(sort_obj)
+  .populate(populate_obj)  
+  .exec(function(err,rs) {
+    cb(rs);
+  })
+}
+
+// returns Online Product page
+exports.getOnlineProductsPage = (req, res, next) => {
+  var populate_obj = {
+    path:"product_id",
+    match: { isActive:true }
+  };
+  get_inventory_list({},{ "product_id": 1 },populate_obj,(rs)=>{
     res.render("products/allProductView", {
       title: "Offline Products",
       products: rs
     });
-  });
-  
+  })
 };
-
-// returns Online Product page
-exports.getOnlineProductsPage = (req, res, next) => {
-  var obj = { isActive: true};
-  find(obj, function(rs) {
+// returns Offline Product page
+exports.getOfflineProductsPage = (req, res, next) => {
+  var populate_obj = {
+    path:"product_id",
+    match: { isActive:false }
+  };
+  get_inventory_list({},{ "product_id": 1 },populate_obj,(rs)=>{
     res.render("products/allProductView", {
-      title: "Online Products",
+      title: "Offline Products",
       products: rs
     });
-  });
+  })
 };
 
-// returns Sale Products Page
-exports.getSaleProductsPage = (req, res, next) => {
-  var obj = { onSale: true };
-  find(obj, function(rs) {
-    res.render("products/allProductView", {
-      title: "Sale Product",
-      products: rs
-    });
-  });
-};
 
-// delete product
-exports.deleteProduct = (req, res, next) => {
-  Product.deleteOne({ _id: mongo.ObjectID(req.params.id) }, function(err,bear) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.redirect("/products/view");
-    }
-  });
-};
+
 // shows the number of fields user wants
 exports.showProductRegistrationFields = (req, res, next) => {
 
@@ -675,10 +632,9 @@ exports.showProductRegistrationFields = (req, res, next) => {
     ]
     var sub="null"
   }
-  console.log(obj)
+ 
   Feature.find({$and:obj},function(err, docs1) {
-    console.log(docs1)
-    if(docs1.length === 0){
+    if(docs1 === undefined || docs1.length === 0){
       res.render("products/reg", {
         num: 0,
         title: "Registration",
@@ -688,7 +644,8 @@ exports.showProductRegistrationFields = (req, res, next) => {
         brandN:brand[1],
         cattN:category[1],
         subN:subcategory[1],
-        status:"notexist"
+        status:"notexist",
+        submitted:true
       });
     }else{
       res.render("products/reg", {
@@ -701,26 +658,15 @@ exports.showProductRegistrationFields = (req, res, next) => {
         brandN:brand[1],
         cattN:category[1],
         subN:subcategory[1],
-        status:"exist"
+        status:"exist",
+        submitted:true
       });
     }
-    
   });
 };
-// // shows the number of fields user wants
-// exports.showProductRegistrationFields = (req, res, next) => {
-//   SubCategory.find({ name: req.params.cat },function(err, docs1) {
-//     res.render("products/reg", {
-//       category: req.params.cat,
-//       features: docs1[0].features,
-//       num_feature: docs1[0].features.length,
-//       title: "Registration"
-//     });
-//   });
-// };
 
 exports.saveLive = (req, res, next) => {
-  console.log("dfsjkhfkh")
+ console.log(req.body.serial)
   var serials= (req.body.serial).split(",");
   var serial_obj=[];
   serials.map((rs)=>{
@@ -733,37 +679,57 @@ exports.saveLive = (req, res, next) => {
     serial: serial_obj,
     unitPrice:req.body.unit_price,
     inventory:req.body.lot_number,
-    admin: req.user._id
-    
+    admin: req.user._id,
+    original_serial: serial_obj
   }
-  
-  new Live(live).save().then(live => {
-    Product.update({_id:req.params.id},{ $addToSet:{ "live.inventory": req.body.lot_number}},{ upsert: true },function(err, docs){
-      if(err){ console.log(err)}
-      Inventory.update({_id:req.body.lot_number},{ "unitPrice":req.body.unit_price, "live":req.body.quantity},{ upsert: true },function(err, docs){
-        if(err){ console.log(err)}
-        req.flash("success_msg", "Live Product Added");
-        res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
-      })
-     
-    }
-  ) 
-    
-});
+  Live.find({product_id:req.params.id}, function(err,rs){
 
- 
+    if(err){ res.send(err)}
+    if(rs.length===0 || rs.length === undefined){
+      new Live(live).save().then(live => {
+        Product.update({_id:req.params.id},{  "live": live._id, unitPrice: req.body.unit_price },{ upsert: true },function(err1, docs2){
+          if(err1){ res.send(err1)}
+          Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
+            "remaining":(parseInt(req.body.remaining)-serial_obj.length),"unitPrice":req.body.unit_price, "live":req.body.quantity, live_id: live._id },{ upsert: true },
+            function(err, docs){
+            if(err){ res.send(err)}
+            req.flash("success_msg", "Live Product Added");
+            res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
+          }) 
+        }
+      ) 
+    });
+    }else{
+      Live.update({product_id:req.params.id},{ $addToSet:{ "serial":serial_obj},unitPrice:req.body.unit_price, quantity: parseInt(rs[0].quantity)+parseInt(req.body.quantity)},{ upsert: true },
+        function(err1, docs1) {
+        if(err1){res.send(err1)}
+      
+        Product.update({_id:req.params.id},{  "live": rs[0]._id , unitPrice: req.body.unit_price},{ upsert: true },function(err2, docs2){
+          if(err1){ res.send(err1)}
+          Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
+          "remaining":(parseInt(req.body.remaining)-serial_obj.length), "unitPrice":req.body.unit_price,live_id: docs1._id,"live_id":rs[0]._id, "live": parseInt(rs[0].quantity)+parseInt(req.body.quantity) },{ upsert: true },
+          function(err, docs){
+          if(err){ res.send(err) }
+          req.flash("success_msg", "Live Product Added");
+          res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
+          }) 
+        }
+      ) 
+    });
+    }
+  })
 };
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
+ console.log(req.body.quantity )
   var serials= (req.body.serial).split(",");
+  
   var serial_obj=[];
+ 
   serials.map((rs)=>{
-    var obj = {
-      number:rs,
-      status:"inStock"
-    }
-    serial_obj.push(obj)
+    serial_obj.push(rs)
   })
+ 
   var inventory = {
     product_id:req.body.model,
     stockQuantity:req.body.quantity,
@@ -772,11 +738,80 @@ exports.saveInventory = (req, res, next) => {
     serial: serial_obj,
     admin: req.user._id,
   }
-  
-  new Inventory(inventory).save().then(inventory => {
-    req.flash("success_msg", "Lot added");
-    res.redirect("/Products/newLot");
-});
-
  
+new Inventory(inventory).save().then(inventory => {
+    
+    res.json(inventory)
+    
+    //  req.flash("success_msg", "Lot added");
+    // res.redirect("/Products/newLot");
+    
+});
 };
+
+// // adds to the sale list
+// exports.makeOnSale = (req, res, next) => {
+
+//   var obj = { onSale: true };
+//   changeStatus(req, res, obj);
+//   res.redirect("/products/Online/" + req.params.cid);
+
+// };
+
+// // returns Remove product sale
+// exports.removeFromSale = (req, res, next) => {
+
+//   var obj = { 
+//     onSale: false,
+//     'productPrice.salePrice': null
+//   };
+//   changeStatus(req, res, obj);
+//   res.redirect("/products/view");
+// };
+
+// // returns Sale Products Page
+// exports.getSaleProductsPage = (req, res, next) => {
+//   var obj = { onSale: true };
+//   find(obj, function(rs) {
+//     res.render("products/allProductView", {
+//       title: "Sale Product",
+//       products: rs
+//     });
+//   });
+// };
+
+
+// // delete product
+// exports.deleteProduct = (req, res, next) => {
+//   Product.deleteOne({ _id: mongo.ObjectID(req.params.id) }, function(err,bear) {
+//     if (err) {
+//       res.send(err);
+//     } else {
+//       res.redirect("/products/view");
+//     }
+//   });
+// };
+
+// returns all product with stock info page
+// exports.getAllProductStock = (req, res, next) => {
+
+//   var resultArray = [];
+//   Product.find()
+//   .sort({ "quantity.stock": -1 })
+//   .populate("subcategory")
+//   .populate("quantity.userID")
+//   .exec(function(err, docs) {
+//     if (err) {
+//       res.send(err);
+//     } else {
+//       for (var i = docs.length - 1; i > -1; i -= 1) {
+//         resultArray.push(docs[i]);
+//       }
+//     }
+//     res.render("stock", {
+//       title: "Stock",
+//       products: resultArray
+//     });
+//   });
+
+// };
