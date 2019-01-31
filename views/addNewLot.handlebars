@@ -1,23 +1,14 @@
-<div class="box">
+<div class="box" >
     <div class="register-logo">
         <a href="#"><b>Add</b>NewLot</a>
     </div>
     <div class="box-body">
 
-
         <div class="row">
-            {{!-- <div>
-                <form onsubmit="get_serial()">
-                    <div class="form-group">
-                        <label for="serial_single">Enter Serial One By One</label>
-                        <input type="text" name="serial_single" id="serial_single" class="form-control">
-                    </div>
-                </form>
-                <div id="new_serials"></div>
-            </div> --}}
+            
             <div class="col-sm-12 col-md-6 col-md-offset-3 col-sm-offset-3">
                 <div class="well">
-                    <input type="hidden" name="check" id="check" value="0">
+
                     {{!-- action="/products/SaveInventory" --}}
                     <div class="dropdown">
                         <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary" data-target="hash"
@@ -46,7 +37,8 @@
 
                     <form id="save" method="POST">
 
-
+                        <input type="text" name="check" id="check" value="0">
+                        <input type="hidden" name="val" id="val" value="0">
                         <div class="form-group">
                             <label for="model">Model</label>
                             <br>
@@ -56,11 +48,7 @@
                                 {{/each}}
                             </select>
                         </div>
-
-                        {{!-- <div class="form-group">
-                            <label for="lot_number">Lot Number</label>
-                            <input type="number" name="lot_number" class="form-control" value="{{product.quantity.lot_number}}">
-                        </div> --}}
+                     
                         <div class="form-group">
                             <label for="purchase_price">Purchase Price</label>
                             <input type="number" name="purchase_price" id="purchase_price" class="form-control"
@@ -73,16 +61,8 @@
                                 required>
                         </div>
                         <div id="space">
-                           
-                        </div>
-                        {{!-- <input type="text" name="valueless" class="form-control" required> --}}
-                        {{!-- <div class="form-group">
-                            <label for="serial">Serial Number</label>
-                            <textarea type="text" name="serial" id="serial" class="form-control" onblur="checkValidityy()"
-                                required></textarea>
-                            <p type="hidden" id="error"></p>
-                        </div> --}}
 
+                        </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
 

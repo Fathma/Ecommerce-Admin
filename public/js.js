@@ -31,8 +31,6 @@ function setvisible() {
   }
 }
 
-
-
 function calculate_discount_price() {
   var dis = document.getElementById("discount123").value;
   var price = document.getElementById("selling_price").value;
@@ -52,21 +50,16 @@ function addnew() {
   } else {
     document.getElementById("feat").value = "";
     document.getElementById("feats").value =
-    document.getElementById("feats").value + "," + feat;
+      document.getElementById("feats").value + "," + feat;
   }
 }
-function saveSerials(){
- 
- 
-  
- 
-}
+function saveSerials() {}
 // creating new textField inside a div
 function create_text_fields(i) {
   var div = document.createElement("div");
-  var breakk= document.createElement("br");
-  div.id = "d"+i;
-  
+  var breakk = document.createElement("br");
+  div.id = "d" + i;
+
   var input = document.createElement("input");
   input.id = "v" + i;
   input.name = "v" + i;
@@ -77,80 +70,86 @@ function create_text_fields(i) {
   div.appendChild(breakk);
   document.getElementById("space").appendChild(div);
 }
-
-document.getElementById("check").value = "0";
+function set_var() {
+  document.getElementById("check").value = "0";
+}
 
 // creating text fields on quantity input
 function createtextfields() {
-
+  // alert(document.getElementById("check").value)
   var check = parseInt(document.getElementById("check").value); // keep track of the previously created fields
   var quantity = parseInt(document.getElementById("quantity").value); // given quantity
-  
+
   if (check === 0) {
-  
     for (var i = 1; i <= quantity; i++) {
       create_text_fields(i);
     }
     document.getElementById("check").value = quantity;
-
   } else if (check > 0 && check < quantity) {
-   
     for (var j = check + 1; j <= quantity; j++) {
       create_text_fields(j);
     }
     document.getElementById("check").value = quantity;
-    
-  } else if(check > 0 && check > quantity){
-   
+  } else if (check > 0 && check > quantity) {
     for (var k = quantity + 1; k <= check; k++) {
-      document.getElementById("d"+k).remove();
+      document.getElementById("d" + k).remove();
     }
     document.getElementById("check").value = quantity;
-  }else if(check===quantity){
-
-  }
-  else{
-    alert("error")
+  } else if (check === quantity) {
+  } else {
+    alert("error");
   }
 }
 
-
 $(document).ready(function() {
+  $("form").submit(function(e) {
+  
+    // this is to prevent double submit
+    if(document.getElementById("val").value === "0"){
 
-  $("form").submit(function(e){
-    if(document.getElementById("check").value === "0"){
-      createtextfields();
-      e.preventDefault();
-    }else{
-     
-      var check =parseInt(document.getElementById("check").value);
-      var data= "";
-      for(var i= 1; i<=check; i++){
-        data += document.getElementById("v"+i).value;
-        if(check != i){
-          data +=",";
+    var check = parseInt(document.getElementById("check").value);
+    var data_string = "";
+  
+    for (var i = 1; i <= check; i++) {
+      if(document.getElementById("v" + i).value !=""){
+        data_string += document.getElementById("v" + i).value;
+        if (check != i) {
+          data_string += ",";
         }
       }
-      if((data.split(",")).length != ArrNoDupe((data.split(","))).length){
-        alert("Serial numbers have to be unique!");
-        e.preventDefault();
-      }else{
-
-        $.post("/products/SaveInventory",
-        {
-          serial: data,
-          model: document.getElementById("model").value,
-          purchase_price: parseInt(document.getElementById("purchase_price").value),
-          quantity: document.getElementById("quantity").value
-        },
-        function(data) {
-        });
-        alert("Successful")
-      }
-      
     }
-    
-});
+
+    if (
+      document.getElementById("check").value === "0" || document.getElementById("check").value != document.getElementById("quantity").value) {
+      createtextfields();
+      e.preventDefault();
+    } 
+    else {
+      if (data_string === "") {
+        
+      } else {
+        if (data_string.split(",").length != ArrNoDupe(data_string.split(",")).length) {
+          alert("Serial numbers have to be unique!");
+          e.preventDefault();
+        } else {
+          $.post(
+            "/products/SaveInventory",
+            {
+              serial: data_string,
+              model: document.getElementById("model").value,
+              purchase_price: parseInt(document.getElementById("purchase_price").value),
+              quantity: document.getElementById("quantity").value
+            },
+            function(data_string) {}
+          );
+          document.getElementById("val").value = "1"
+          alert("successful")
+        }
+      }
+    }
+  }
+  });
+
   $("#categg").change(function() {
     var cat_id = document.getElementById("categg").value.split(",");
     $.get(
@@ -163,22 +162,17 @@ $(document).ready(function() {
       }
     );
   });
-
+  // creates dropdown
   function configureDropDownL(ddl2, data) {
     var options;
     options += '<option value="0">Select One</>';
     for (i = 0; i < data[0].subCategories.length; i++) {
-      options +=
-        '<option value="' +
-        data[0].subCategories[i]._id +
-        '">' +
-        data[0].subCategories[i].name +
-        "</>";
+      options += '<option value="' + data[0].subCategories[i]._id + '">' + data[0].subCategories[i].name + "</>";
     }
-    document.getElementById("subCategg").innerHTML = options;
+   ddl2.innerHTML = options;
   }
 });
-
+// makes an array unique
 function ArrNoDupe(a) {
   var temp = {};
   for (var i = 0; i < a.length; i++) temp[a[i]] = true;
@@ -187,13 +181,12 @@ function ArrNoDupe(a) {
   return r;
 }
 
-
-function checkValidityy() {
-  var arr = document.getElementById("serial").value.split(",");
-  var arr2 = ArrNoDupe(arr);
-  document.getElementById("serial").value = arr2;
-  document.getElementById("quantity").value = arr2.length;
-}
+// function checkValidityy() {
+//   var arr = document.getElementById("serial").value.split(",");
+//   var arr2 = ArrNoDupe(arr);
+//   document.getElementById("serial").value = arr2;
+//   document.getElementById("quantity").value = arr2.length;
+// }
 
 function set_disable(id) {
   var all = [];

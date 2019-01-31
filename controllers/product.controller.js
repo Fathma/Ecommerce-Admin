@@ -296,7 +296,7 @@ exports.SaveProduct= (req, res, next) => {
   pro.then(() => {
     gfs.remove({ filename: req.file.filename }, (err) => {
       if (err) console.log(err)
-      req.flash("success_msg", "Product added.");
+    
       res.redirect("/category/Entry");
     })
   })
@@ -506,9 +506,7 @@ exports.getEditStockPage = (req, res, next) => {
       title: "Update Stock Info",
       product: docs[0]
     });
-
   });
-
 };
 
 //find fuction
@@ -534,7 +532,6 @@ exports.getProductByCat = (req, res, next)=>{
 }
 // getting models by Sub category
 exports.getProductBySubcat = (req, res, next)=>{
-  console.log(req.params.sub_cat)
   find({subcategory: req.params.sub_cat},function(rs){
     res.render("addNewLot", {product:rs});
   })
@@ -721,7 +718,7 @@ exports.saveLive = (req, res, next) => {
 };
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
- console.log(req.body.quantity )
+ console.log("SDF")
   var serials= (req.body.serial).split(",");
   
   var serial_obj=[];
