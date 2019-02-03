@@ -59,10 +59,10 @@ const upload = multer({ storage });
 // router.get("/Sale", product_controller.getSaleProductsPage);
 // router.post("/saveSerial/:id", product_controller.saveSerial);
 
-router.get("/singleProduct/:id", product_controller.singleProduct);
+// router.get("/singleProduct/:id", product_controller.singleProduct);
 router.get("/Edit/:id", product_controller.getEditpage);
 
-router.get("/stockEditPage", product_controller.addLotPage);
+// router.get("/stockEditPage", product_controller.addLotPage);
 
 router.get("/Online", product_controller.getOnlineProductsPage);
 router.get("/offline", product_controller.getOfflineProductsPage);
@@ -71,12 +71,12 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 
 // router.get("/RemoveFromSale/:id/:cid", product_controller.removeFromSale);
 // router.get("/makeSale/:id/:cid", product_controller.makeOnSale);
-router.get("/addDiscount/:id/:cid", product_controller.addDiscountpage);
+// router.get("/addDiscount/:id/:cid", product_controller.addDiscountpage);
 
-router.post("/stockEdit/:id", product_controller.getEditStock);
+// router.post("/stockEdit/:id", product_controller.getEditStock);
 router.get("/stockEditPage/:id", product_controller.getEditStockPage);
 
-router.post("/Discount/:id", product_controller.addDiscount);
+// router.post("/Discount/:id", product_controller.addDiscount);
 
 router.get("/liveStockEdit/:id", product_controller.getLiveStockEditpage);
 

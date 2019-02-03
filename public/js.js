@@ -208,3 +208,7 @@ function set_disable(id) {
     document.getElementById(id).style.color = "#041126";
   }
 }
+
+function saveProduct(){
+  alert(document.getElementById("num").value);
+}
