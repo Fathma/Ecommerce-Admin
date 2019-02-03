@@ -613,15 +613,16 @@ exports.showProductRegistrationFields = (req, res, next) => {
   var category=(req.body.categg).split(",");
   var subcategory=(req.body.subCategg).split(",");
   var brand=(req.body.brandg).split(",");
-
-  if (req.body.subCategg != "null") {
+  console.log(req.body.subCategg);
+  if (req.body.subCategg != "0") {
+   
     var obj=[
       {category: category[0]},
       {subcategory: subcategory[0]},
       {brand: brand[0]}
     ]
     var sub= subcategory[0];
-    
+    console.log(obj)
   }else{
     var obj=[
       {category: category[0]},
@@ -631,6 +632,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
   }
  
   Feature.find({$and:obj},function(err, docs1) {
+    
     if(docs1 === undefined || docs1.length === 0){
       res.render("products/reg", {
         num: 0,
@@ -718,9 +720,9 @@ exports.saveLive = (req, res, next) => {
 };
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
- console.log("SDF")
+ 
   var serials= (req.body.serial).split(",");
-  
+
   var serial_obj=[];
  
   serials.map((rs)=>{
