@@ -23,14 +23,14 @@
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="/assets/css/bootstrap3-wysihtml5.min.css">
     <!-- jQuery 3 -->
-        <script src="/assets/js/jquery.min.js"></script>
-        <!-- jQuery UI 1.11.4 -->
-        <script src="/assets/js/jquery-ui.min.js"></script>
+    <script src="/assets/js/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="/assets/js/jquery-ui.min.js"></script>
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    
+
     <script src="/js.js"></script>
-    
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini" onload="set_var()">
@@ -45,8 +45,8 @@
                 <span class="logo-lg"><b>Admin</b>Dashboard</span>
             </a>
             {{else}}
-             <a href="#" class="logo">
-               
+            <a href="#" class="logo">
+
                 <span class="logo-lg">ECL</span>
             </a>
             {{/if}}
@@ -61,6 +61,16 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         {{#if user}}
+                        <li class="nav-item">
+                            <a id="dLabel"  data-toggle="dropdown" data-target="hash" href="hash" aria-expanded="true">
+                                <img src="https://img.icons8.com/ios/20/ffffff/appointment-reminders.png"><span id="notification"></span></a>
+                            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                <li>
+                                    <a id="set_href">Low Quantity<span name="lowLive" style="padding: 5%; color:red"></span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        
                         <li class="nav-item">
                             <a href="/users/register" class="nav-link">Register</a>
                         </li>
@@ -111,11 +121,11 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-circle-o"></i> Admin Activity Board</a></li>
+                            <li><a href="/products/showDashboard"><i class="fa fa-circle-o"></i> Admin Activity Board</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
-                       <a href="#">
+                        <a href="#">
                             <i class="fa fa-folder"></i>
                             <span>Product</span>
                             <span class="pull-right-container">
@@ -127,7 +137,7 @@
                             <li><a href="/products/view"><i class="fa fa-circle-o"></i>All Products</a></li>
                         </ul>
                     </li>
-                    
+
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-folder"></i>
@@ -178,7 +188,8 @@
                         </a>
                         <ul class="treeview-menu">
                             <li>
-                                <a href="/customers/RegisteredCustomer"><i class="fa fa-circle-o"></i>Registered Customers</a>
+                                <a href="/customers/RegisteredCustomer"><i class="fa fa-circle-o"></i>Registered
+                                    Customers</a>
                             </li>
                         </ul>
                     </li>
@@ -208,7 +219,7 @@
         </aside>
         {{else}}
         <aside class="main-sidebar" style="background-color: #ecf0f5"></aside>
-           {{/if}}
+        {{/if}}
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <section class="content-header">
@@ -230,7 +241,8 @@
         <!-- ./wrapper -->
 
         <!-- jQuery 3 -->
-        {{!-- <script src="/assets/js/jquery.min.js"></script>
+        {{!--
+        <script src="/assets/js/jquery.min.js"></script>
         <!-- jQuery UI 1.11.4 -->
         <script src="/assets/js/jquery-ui.min.js"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip --> --}}
@@ -248,22 +260,22 @@
         <!-- AdminLTE App -->
         <script src="/assets/js/adminlte.min.js"></script>
         <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.js'></script>
-    
-    <script>
-        Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-            return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-        });
-                // testing helper
-        Handlebars.registerHelper('noop', function(options) {
-            return options.fn(this);
-        });
-    </script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) 
+
+        <script>
+            Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
+                return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+            });
+            // testing helper
+            Handlebars.registerHelper('noop', function (options) {
+                return options.fn(this);
+            });
+        </script>
+        <!-- AdminLTE dashboard demo (This is only for demo purposes) 
 <script src="assets/js/dashboard.js"></script>
  //AdminLTE for demo purposes 
 <script src="assets/js/demo.js"></script>-->
 
-<script src="/js.js"></script>
+        <script src="/js.js"></script>
 </body>
 
 </html>

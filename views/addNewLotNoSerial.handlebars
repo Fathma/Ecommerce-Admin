@@ -1,6 +1,6 @@
 <div class="box" >
     <div class="register-logo">
-        <a href="#"><b>Add</b>NewLot With Serial</a>
+        <a href="#"><b>Add</b>NewLot Without Serial</a>
     </div>
     <div class="box-body">
 
@@ -21,24 +21,24 @@
                                 <ul class="dropdown-menu">
                                     {{# each this.subCategories}}
                                     <li>
-                                        <a href="/products/getProductBySubcat/{{id}}">{{name}}</a>
+                                        <a href="/products/getProductBySubcatNoSL/{{id}}">{{name}}</a>
                                     </li>
                                     {{/each}}
                                 </ul>
                             </li>
                             {{else}}
                             <li>
-                                <a href="/products/getProductByCat/{{this._id}}">{{this.name}}</a>
+                                <a href="/products/getProductByCatNoSL/{{this._id}}">{{this.name}}</a>
                             </li>
                             {{/if}}
                             {{/each}}
                         </ul>
                     </div>
 
-                    <form id="save" method="POST">
+                    <form action="/products/saveInventoryNoSerial" method="POST">
 
-                        <input type="hidden" name="check" id="check" value="0">
-                        <input type="hidden" name="val" id="val" value="0">
+                        {{!-- <input type="text" name="check" id="check" value="0">
+                        <input type="text" name="val" id="val" value="0"> --}}
                         <div class="form-group">
                             <label for="model">Model</label>
                             <br>
@@ -57,7 +57,7 @@
 
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="number" name="quantity" id="quantity" onblur="createtextfields()" class="form-control"
+                            <input type="number" name="quantity" id="quantity"  class="form-control"
                                 required>
                         </div>
                         <div id="space">

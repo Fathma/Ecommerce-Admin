@@ -21,6 +21,7 @@ var ProductSchema = new Schema({
    
     unitPrice: { type: Number },
     isActive:{ type: Boolean, required: false },
+    status: { type: Boolean, required: false },
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
     
     // pinned: { type: String, required: false },

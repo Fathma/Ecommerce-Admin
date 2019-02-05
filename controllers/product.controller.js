@@ -44,6 +44,45 @@ const storage = new GridFsStorage(
   });
 const upload = multer({ storage });
 
+// get low quantity
+exports.lowLiveQuantity= (req, res, next) => {
+  Live.find({quantity:{$lt:3}})
+    .exec(function(err, docs) {
+      if (err) { res.send(err); }
+      var count=0;
+      if(docs.length != 0){
+        count++;
+      }
+      res.json({quantity: docs.length, count:count})
+    });
+};
+
+// get low quantity details
+exports.lowLiveQuantityDetails= (req, res, next) => {
+  allFuctions.get_all_inventory_list({live:{$lt:3}},{},(docs)=>{
+    res.render("products/allProductView", {
+      title: "All Product",
+      products: docs,
+     
+    });
+  })
+};
+
+// get lot without serial page
+exports.showDashboard= (req, res, next) => {
+  Live.find({quantity:{$lt:3}})
+    .exec(function(err, docs) {
+      if (err) { res.send(err); }
+      res.render("dashboard",{lowlive:docs.length, data: docs});
+    });
+  
+};
+
+// get lot without serial page
+exports.saveInventoryNoSerialPage= (req, res, next) => {
+  res.render("addNewLotNoSerial");
+};
+
 // get Registration page
 exports.showProductRegistrationFieldspage= (req, res, next) => {
   res.render("products/reg");
@@ -108,6 +147,22 @@ exports.makeActive = (req, res, next) => {
   });
 };
 
+// returns product Enable
+exports.makeEnable = (req, res, next) => {
+  var obj = { status: false };
+  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+    res.redirect("/products/view");
+  });
+};
+
+// makes product Disable
+exports.makeDisable = (req, res, next) => {
+  var obj = { status: true };
+  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+    res.redirect("/products/view");
+  });
+};
+
 // returns Edit stock page
 exports.getEditStockPage = (req, res, next) => {
   allFuctions.get_inventory_list({ _id: req.params.id }, {}, "product_id", (docs)=>{
@@ -123,14 +178,28 @@ exports.getProductByCat = (req, res, next)=>{
   allFuctions.find({category: req.params.cat},(rs)=>{
     res.render("addNewLot", {product:rs});
   })
-}
+};
 
 // getting product models by Sub category
 exports.getProductBySubcat = (req, res, next)=>{
   allFuctions.find({subcategory: req.params.sub_cat},(rs)=>{
     res.render("addNewLot", {product:rs});
   })
-}
+};
+
+// getting product models by Category
+exports.getProductByCatNoSerial = (req, res, next)=>{
+  allFuctions.find({category: req.params.cat},(rs)=>{
+    res.render("addNewLotNoSerial", {product:rs});
+  })
+};
+
+// getting product models by Sub category
+exports.getProductBySubcatNoSerial = (req, res, next)=>{
+  allFuctions.find({subcategory: req.params.sub_cat},(rs)=>{
+    res.render("addNewLotNoSerial", {product:rs});
+  })
+};
 
 // returns Online Product page
 exports.getOnlineProductsPage = (req, res, next) => {
@@ -139,6 +208,7 @@ exports.getOnlineProductsPage = (req, res, next) => {
     match: { isActive:true }
   };
   allFuctions.get_inventory_list({},{ "product_id": 1 },populate_obj,(rs)=>{
+    console.log(rs)
     res.render("products/allProductView", {
       title: "Offline Products",
       products: rs
@@ -176,6 +246,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
   }else{
     var sub="null";
   }
+  
  
   Feature.find({$and:obj},function(err, docs1) {
     var render_obj ={
@@ -188,6 +259,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
       subN:subcategory[1],
       submitted:true
     }
+    
     if(docs1 === undefined || docs1.length === 0){
       render_obj.num = 0;
       render_obj.status ="notexist";
@@ -216,39 +288,73 @@ exports.saveLive = (req, res, next) => {
    }
    Live.find({product_id:req.params.id}, function(err,rs){
  
-     if(err){ res.send(err)}
+     if(err){ console.log(err)}
+     console.log("SDF")
      if(rs.length===0 || rs.length === undefined){
        new Live(live).save().then(live => {
+        console.log(live);
           allFuctions.changeStatus({_id:req.params.id},{ "live": live._id, unitPrice: req.body.unit_price }, res, (docs2)=>{
+            console.log(req.body.lot_number)
             Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
-              "remaining":(parseInt(req.body.remaining)-serial_obj.length),"unitPrice":req.body.unit_price, "live":req.body.quantity, live_id: live._id },{ upsert: true },
+              "remaining":(parseInt(req.body.remaining)-req.body.quantity),"unitPrice":req.body.unit_price, "live":req.body.quantity, live_id: live._id },{ upsert: true },
               function(err, docs){
-              if(err){ res.send(err)}
+              if(err){ console.log(err);}
+              console.log("SDF")
               req.flash("success_msg", "Live Product Added");
               res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
             }) 
           }
        ) 
-     });
-     }else{
-       Live.update({product_id:req.params.id},{ $addToSet:{ "serial":serial_obj},unitPrice:req.body.unit_price, quantity: parseInt(rs[0].quantity)+parseInt(req.body.quantity)},{ upsert: true },
-         function(err1, docs1) {
-         if(err1){res.send(err1)}
+      });
+      }else{
        
-        allFuctions.changeStatus({_id:req.params.id},{ "live": rs[0]._id , unitPrice: req.body.unit_price }, res, (docs2)=>{
-          Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
-          "remaining":(parseInt(req.body.remaining)-serial_obj.length), "unitPrice":req.body.unit_price,live_id: docs1._id,"live_id":rs[0]._id, "live": parseInt(rs[0].quantity)+parseInt(req.body.quantity) },{ upsert: true },
-          function(err, docs){
-          if(err){ res.send(err) }
-          req.flash("success_msg", "Live Product Added");
-          res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
-          }) 
-        }
-       ) 
-     });
-     }
+        Live.update({product_id:req.params.id},{ $addToSet:{ "serial":serial_obj},unitPrice:req.body.unit_price, quantity: parseInt(rs[0].quantity)+parseInt(req.body.quantity)},{ upsert: true },
+          function(err1, docs1) {
+          if(err1){res.send(err1)}
+          allFuctions.changeStatus({_id:req.params.id},{ "live": rs[0]._id , unitPrice: req.body.unit_price }, res, (docs2)=>{
+            Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
+            "remaining":(parseInt(req.body.remaining)-req.body.quantity), "unitPrice":req.body.unit_price,live_id: docs1._id,
+            "live_id":rs[0]._id, "live": parseInt(rs[0].quantity)+parseInt(req.body.quantity) },{ upsert: true },
+            function(err, docs){
+              if(err){ res.send(err) }
+              Inventory.update({product_id: req.params.id},{"unitPrice":req.body.unit_price, "live": parseInt(rs[0].quantity)+parseInt(req.body.quantity) },
+              {multi: true}, function(err,docs3){
+                if(err){res.send(err)}
+                req.flash("success_msg", "Live Product Added");
+                res.redirect("/Products/liveStockEdit/"+req.body.lot_number);
+              })
+             
+            }) 
+          }
+        ) 
+      });
+      }
    })
  };
+
+// get lot without serial page
+exports.saveInventoryNoSerial= (req, res, next) => {
+  var inventory = {
+    product_id:req.body.model,
+    stockQuantity:req.body.quantity,
+    purchasePrice: req.body.purchase_price,
+    remaining: req.body.quantity,
+    admin: req.user._id,
+  }
+  Live.find({product_id:req.body.model}, (rs)=>{
+    console.log(rs)
+    if(rs){
+      inventory.live_id=rs[0]._id;
+      inventory.live=rs[0].quantity;
+      inventory.unitPrice = rs[0].unitPrice;
+    }
+    new Inventory(inventory).save().then(inventory => {
+      res.redirect("/products/saveInventoryNoSerialPage");
+    });
+  })
+
+ 
+};
 
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
@@ -460,12 +566,14 @@ exports.SaveProduct= (req, res, next) => {
       features: data,
       categoryName: req.body.cattN,
       subcategoryName:  req.body.subN,
-      brandName: req.body.brandN,
+      brandName: req.body.brandN
     };
     
-    if( req.body.sub != "0"){
+    if( req.body.sub === "null" ){}
+    else{
       newProduct.subcategory= req.body.sub
     }
+    console.log(newProduct);
     new Product(newProduct).save().then(product => {
     Category.update(
       { _id: selected_category },
@@ -473,7 +581,8 @@ exports.SaveProduct= (req, res, next) => {
       { upsert: true },
       function(err, docs) {
         if (err) { res.send(err); }
-        if (req.body.sub != "0") {
+        if (req.body.sub === "null") {}
+        else{
           SubCategory.update(
             { _id: req.body.sub },
             { $addToSet: { brands: selected_brand}, category: selected_category  },

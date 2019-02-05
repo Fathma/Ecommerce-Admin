@@ -8,7 +8,7 @@ var InventorySchema = new Schema({
     stockQuantity: {type:Number},
     purchasePrice: {type: Number},
     remaining: {type: Number},
-    live:{type:Number, default:0},
+    live:{ type: Number },
     unitPrice:{type:Number, default:0},
     original_serial:{type:Array},
     serial:{type:Array},

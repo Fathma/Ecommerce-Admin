@@ -57,7 +57,7 @@ const upload = multer({ storage });
 // router.get("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFieldspage);
 // router.get("/stock", product_controller.getAllProductStock);
 // router.get("/Sale", product_controller.getSaleProductsPage);
-// router.post("/saveSerial/:id", product_controller.saveSerial);
+
 
 // router.get("/singleProduct/:id", product_controller.singleProduct);
 router.get("/Edit/:id", product_controller.getEditpage);
@@ -76,14 +76,23 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 // router.post("/stockEdit/:id", product_controller.getEditStock);
 router.get("/stockEditPage/:id", product_controller.getEditStockPage);
 
+router.get("/dashboard", product_controller.lowLiveQuantity);
+router.get("/showDashboard", product_controller.showDashboard);
+router.get("/viewLowLive", product_controller.lowLiveQuantityDetails);
 // router.post("/Discount/:id", product_controller.addDiscount);
-
+router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
+router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
 router.get("/liveStockEdit/:id", product_controller.getLiveStockEditpage);
 
+router.post("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
+router.post("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
+router.get("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
+router.get("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
 // new
 router.post("/saveLive/:id", product_controller.saveLive);
 router.get("/view", ensureAuthenticated, product_controller.getAllProducts);
 router.get("/newLot", product_controller.newLot);
+router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
 router.post("/SaveInventory", product_controller.saveInventory);
 router.get("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.post("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);

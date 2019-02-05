@@ -1,7 +1,13 @@
 .description{
     color: dimgray;
 }
-
+.dot {
+    height: 15px;
+    width: 15px;
+    background-color: rgb(218, 37, 37);
+    border-radius: 50%;
+    display: inline-block;
+  }
 .price {
     font-size: 25px;
 }

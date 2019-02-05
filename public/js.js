@@ -20,6 +20,7 @@ function setvisible() {
     input.id = "v" + nums;
     input.name = "v" + nums;
     input.type = "text";
+    input.required = true;
     input.className = "form-control";
 
     div.appendChild(input1);
@@ -102,52 +103,80 @@ function createtextfields() {
 }
 
 $(document).ready(function() {
-  $("form").submit(function(e) {
-  
-    // this is to prevent double submit
-    if(document.getElementById("val").value === "0"){
-
-    var check = parseInt(document.getElementById("check").value);
-    var data_string = "";
-  
-    for (var i = 1; i <= check; i++) {
-      if(document.getElementById("v" + i).value !=""){
-        data_string += document.getElementById("v" + i).value;
-        if (check != i) {
-          data_string += ",";
-        }
+  // onload
+  notificationCheck();
+  window.setInterval(function() {
+    notificationCheck();
+  }, 5000);
+  // gets the notifications
+  function notificationCheck() {
+    $.get("/products/dashboard", {}, function(data_string) {
+      if (data_string.count != 0) {
+        document.getElementById("notification").textContent = JSON.stringify(
+          data_string.count
+        );
       }
-    }
-
-    if (
-      document.getElementById("check").value === "0" || document.getElementById("check").value != document.getElementById("quantity").value) {
-      createtextfields();
-      e.preventDefault();
-    } 
-    else {
-      if (data_string === "") {
-        
+      document.getElementById("lowLive").textContent = JSON.stringify(
+        data_string.quantity
+      );
+      if (data_string.quantity === 0) {
+        document.getElementById("set_href").href = "#";
       } else {
-        if (data_string.split(",").length != ArrNoDupe(data_string.split(",")).length) {
-          alert("Serial numbers have to be unique!");
-          e.preventDefault();
+        document.getElementById("set_href").href = "/products/viewLowLive";
+      }
+    });
+  }
+
+  $("form").submit(function(e) {
+    // this is to prevent double submit
+    if (document.getElementById("val").value === "0") {
+      var check = parseInt(document.getElementById("check").value);
+      var data_string = "";
+
+      for (var i = 1; i <= check; i++) {
+        if (document.getElementById("v" + i).value != "") {
+          data_string += document.getElementById("v" + i).value;
+          if (check != i) {
+            data_string += ",";
+          }
+        }
+      }
+
+      if (
+        document.getElementById("check").value === "0" ||
+        document.getElementById("check").value !=
+          document.getElementById("quantity").value
+      ) {
+        createtextfields();
+        e.preventDefault();
+      } else {
+        if (data_string === "") {
         } else {
-          $.post(
-            "/products/SaveInventory",
-            {
-              serial: data_string,
-              model: document.getElementById("model").value,
-              purchase_price: parseInt(document.getElementById("purchase_price").value),
-              quantity: document.getElementById("quantity").value
-            },
-            function(data_string) {}
-          );
-          document.getElementById("val").value = "1"
-          alert("successful")
+          if (
+            data_string.split(",").length !=
+            ArrNoDupe(data_string.split(",")).length
+          ) {
+            alert("Serial numbers have to be unique!");
+            e.preventDefault();
+          } else {
+            $.post(
+              "/products/SaveInventory",
+              {
+                serial: data_string,
+                model: document.getElementById("model").value,
+                purchase_price: parseInt(
+                  document.getElementById("purchase_price").value
+                ),
+                quantity: document.getElementById("quantity").value
+              },
+              function(data_string) {}
+            );
+            document.getElementById("val").value = "1";
+            alert("successful");
+          }
         }
       }
     }
-  }
   });
 
   $("#categg").change(function() {
@@ -167,9 +196,14 @@ $(document).ready(function() {
     var options;
     options += '<option value="0">Select One</>';
     for (i = 0; i < data[0].subCategories.length; i++) {
-      options += '<option value="' + data[0].subCategories[i]._id + '">' + data[0].subCategories[i].name + "</>";
+      options +=
+        '<option value="' +
+        data[0].subCategories[i]._id +
+        '">' +
+        data[0].subCategories[i].name +
+        "</>";
     }
-   ddl2.innerHTML = options;
+    ddl2.innerHTML = options;
   }
 });
 // makes an array unique
@@ -209,6 +243,6 @@ function set_disable(id) {
   }
 }
 
-function saveProduct(){
+function saveProduct() {
   alert(document.getElementById("num").value);
 }

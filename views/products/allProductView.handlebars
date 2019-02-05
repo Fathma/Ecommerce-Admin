@@ -4,16 +4,16 @@
     </div>
 
     <div class="row">
-         {{# if products}}
+        {{# if products}}
         <div class="col-sm-1">
-           
+
             <ul style="list-style-type: none;padding: 0">
                 <li class="dropdown">
                     <a style="color: black; font-weight: bold; font-size: medium" href="#" class="dropdown-toggle"
                         data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><button class="btn btn-default">Sort
                             By<span class="caret"></span></button></a>
                     <ul class="dropdown-menu">
-                       
+                        <li><a href="/products/lowLiveQuantity">sdfsdfsdf</a></li>
                         <li><a href="/products/View">All Products <img src="https://img.icons8.com/ios/20/000000/open-box.png"
                                     class="pull-right"></a></li>
                         <li><a href="/products/Online">Online Products <img src="https://img.icons8.com/ios/20/000000/mobile-order-filled.png"
@@ -29,35 +29,25 @@
                     </ul>
                 </li>
             </ul>
-            
+
         </div>
+
         <div class="col-sm-10">
-            <a class="btn btn-success pull-right" href="/products/newLot">New Lot</a>
+            <div class="dropdown pull-right">
+                <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-success" data-target="hash" href="hash"
+                    aria-expanded="true">New Lot <span class="caret"></span></a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li>
+                        <a href="/products/newLot">With Serial</a>
+                    </li>
+                    <li>
+                        <a href="/products/saveInventoryNoSerialPage">Without Serial</a>
+                    </li>
+                </ul>
+            </div>
+            {{!-- <a class="btn btn-success pull-right" href="/products/newLot">New Lot</a> --}}
         </div>
-        {{!-- <div class="dropdown">
-                        <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-primary" data-target="hash"
-                            href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
-                        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
-                            {{# each S_categories}}
-                            {{# if this.subCategories}}
-                            <li class="dropdown-submenu pull-right1">
-                                <a tabindex="-1" href="#">{{this.name}}</a>
-                                <ul class="dropdown-menu">
-                                    {{# each this.subCategories}}
-                                    <li>
-                                        <a href="/products/getProductBySubcat/{{id}}">{{name}}</a>
-                                    </li>
-                                    {{/each}}
-                                </ul>
-                            </li>
-                            {{else}}
-                            <li>
-                                <a href="/products/getProductByCat/{{this._id}}">{{this.name}}</a>
-                            </li>
-                            {{/if}}
-                            {{/each}}
-                        </ul>
-                    </div> --}}
+
 
         <div class="col-sm-1">
             <a class="btn btn-success pull-right" href="/category/Entry">New Product</a>
@@ -71,30 +61,30 @@
     <div style="background-color: white">
         <table style="width:100%" class="table table-hover">
             <tr>
-                
+
                 <th>Title</th>
                 <th>InventoryID</th>
                 <th>Purchase Price</th>
                 <th>Selling Price</th>
                 <th>Offline</th>
                 <th>Live</th>
-              
+
                 <th>Action</th>
             </tr>
             {{# each products}}
             {{# if this.product_id.model}}
             <tr>
-               
 
-                <td> 
-                    <a href="/products/Edit/{{this.product_id._id}}" data-toggle="tooltip" data-placement="top"
-                        title="Edit" style="padding: 0%" class="btn btn-primary">
+
+                <td>
+                    <a href="/products/Edit/{{this.product_id._id}}" data-toggle="tooltip" data-placement="top" title="Edit"
+                        style="padding: 0%" class="btn btn-primary">
                         <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
                     </a>
                     <strong>{{this.product_id.model}}</strong>
                 </td>
 
-                <td> 
+                <td>
                     <strong>{{this._id}}</strong>
                 </td>
 
@@ -105,7 +95,8 @@
                 <td>
                     {{!-- {{# if this.onSale}} --}}
                     {{!-- <strike><strong>{{this.productPrice.listPrice}}TK</strong></strike><br> --}}
-                    {{!-- <strong style="color: red"><a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}">{{this.productPrice.salePrice}}TK</a></strong> --}}
+                    {{!-- <strong style="color: red"><a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}">{{this.productPrice.salePrice}}TK</a></strong>
+                    --}}
                     {{!-- {{else}} --}}
                     <strong>{{this.product_id.unitPrice}}TK</strong>
                     {{!-- {{/if}} --}}
@@ -120,41 +111,34 @@
                 </td>
                 <td>
                     {{!-- {{# if this.quantity.storeLive}} --}}
-                        {{# if this.product_id.isActive}}
-                            <a href="/products/unactive/{{this.product_id._id}}" class="btn btn-default ">Offline</a>
-                            {{!-- {{# if this.onSale }} --}}
-                            {{!-- <a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}" class="btn btn-default">Edit Discount</a> --}}
-                            {{!-- <a onclick="if (confirm('Are you sure you want to delete the product lot?')) { href='/products/removeFromSale/{{this._id}}/{{this.subcategory._id}}'; } else { return false; }" --}}
-                                {{!-- class="btn btn-default">Remove Discount</a> --}}
-                            {{!--  if this.onSale --}}
-                            {{!-- {{else}} --}}
-                            {{!-- <a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}" class="btn btn-default">Add Discount</a> --}}
-                            {{!--  if this.onSale --}}
-                            {{!-- {{/if}} --}}
-                        {{!-- if this.isActive --}}
-                        {{else}}
-                        <a href="/products/active/{{this.product_id._id}}" class="btn btn-default">Online</a>
-                        {{!-- if this.isActive --}}
-                        {{/if}}
-                        <a href="/products/liveStockEdit/{{this._id}}" class="btn btn-default">Edit Live</a>
-                        {{!-- <a class="btn btn-danger" id="d" onclick="if (confirm('Are you sure you want to remove discount?')) { document.getElementById(this).innerHTML= 'Enable' } else { return false; }" --}}
-                        {{!-- data-toggle="tooltip" data-placement="top" title="Delete">Disable</a> --}}
-                </td>
+                    {{# if this.product_id.isActive}}
+                    <a href="/products/unactive/{{this.product_id._id}}" class="btn btn-default ">Offline</a>
+                    {{!-- {{# if this.onSale }} --}}
+                    {{!-- <a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}" class="btn btn-default">Edit
+                        Discount</a> --}}
+                    {{!-- <a onclick="if (confirm('Are you sure you want to delete the product lot?')) { href='/products/removeFromSale/{{this._id}}/{{this.subcategory._id}}'; } else { return false; }"
+                        --}} {{!-- class="btn btn-default">Remove Discount</a> --}} {{!--  if this.onSale --}}
+                        {{!-- {{else}} --}} {{!-- <a href="/products/addDiscount/{{this._id}}/{{this.subcategory._id}}"
+                        class="btn btn-default">Add Discount</a> --}}
+                    {{!-- if this.onSale --}}
                     {{!-- {{/if}} --}}
-            </tr>
-            {{!-- each product --}}
-            {{/if}}
-            {{/each}}
-        </table>
-
-    </div>
-    {{ else }}
-    <div class="row">
-        <div >
-            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
-            <p>1. To a add a new lot click the button on the right. <a class="btn btn-success " href="/products/newLot">New Lot</a></p>
-            <p>2. For new product information entry click the button on the right. <a class="btn btn-success" href="/products/showfields">New Product</a></p>
-        </div>
+                    {{!-- if this.isActive --}}
+                    {{else}}
+                    <a href="/products/active/{{this.product_id._id}}" class="btn btn-default">Online</a>
+                    {{!-- if this.isActive --}}
+                    {{/if}}
+                    <a href="/products/liveStockEdit/{{this._id}}" class="btn btn-default">Edit Live</a>
+                    {{!-- <a class="btn btn-danger" id="d" onclick="if (confirm('Are you sure you want to remove discount?')) { document.getElementById(this).innerHTML= 'Enable' } else { return false; }"
+                        --}} {{!-- data-toggle="tooltip" data-placement="top" title="Delete">Disable</a> --}} </td>
+                        {{!-- {{/if}} --}} </tr> {{!-- each product --}} {{/if}} {{/each}} </table> </div> {{ else }}
+                        <div class="row">
+                        <div>
+                            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
+                            <p>1. To a add a new lot click the button on the right. <a class="btn btn-success " href="/products/newLot">New
+                                    Lot</a></p>
+                            <p>2. For new product information entry click the button on the right. <a class="btn btn-success"
+                                    href="/products/showfields">New Product</a></p>
+                        </div>
     </div>
     {{/if}}
 

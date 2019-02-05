@@ -84,7 +84,6 @@ app.use(function (req, res, next) {
    .exec(function (err, categories) {
        if (err) return next(err);
        res.locals.S_categories = categories;
-      
        next();
    });
 });
