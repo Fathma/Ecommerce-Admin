@@ -74,23 +74,28 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 // router.get("/addDiscount/:id/:cid", product_controller.addDiscountpage);
 
 // router.post("/stockEdit/:id", product_controller.getEditStock);
+router.post("/updateInventory", product_controller.updateInventory);
+
 router.get("/stockEditPage/:id", product_controller.getEditStockPage);
 
+router.get("/check_availablity/:model", product_controller.check_availablity);
 router.get("/dashboard", product_controller.lowLiveQuantity);
 router.get("/showDashboard", product_controller.showDashboard);
 router.get("/viewLowLive", product_controller.lowLiveQuantityDetails);
 // router.post("/Discount/:id", product_controller.addDiscount);
 router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
 router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
-router.get("/liveStockEdit/:id", product_controller.getLiveStockEditpage);
+router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
+router.get("/RestoreLivepage/:id", product_controller.getRestoreLivepage);
 
+router.post("/Restore/:id", product_controller.getRestoreLive);
 router.post("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
 router.post("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
 router.get("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
 router.get("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
 // new
 router.post("/saveLive/:id", product_controller.saveLive);
-router.get("/view", ensureAuthenticated, product_controller.getAllProducts);
+router.get("/view", product_controller.getAllProducts);
 router.get("/newLot", product_controller.newLot);
 router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
 router.post("/SaveInventory", product_controller.saveInventory);

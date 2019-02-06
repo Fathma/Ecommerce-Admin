@@ -8,6 +8,23 @@
     border-radius: 50%;
     display: inline-block;
   }
+
+  :required {
+    background: red;
+  }
+ 
+  input:required:focus {
+    border: 1px solid red;
+    outline: none;
+  }
+  
+  /**
+   * style input elements that have a required
+   * attribute and a hover state
+   */
+  input:required:hover {
+    opacity: 1;
+  }
 .price {
     font-size: 25px;
 }

@@ -17,6 +17,31 @@ exports.get_inventory_list = (condition, sort_obj, populate_obj, cb) => {
     });
 };
 
+exports.check_availablity= (req, res, next) => {
+  var pre_arr=[];
+  allFuctions.get_all_inventory_list({product_id:req.body.model},{},(rs)=>{
+    rs.map((inventory)=>{
+      var ser=inventory.serial;
+      ser.map((serial)=>{
+        pre_arr.push(serial);
+      })
+    })
+  var serials= (req.body.serial).split(",");
+  var exist_serials="";
+  serials.map((serial)=>{
+    if(pre_arr.includes(serial)){
+      exist_serials +=serial+" ";
+    }
+  })
+  if(exist_serials.length === 0){
+    res.json({data:true})
+  }else{
+    res.json({data:false})
+  }
+
+})
+}
+
 // get inventory list by filter
 exports.get_all_inventory_list = (condition, sort_obj, cb) => {
   Inventory.find(condition)
@@ -31,14 +56,12 @@ exports.get_all_inventory_list = (condition, sort_obj, cb) => {
 
 //find fuction from product collection
 exports.find = (obj, cb) => {
-  console.log(obj);
   Product.find(obj)
     .populate("brand")
     .populate("admin")
     .populate("subcategory")
     .populate("category")
     .exec(function(err, docs) {
-      console.log(docs);
       cb(docs);
     });
 };

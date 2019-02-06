@@ -107,7 +107,7 @@
                 </td>
 
                 <td>
-                    <a href="/products/liveStockEdit/{{this._id}}" class="btn btn-outline-success">{{this.live_id.quantity}}</a>
+                    <a href="/products/RestoreLivepage/{{this.live_id._id}}" class="btn btn-outline-success">{{this.live_id.quantity}}</a>
                 </td>
                 <td>
                     {{!-- {{# if this.quantity.storeLive}} --}}
@@ -127,7 +127,7 @@
                     <a href="/products/active/{{this.product_id._id}}" class="btn btn-default">Online</a>
                     {{!-- if this.isActive --}}
                     {{/if}}
-                    <a href="/products/liveStockEdit/{{this._id}}" class="btn btn-default">Edit Live</a>
+                    <a href="/products/liveStockEdit/{{this._id}}/{{this.product_id._id}}" class="btn btn-default">Edit Live</a>
                     {{!-- <a class="btn btn-danger" id="d" onclick="if (confirm('Are you sure you want to remove discount?')) { document.getElementById(this).innerHTML= 'Enable' } else { return false; }"
                         --}} {{!-- data-toggle="tooltip" data-placement="top" title="Delete">Disable</a> --}} </td>
                         {{!-- {{/if}} --}} </tr> {{!-- each product --}} {{/if}} {{/each}} </table> </div> {{ else }}
