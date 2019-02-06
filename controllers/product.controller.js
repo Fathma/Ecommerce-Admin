@@ -125,14 +125,16 @@ exports.getRestoreLivepage= (req, res, next) => {
     })
 };
 
-// exports.updateInventory=(req, res, next) => {
-//   Inventory.update({_id:req.params.id},{add},(err,docs)=>{
-//     res.render("liveToInventory", {
-//       title: "Restore live serial",
-//       live: docs[0]
-//     });
-//   })
-// };
+exports.updateInventory=(req, res, next) => {
+// not implemented yet
+
+  // Inventory.update({_id:req.params.id},{add},(err,docs)=>{
+  //   res.render("liveToInventory", {
+  //     title: "Restore live serial",
+  //     live: docs[0]
+  //   });
+  // })
+};
 
 // this is to get selected serials and restore them in inventory and update the remaining live quantity 
 exports.getRestoreLive= (req, res, next) => {
