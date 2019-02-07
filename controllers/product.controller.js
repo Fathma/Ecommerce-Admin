@@ -126,7 +126,7 @@ exports.getRestoreLivepage= (req, res, next) => {
 };
 
 exports.updateInventory=(req, res, next) => {
-// not implemented yet
+  // not implemented yet
 
   // Inventory.update({_id:req.params.id},{add},(err,docs)=>{
   //   res.render("liveToInventory", {
@@ -145,8 +145,7 @@ exports.getRestoreLive= (req, res, next) => {
       Inventory.find({_id: rs}, (err,inventory)=>{
         live_serials.map((selected_serial)=>{
           if(includes(inventory[0].original_serial, selected_serial)){
-            console.log(inventory[0].remaining)
-            console.log(inventory[0].live)
+           
             Inventory.update({_id: rs}, { $addToSet:{ "serial":selected_serial}, remaining:inventory[0].remaining+1,  live: inventory[0].live-1}, (err,result)=>{
               res.redirect("/products/RestoreLivepage/"+req.body.liveId);
             })
@@ -344,9 +343,8 @@ exports.saveLive = (req, res, next) => {
      console.log("SDF")
      if(rs.length===0 || rs.length === undefined){
        new Live(live).save().then(live => {
-        console.log(live);
           allFuctions.changeStatus({_id:req.params.id},{ "live": live._id, unitPrice: req.body.unit_price }, res, (docs2)=>{
-            console.log(req.body.lot_number)
+            
             Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }},
               "remaining":(parseInt(req.body.remaining)-req.body.quantity),"unitPrice":req.body.unit_price, "live":req.body.quantity, live_id: live._id },{ upsert: true },
               function(err, docs){
@@ -359,7 +357,6 @@ exports.saveLive = (req, res, next) => {
        ) 
       });
       }else{
-       
         Live.update({product_id:req.params.id},{ $addToSet:{ "serial":serial_obj},unitPrice:req.body.unit_price, quantity: parseInt(rs[0].quantity)+parseInt(req.body.quantity)},{ upsert: true },
           function(err1, docs1) {
           if(err1){res.send(err1)}
@@ -375,7 +372,6 @@ exports.saveLive = (req, res, next) => {
                 req.flash("success_msg", "Live Product Added");
                 res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
               })
-             
             }) 
           }
         ) 

@@ -5,6 +5,8 @@ const router = express.Router();
 const orders = require('../controllers/orders.controller');
 
 router.get("/orders", orders.showOrdersPage);
-router.get("/orderDetails", orders.showOrderDetails);
+router.get("/generateInvoice/:oid", orders.generateInvoice);
+router.get("/orderDetails/:id", orders.showOrderDetails);
+router.post("/updateHistory/:oid", orders.updateHistory);
 
 module.exports = router;

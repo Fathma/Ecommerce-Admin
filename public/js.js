@@ -122,6 +122,8 @@ function createtextfields() {
 }
 
 $(document).ready(function() {
+
+
   $("#model").change(function(e) {
     $.get(
       "/products/check_availablity/" + document.getElementById("model").value,
@@ -133,28 +135,28 @@ $(document).ready(function() {
   });
 
   // onload
-  // notificationCheck();
+  notificationCheck();
 
 
-  // window.setInterval(function() {
-  //   notificationCheck();
-  // }, 5000);
+  window.setInterval(function() {
+    notificationCheck();
+  }, 10000);
 
   // gets the notifications
   function notificationCheck() {
     $.get("/products/dashboard", {}, function(data_string) {
     
       if (data_string.count != 0) {
-        document.getElementById("notification").textContent = JSON.stringify(
-          data_string.count
-        );
+        document.getElementById("notification").textContent = JSON.stringify( data_string.count);
       }
-      document.getElementById("lowLive").textContent = JSON.stringify(
-        data_string.quantity
-      );
+      
+      document.getElementById("lowLive").textContent = JSON.stringify(data_string.quantity);
+     
+     
       if (data_string.quantity === 0) {
         document.getElementById("set_href").href = "#";
       } else {
+        
         document.getElementById("set_href").href = "/products/viewLowLive";
       }
     });
@@ -222,7 +224,7 @@ $(document).ready(function() {
             }
 
             if (exists.length === 0) {
-              alert("in")
+            
               $.post(
                 "/products/SaveInventory",
                 {
