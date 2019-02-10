@@ -18,7 +18,7 @@ var ProductSchema = new Schema({
     image: String,
     
     live: { type: Schema.Types.ObjectId, ref: 'Live' },
-   
+    
     unitPrice: { type: Number },
     isActive:{ type: Boolean, required: false },
     status: { type: Boolean, required: false },

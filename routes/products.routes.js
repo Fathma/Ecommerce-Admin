@@ -76,7 +76,7 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 // router.post("/stockEdit/:id", product_controller.getEditStock);
 router.post("/updateInventory", product_controller.updateInventory);
 
-router.get("/stockEditPage/:id", product_controller.getEditStockPage);
+router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
 
 router.get("/check_availablity/:model", product_controller.check_availablity);
 router.get("/dashboard", product_controller.lowLiveQuantity);
@@ -186,19 +186,18 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
     }
   })
   pro.then(() => {
-    SubCategory.findOne({ name: req.body.sub_cat }, function (err, ncategory) {
+    // SubCategory.findOne({ name: req.body.sub_cat }, function (err, ncategory) {
 
-      if (err) return next(err);
-      var obj;
-      Brand.findOne({ name: req.body.brand }, function (err, nbrand) {
+    //   if (err) return next(err);
+    //   var obj;
+      // Brand.findOne({ name: req.body.brand }, function (err, nbrand) {
         if (array != "") {
           obj = {
             'name': req.body.title1,
-            'subcategory': ncategory._id,
-            'category': ncategory.category,
-            'productPrice.listPrice': 0,
+            // 'subcategory': ncategory._id,
+            // 'category': ncategory.category,
             'image': array,
-            'brand': nbrand._id,
+            // 'brand': nbrand._id,
             'model': req.body.model,
             'warranty': req.body.warranty,
             'description': req.body.description,
@@ -208,10 +207,9 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
         }else{
           obj={
             'name': req.body.title1,
-            'subcategory': ncategory._id,
-            'category': ncategory.category,
-            'productPrice.listPrice': req.body.list_price,
-            'brand': nbrand._id,
+            // 'subcategory': ncategory._id,
+            // 'category': ncategory.category,
+            // 'brand': nbrand._id,
             'model': req.body.model,
             'warranty': req.body.warranty,
             'description': req.body.description,
@@ -222,7 +220,6 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
           Product.findOneAndUpdate({ _id: mongo.ObjectID(req.params.pid) },
             {
               $set: obj
-
             }, { upsert: true },
             function (err, docs) {
               if (err) {
@@ -230,13 +227,14 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
               }
             })
         
-      })
+      // })
     })
-  })
+  // })
   pro.then(() => {
     if (req.file) {
       gfs.remove({ filename: req.file.filename }, (err) => {
         if (err) console.log(err)
+        res.redirect("/products/Edit/"+req.params.pid)
       })
     }
   })

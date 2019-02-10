@@ -1,3 +1,14 @@
+function myFunction() {
+  document.getElementById("buttonID").style.display="none";
+  document.getElementById("footer").style.display="none";
+  
+ window.print(
+     
+ );
+ document.getElementById("footer").style.display="block";
+ document.getElementById("buttonID").style.display="block";
+}
+
 function setvisible() {
   var nums = parseInt(document.getElementById("new_feat").value) + 1;
   document.getElementById("new_feat").value = nums;
@@ -32,18 +43,21 @@ function setvisible() {
   }
 }
 
+// not implemented yet
 function calculate_discount_price() {
   var dis = document.getElementById("discount123").value;
   var price = document.getElementById("selling_price").value;
   document.getElementById("price_discount").value = price - (dis / 100) * price;
 }
 
+// not implemented yet
 function calculate_discount_percentage() {
   var dis = document.getElementById("price_discount").value;
   var price = document.getElementById("selling_price").value;
   document.getElementById("discount123").value = ((price - dis) / price) * 100;
 }
 
+// adds a new feature
 function addnew() {
   var feat = document.getElementById("feat").value;
 
@@ -90,8 +104,6 @@ function check_all_purchase_price(){
   }else{
     document.getElementById("msg").innerHTML = "";
   }
-  
- 
 }
 
 // creating text fields on quantity input
@@ -121,11 +133,44 @@ function createtextfields() {
   }
 }
 
+// change the image on selecting a new image
+function readURL(input) {
+  if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          $('#image')
+              .attr('src', e.target.result)  
+      };
+      reader.readAsDataURL(input.files[0]);
+      readImageFile();
+  }
+}
+
+
 $(document).ready(function() {
+  var doc = new jsPDF();
+var specialElementHandlers = {
+    '#editor': function (element, renderer) {
+        return true;
+    }
+};
+
+$('#cmd').click(function () {
+    doc.fromHTML($('#content').html(), 15, 15, {
+        'width': 1000,
+            'elementHandlers': specialElementHandlers
+    });
+    doc.save('sample-file.pdf');
+});
 
 
+
+  // on product model change this function get all the previous serial numbers 
+  // and adds to a hidden textfield 
   $("#model").change(function(e) {
+    
     $.get(
+      // here model is the product_id
       "/products/check_availablity/" + document.getElementById("model").value,
       {},
       function(data) {
@@ -134,13 +179,13 @@ $(document).ready(function() {
     );
   });
 
-  // onload
-  notificationCheck();
+  // // onload
+  // notificationCheck();
 
 
-  window.setInterval(function() {
-    notificationCheck();
-  }, 10000);
+  // window.setInterval(function() {
+  //   notificationCheck();
+  // }, 10000);
 
   // gets the notifications
   function notificationCheck() {
@@ -151,7 +196,6 @@ $(document).ready(function() {
       }
       
       document.getElementById("lowLive").textContent = JSON.stringify(data_string.quantity);
-     
      
       if (data_string.quantity === 0) {
         document.getElementById("set_href").href = "#";
@@ -237,7 +281,6 @@ $(document).ready(function() {
                 },
                 function(data_string) {
                   alert(JSON.stringify(data_string));
-                  
                 }
               );
               alert("successful");
@@ -288,16 +331,19 @@ function ArrNoDupe(a) {
   var temp = {};
   for (var i = 0; i < a.length; i++) temp[a[i]] = true;
   var r = [];
-  for (var k in temp) r.push(k);
+  for (var k in temp){
+    r.push(k);
+  }
   return r;
 }
 
-// function checkValidityy() {
-//   var arr = document.getElementById("serial").value.split(",");
-//   var arr2 = ArrNoDupe(arr);
-//   document.getElementById("serial").value = arr2;
-//   document.getElementById("quantity").value = arr2.length;
-// }
+function checkValidityy() {
+  var arr = document.getElementById("serial").value.split(",");
+  alert(arr.length)
+  var arr2 = ArrNoDupe(arr);
+  document.getElementById("serial").value = arr2;
+  document.getElementById("quantity").value = arr2.length;
+}
 
 // on selection of a serial number it makes the color black and returns an unique array to the serial Text Box
 // Seems like the selected serail number is disabled after first click

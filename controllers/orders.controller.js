@@ -22,7 +22,7 @@ exports.showOrderDetails = (req, res, next) => {
 // view list of customers
 exports.generateInvoice = (req, res, next) => {
     allFuctions.get_orders({_id: req.params.oid}, (rs)=>{
-        res.render("orders/invoice", {order: rs[0]});
+        res.render("orders/invoice", { title:"Invoice" ,order: rs[0]});
     })
 };
 
@@ -41,7 +41,6 @@ exports.updateHistory = (req, res, next) => {
         status: req.body.status,
         customerNotified: notify
     }
-
     Order.update({_id: req.params.oid},{ $addToSet:{"history": history} , "currentStatus": status, "lastModified": new Date()},{upsert:true},(err,rs)=>{
         if(err){console.log(err)}
         Email.sendEmail("devtestjihad@gmail.com", req.body.email, "ECL update", "<h2>"+req.body.comment+"</h2>")

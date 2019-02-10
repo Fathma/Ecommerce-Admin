@@ -217,11 +217,37 @@ exports.makeDisable = (req, res, next) => {
 
 // returns Edit stock page
 exports.getEditStockPage = (req, res, next) => {
-  allFuctions.get_inventory_list({ _id: req.params.id }, {}, "product_id", (docs)=>{
-    res.render("editStockInfo", {
-      title: "Update Stock Info",
-      product: docs[0]
-    });
+
+  allFuctions.get_inventory_list({ _id: req.params.lot_id }, {}, "product_id", (docs)=>{
+    var serial_string="";
+    for(var i=0; i<docs[0].serial.length; i++){
+      serial_string += docs[0].serial[i];
+      if(i != docs[0].serial.length -1){
+        serial_string += ",";
+      }
+      allFuctions.get_inventory_list({product_id: req.params.pid }, {}, "product_id", (rs)=>{
+        var all_serials = "";
+        rs.map((lot)=>{
+          if(lot._id === req.params.lot_id){}
+          else{
+            for(var j=0; j< lot.original_serial.length; j++){
+              all_serials += lot.original_serial[j];
+              if(j != lot.original_serial.length -1){
+                all_serials += ",";
+              }
+            }
+          }
+          
+        })
+        res.render("editStockInfo", {
+          title: "Update Stock Info",
+          product: docs[0],
+          serial_string: serial_string,
+          original_serial:all_serials,
+        });
+      })
+    }
+    
   })
 };
 

@@ -1,131 +1,89 @@
-<div class="box" >
-    
-    <div class="box-body">
+<div class="row">
+    {{!-- <div class="col-sm-1"></div> --}}
+    <div class="col-sm-12 left-col">
+        <div class="panel panel-default">
 
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8 pull-center">
-               
-               
-    <div class="container-fluid">
-         <bold><h2>Everest Computers LTD</h2></bold>
-                <bold><h4><Address>House No-7, 2nd Floor, Momtaz Plaza, Road No-4, Dhanmondi R/A, Dhaka 1205</Address></h4></bold><br><br>
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-12 left-col">
-                <div class="panel panel-default">
-                   
-                    <div class="panel-body">
-                        <div class="order">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <tr>
-                                            <td>Order ID:</td>
-                                            <td>{{order._id}}</td>
-                                        </tr>
-                                        {{!-- <tr>
-                                            <td>Invoice No:</td>
-                                            <td>
-                                                <a href="/orders/generateInvoice/{{order._id}}" id="button-invoice" class="btn btn-success btn-xs">
-                                                    <i class="fa fa-cog"></i> Generate</a>
-                                            </td>
-                                        </tr> --}}
-                                        <tr>
-                                            <td>Customer:</td>
-                                            <td>{{order.user.profile.name}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>E-Mail:</td>
-                                            <td><a href="mailto:{{order.user.email}}">{{order.user.email}}</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Telephone:</td>
-                                            <td>{{order.user.contact}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Total:</td>
-                                            <td>{{order.totalAmount}}TK</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Order Status:</td>
-                                            <td id="order-status">{{order.currentStatus}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Order Date:</td>
-                                            <td>{{order.created}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Payment Method:</td>
-                                            <td>{{order.paymentMethod}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+            <div class="panel-body">
+                <bold>
+                    <h4>Everest Computers LTD</h4>
+                </bold>
+                <bold>
+                    <p style="font-size: 9">House No-7, 2nd Floor, Momtaz Plaza, Road No-4, Dhanmondi R/A, Dhaka 1205</p>
+                </bold>
+                <hr>
+                <br>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label> Order ID:</label>
+                        <p>Customer:</p>
+                        <p>E-Mail:</p>
+                        <p>Telephone:</p>
+                        <p>Order Date:</p>
+                        <p>Payment Method:</p>
+
                     </div>
-                     <div class="panel-body">
-                        <div class="product">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <td class="text-left">Product</td>
-                                            <td class="text-right">Quantity</td>
-                                            <td class="text-right">Unit Price</td>
-                                            <td class="text-right">Total</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{# each order.cart}}
+                    <div class="col-sm-9">
+                        <label>{{order._id}}</label>
+                        <p>{{order.user.profile.name}}</p>
+                        <p>{{order.user.email}}</p>
+                        <p>{{order.user.contact}}</p>
+                        <p>{{order.created}}</p>
+                        <p>{{order.paymentMethod}}</p>
+                    </div>
+                </div>
 
-                                        <tr>
-                                            <td class="text-left">
-                                                <a href="#">{{this.title}}</a>
-                                                <br>
-                                            </td>
-                                            <td class="text-right">{{this.quantity}}</td>
-                                            <td class="text-right">{{this.unitPrice}}TK</td>
-                                            <td class="text-right">{{this.price}}TK</td>
-                                        </tr>
-                                        {{/each}}
-                                        <tr>
-                                            <td colspan="3" class="text-right">Shipping Cost:</td>
-                                            <td class="text-right">{{order.shippingCost}}TK</td>
-                                        </tr>
-                                        {{!-- <tr>
-                                            <td colspan="3" class="text-right">VAT (20%):</td>
-                                            <td class="text-right">$3.00</td>
-                                        </tr> --}}
-                                        {{!-- <tr>
-                                            <td colspan="3" class="text-right">Sub-Total:</td>
-                                            <td class="text-right">$15.00</td>
-                                        </tr> --}}
-                                        <tr>
-                                            <td colspan="3" class="text-right">Total:</td>
-                                            <td class="text-right">{{order.totalAmount}}TK</td>
-                                        </tr>
+            </div>
+            <div class="panel-body">
+                <div class="product">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td class="text-left">Product</td>
+                                    <td class="text-right">Quantity</td>
+                                    <td class="text-right">Unit Price</td>
+                                    <td class="text-right">Total</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{# each order.cart}}
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                <tr>
+                                    <td class="text-left">
+                                        <a href="#">{{this.title}}</a>
+                                        <br>
+                                    </td>
+                                    <td class="text-right">{{this.quantity}}</td>
+                                    <td class="text-right">{{this.unitPrice}}TK</td>
+                                    <td class="text-right">{{this.price}}TK</td>
+                                </tr>
+                                {{/each}}
+                                <tr>
+                                    <td colspan="3" class="text-right">Shipping Cost:</td>
+                                    <td class="text-right">{{order.shippingCost}}TK</td>
+                                </tr>
+                                {{!-- <tr>
+                                    <td colspan="3" class="text-right">VAT (20%):</td>
+                                    <td class="text-right">$3.00</td>
+                                </tr> --}}
+                                {{!-- <tr>
+                                    <td colspan="3" class="text-right">Sub-Total:</td>
+                                    <td class="text-right">$15.00</td>
+                                </tr> --}}
+                                <tr>
+                                    <td colspan="3" class="text-right">Total:</td>
+                                    <td class="text-right">{{order.totalAmount}}TK</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-1"></div>
-        </div>
-            </div>
-            <div class="col-sm-2">
-
-            </div>
-        </div>
     </div>
 </div>
-<div id="container" style="height: 1766px;">
-    <div class="row">
-
-        
-
-   
+{{!-- <div class="col-sm-1"></div> --}}
+</div>
+<button class="btn btn-info text-center pull-right" style="background-color: #0747a6; margin-bottom:10px;" onclick="myFunction()"
+    id="buttonID">Download</button>

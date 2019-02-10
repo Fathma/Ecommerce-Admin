@@ -16,6 +16,7 @@ exports.get_inventory_list = (condition, sort_obj, populate_obj, cb) => {
     .populate(populate_obj)
     .populate("live_id")
     .exec(function(err, rs) {
+      if(err){res.send(err)}
       cb(rs);
     });
 };

@@ -1,6 +1,9 @@
 .description{
     color: dimgray;
 }
+.borderless td, .borderless th {
+    border: none;
+}
 .dot {
     height: 15px;
     width: 15px;
