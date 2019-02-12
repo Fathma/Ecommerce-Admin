@@ -80,7 +80,6 @@
                         </div>
 
                         <div class="form-group">
-
                             <label for="subCategg">Sub Category(optional)</label>
                             <select class="form-control" name="subCategg" id="subCategg">
                                 <option value="null">select one</option>
@@ -88,7 +87,6 @@
                                 <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
                                 {{/each}}
                             </select>
-
                         </div>
 
                         <div class="form-group">
@@ -157,6 +155,11 @@
                         </div>
 
                     </div><br>
+
+                    <div class="form-group">
+                        <label for="weight">Weight</label>
+                        <input type="text" name="weight" class="form-control" placeholder="Enter weight" required>
+                    </div>
 
                     <div class="form-group">
                         <label for="warranty">Warranty</label>

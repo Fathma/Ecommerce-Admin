@@ -16,7 +16,7 @@ exports.get_inventory_list = (condition, sort_obj, populate_obj, cb) => {
     .populate(populate_obj)
     .populate("live_id")
     .exec(function(err, rs) {
-      if(err){res.send(err)}
+      
       cb(rs);
     });
 };
@@ -61,6 +61,11 @@ exports.changeStatus = (condition,  object, res, cb) => {
 // orders
 exports.get_orders = (condition, cb)=>{
   Order.find(condition)
+  // .populate('cart.product')
+  .populate({
+      path: "cart.product",
+      populate: { path: "live" }
+    })
   .populate("user")
   .exec((err, rs)=>{
      cb(rs);

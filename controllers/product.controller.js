@@ -127,7 +127,6 @@ exports.getRestoreLivepage= (req, res, next) => {
 
 exports.updateInventory=(req, res, next) => {
   // not implemented yet
-
   // Inventory.update({_id:req.params.id},{add},(err,docs)=>{
   //   res.render("liveToInventory", {
   //     title: "Restore live serial",
@@ -145,7 +144,6 @@ exports.getRestoreLive= (req, res, next) => {
       Inventory.find({_id: rs}, (err,inventory)=>{
         live_serials.map((selected_serial)=>{
           if(includes(inventory[0].original_serial, selected_serial)){
-           
             Inventory.update({_id: rs}, { $addToSet:{ "serial":selected_serial}, remaining:inventory[0].remaining+1,  live: inventory[0].live-1}, (err,result)=>{
               res.redirect("/products/RestoreLivepage/"+req.body.liveId);
             })
@@ -219,13 +217,16 @@ exports.makeDisable = (req, res, next) => {
 exports.getEditStockPage = (req, res, next) => {
 
   allFuctions.get_inventory_list({ _id: req.params.lot_id }, {}, "product_id", (docs)=>{
+   
     var serial_string="";
     for(var i=0; i<docs[0].serial.length; i++){
       serial_string += docs[0].serial[i];
       if(i != docs[0].serial.length -1){
         serial_string += ",";
       }
+    }
       allFuctions.get_inventory_list({product_id: req.params.pid }, {}, "product_id", (rs)=>{
+        
         var all_serials = "";
         rs.map((lot)=>{
           if(lot._id === req.params.lot_id){}
@@ -237,7 +238,6 @@ exports.getEditStockPage = (req, res, next) => {
               }
             }
           }
-          
         })
         res.render("editStockInfo", {
           title: "Update Stock Info",
@@ -246,9 +246,53 @@ exports.getEditStockPage = (req, res, next) => {
           original_serial:all_serials,
         });
       })
-    }
-    
   })
+};
+
+exports.EditPP = (req, res, next)=>{
+  Inventory.update({_id: req.params.lot_id },
+    {$set:{purchasePrice: req.body.PP}
+   }, {upsert:true}, (err,rs)=>{
+    if(err){
+      res.send(err);
+    }else{
+      res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
+    }
+   })
+}
+exports.EditDelete = (req, res, next)=>{
+  
+  Inventory.update({_id: req.params.lot_id },
+    {$pull:{original_serial: req.body.pre_serial_del, serial:req.body.pre_serial_del}
+   }, {upsert:true}, (err,rs)=>{
+    if(err){
+      res.send(err);
+    }else{
+      res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
+    }
+   })
+}
+
+exports.EditReplace = (req, res, next)=>{
+ 
+  Inventory.update({_id: req.params.lot_id },{$addToSet:{original_serial:req.body.replace_serial, serial:req.body.replace_serial}}, 
+    {upsert:true}, (err,rs)=>{
+      if(err){
+        res.send(err);
+      } else {
+        Inventory.update({_id: req.params.lot_id },
+          {$pull:{original_serial: req.body.pre_serial, serial:req.body.pre_serial}
+         }, {upsert:true}, (err,rs)=>{
+          if(err){
+            res.send(err);
+          }else{
+            res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
+          }
+         })
+
+      }
+      
+     })
 };
 
 // getting product models by Category
@@ -277,6 +321,23 @@ exports.getProductBySubcatNoSerial = (req, res, next)=>{
   allFuctions.find({subcategory: req.params.sub_cat},(rs)=>{
     res.render("addNewLotNoSerial", {product:rs});
   })
+};
+
+
+exports.editAddNew = (req, res, next) => {
+ Inventory.update({_id: req.params.lot_id},
+  { 
+    $addToSet:{ serial: req.body.new_serial, original_serial: req.body.new_serial},
+    $inc: { stockQuantity:1, remaining:1} }, 
+    { upsert:true }, (err,docs)=>{
+   if(err){
+    res.send(err);
+   } else{
+    res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
+   }
+   
+ })
+  
 };
 
 // returns Online Product page
@@ -654,7 +715,8 @@ exports.SaveProduct= (req, res, next) => {
       features: data,
       categoryName: req.body.cattN,
       subcategoryName:  req.body.subN,
-      brandName: req.body.brandN
+      brandName: req.body.brandN,
+      weight: req.body.weight
     };
     
     if( req.body.sub === "null" ){}

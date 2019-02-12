@@ -60,8 +60,13 @@ const upload = multer({ storage });
 
 
 // router.get("/singleProduct/:id", product_controller.singleProduct);
-router.get("/Edit/:id", product_controller.getEditpage);
 
+// serial number
+router.get("/Edit/:id", product_controller.getEditpage);
+router.post("/EditAddOne/:lot_id/:pid", product_controller.editAddNew);
+router.post("/EditReplace/:lot_id/:pid", product_controller.EditReplace);
+router.post("/EditDelete/:lot_id/:pid", product_controller.EditDelete);
+router.post("/EditPP/:lot_id/:pid", product_controller.EditPP);
 // router.get("/stockEditPage", product_controller.addLotPage);
 
 router.get("/Online", product_controller.getOnlineProductsPage);
@@ -198,6 +203,7 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
             // 'category': ncategory.category,
             'image': array,
             // 'brand': nbrand._id,
+            'weight': req.body.weight,
             'model': req.body.model,
             'warranty': req.body.warranty,
             'description': req.body.description,
@@ -207,6 +213,7 @@ router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) =
         }else{
           obj={
             'name': req.body.title1,
+            'weight': req.body.weight,
             // 'subcategory': ncategory._id,
             // 'category': ncategory.category,
             // 'brand': nbrand._id,

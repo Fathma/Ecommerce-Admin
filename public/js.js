@@ -9,6 +9,28 @@ function myFunction() {
  document.getElementById("buttonID").style.display="block";
 }
 
+// checking during selecting serial number for ordered products
+function set_serial_last(){
+  
+  var product_serial =document.getElementById("Serial");
+  
+  if(document.getElementById("selected").value === "0"){
+
+  }else{
+    if(product_serial.value === ""){
+        product_serial.value = document.getElementById("selected").value; 
+    }else{
+      if((product_serial.value.split(",")).length === parseInt(document.getElementById("quantity").value)){
+        alert("Quantity of the product is satisfied");
+      }else{
+        product_serial.value = product_serial.value +","+ document.getElementById("selected").value;
+      }
+    }
+    var srr =ArrNoDupe(product_serial.value.split(","));
+    product_serial.value = srr;
+  }
+}
+
 function setvisible() {
   var nums = parseInt(document.getElementById("new_feat").value) + 1;
   document.getElementById("new_feat").value = nums;

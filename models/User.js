@@ -22,6 +22,10 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  branch: {
+    type: String,
+    required: true
   }
 });
 

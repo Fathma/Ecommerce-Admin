@@ -1,37 +1,51 @@
 <div class="row">
     {{!-- <div class="col-sm-1"></div> --}}
     <div class="col-sm-12 left-col">
-        <div class="panel panel-default">
+        <div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
 
             <div class="panel-body">
-                <bold>
-                    <h4>Everest Computers LTD</h4>
-                </bold>
-                <bold>
-                    <p style="font-size: 9">House No-7, 2nd Floor, Momtaz Plaza, Road No-4, Dhanmondi R/A, Dhaka 1205</p>
-                </bold>
-                <hr>
-                <br>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <label> Order ID:</label>
-                        <p>Customer:</p>
-                        <p>E-Mail:</p>
-                        <p>Telephone:</p>
-                        <p>Order Date:</p>
-                        <p>Payment Method:</p>
 
-                    </div>
-                    <div class="col-sm-9">
-                        <label>{{order._id}}</label>
-                        <p>{{order.user.profile.name}}</p>
-                        <p>{{order.user.email}}</p>
-                        <p>{{order.user.contact}}</p>
-                        <p>{{order.created}}</p>
-                        <p>{{order.paymentMethod}}</p>
-                    </div>
-                </div>
-
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><b> Order ID:</b></td>
+                            <td>{{order._id}}</td>
+                            <td><b>Invoice No:</b></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b>Customer:</b></td>
+                            <td>{{order.user.profile.name}}</td>
+                            <td><b>Stock Location:</b></td>
+                            <td>{{order.stockLocation}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>E-Mail:</b></td>
+                            <td>{{order.user.email}}</td>
+                            <td><b>Sales Person:</b></td>
+                            <td>{{user.name}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Telephone:</b></td>
+                            <td>{{order.user.contact}}</td>
+                            <td><b>Entry By:</b></td>
+                            <td>{{user.name}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Payment Method:</b></td>
+                            <td>{{order.paymentMethod}}</td>
+                            <td><b>Address:</b></td>
+                            <td>{{order.address}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="panel-body">
                 <div class="product">
@@ -50,7 +64,11 @@
 
                                 <tr>
                                     <td class="text-left">
-                                        <a href="#">{{this.title}}</a>
+                                        <a href="#">{{this.product.name}}</a>
+                                        <br>
+                                        <p>SN:{{# each this.serial}}
+                                            {{this}}
+                                            {{/each}}</p>
                                         <br>
                                     </td>
                                     <td class="text-right">{{this.quantity}}</td>
@@ -79,11 +97,21 @@
                         </table>
                     </div>
                 </div>
+                <br><br>
+                <div class="pull-right">
+                    <p class="pull-right">_____________</p><br>
+                    <p class="pull-right">Authorised Signature and Company Stamp</p>
+                </div><br><br>
+                <div>
+                    <p>Signature and Company Stamp</p>
+                    <p>Goods sold and received or accepted by the customers are not returnable.</p>
+                    <p>Warranty will void of all products if sticker is removed.</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 {{!-- <div class="col-sm-1"></div> --}}
-</div>
 <button class="btn btn-info text-center pull-right" style="background-color: #0747a6; margin-bottom:10px;" onclick="myFunction()"
     id="buttonID">Download</button>
+</div>

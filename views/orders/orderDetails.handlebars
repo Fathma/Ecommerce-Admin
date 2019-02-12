@@ -28,6 +28,7 @@
                                             <td>Invoice No:</td>
                                             <td>
                                                 <a href="/orders/generateInvoice/{{order._id}}" id="button-invoice" class="btn btn-success btn-xs">
+                                                {{!-- <a href="/orders/setInvoiceValues/{{order._id}}" id="button-invoice" class="btn btn-success btn-xs"> --}}
                                                     <i class="fa fa-cog"></i> Generate</a>
                                             </td>
                                         </tr>
@@ -89,6 +90,7 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
+                                            <td class="text-left">Option</td>
                                             <td class="text-left">Product</td>
                                             <td class="text-right">Quantity</td>
                                             <td class="text-right">Unit Price</td>
@@ -99,8 +101,12 @@
                                         {{# each order.cart}}
 
                                         <tr>
+                                            <td ><a href="/orders/addSerialToProduct/{{this.oid}}/{{this.product._id}}/{{this.product.name}}/{{this.quantity}}/{{this._id}}">Add Serial Number</a></td>
                                             <td class="text-left">
-                                                <a href="#">{{this.title}}</a>
+                                                <a href="#">{{this.product.name}}</a>
+                                                <p>SN:{{# each this.serial}}
+                                                    {{this}}
+                                                    {{/each}}</p>
                                                 <br>
                                             </td>
                                             <td class="text-right">{{this.quantity}}</td>
@@ -109,19 +115,11 @@
                                         </tr>
                                         {{/each}}
                                         <tr>
-                                            <td colspan="3" class="text-right">Shipping Cost:</td>
+                                            <td colspan="4" class="text-right">Shipping Cost:</td>
                                             <td class="text-right">{{order.shippingCost}}TK</td>
                                         </tr>
-                                        {{!-- <tr>
-                                            <td colspan="3" class="text-right">VAT (20%):</td>
-                                            <td class="text-right">$3.00</td>
-                                        </tr> --}}
-                                        {{!-- <tr>
-                                            <td colspan="3" class="text-right">Sub-Total:</td>
-                                            <td class="text-right">$15.00</td>
-                                        </tr> --}}
                                         <tr>
-                                            <td colspan="3" class="text-right">Total:</td>
+                                            <td colspan="4" class="text-right">Total:</td>
                                             <td class="text-right">{{order.totalAmount}}TK</td>
                                         </tr>
 

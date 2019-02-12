@@ -16,6 +16,7 @@ var ProductSchema = new Schema({
     description: { type: String, default: 'None'},
     shippingInfo: {type:String, default:'None'},
     image: String,
+    weight:  {type:String},
     
     live: { type: Schema.Types.ObjectId, ref: 'Live' },
     
@@ -24,27 +25,13 @@ var ProductSchema = new Schema({
     status: { type: Boolean, required: false },
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
     
-    // pinned: { type: String, required: false },
-    // home: { type: String, required: false },
     
-    // quantity: {
-    //   stock: { type: Number, default: 0},
-    //   storeLive: { type: Number, default: 0 },
-    //   stock_last_update: {type:Date, default:Date.now},
-    //   userID:{ type: Schema.Types.ObjectId, ref: 'users' },
-    // },
-    // serial:{ type: Array},
-    // productPrice: {
-    //     listPrice: { type: Number, default: 0},
-    //     salePrice: { type: Number, default: 0},
-    //     wholeSalePrice: { type: Number, default: 0}
-    // },
     isActive: Boolean,
-    // onSale: Boolean,
+   
     
     created: { type: Date, default: Date.now },
 
-    // reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    
 
 
 });

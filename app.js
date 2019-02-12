@@ -48,6 +48,7 @@ app.use(morgan('dev'));//Morgan to see Routes in shell/command/bash.
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 app.use(methodOverride('_method'));
 // Handlebars middleware
 app.engine("handlebars", handlebars({ defaultLayout: "main" }));
@@ -69,14 +70,11 @@ app.use(session({
   cookie: { maxAge: 180*60*1000 }
 }));
 
-
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(flash());
-
-
 
 app.use(function (req, res, next) {
    Category.find()
@@ -104,6 +102,7 @@ app.use(function(req, res, next){
       next();
   });
 });
+
 app.use(function(req, res, next){
   SubCategory.find({}, function(err, categories){
       if(err) return next(err);
@@ -111,6 +110,7 @@ app.use(function(req, res, next){
       next();
   });
 });
+
 app.use(function(req, res, next){
   Brand.find({}, function(err, docs){
     if(err) return next(err);
