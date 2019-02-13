@@ -25,9 +25,7 @@ var CustomerOrderSchema = new Schema({
     shippingCost:{ type: Number },
     paymentMethod:{ type: String },
     history: { type: Array },
-    salesPerson:{ type: String },
-    entryBy:{ type: String },
-    stockLocation:{ type: String }
+    invoice:{ type: Schema.Types.ObjectId, ref: 'Invoice' }
 
     //     {
     //     date: { type: Date, default: Date.now },

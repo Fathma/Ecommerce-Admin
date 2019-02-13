@@ -1,6 +1,6 @@
 const express = require("express");
 
-const returns = require("../models/return.model");
+// const returns = require("../models/return.model");
 
 // view list of Returns
 exports.showReturnList = (req, res, next) => {

@@ -323,7 +323,7 @@ exports.getProductBySubcatNoSerial = (req, res, next)=>{
   })
 };
 
-
+// adding new serial during edit lot
 exports.editAddNew = (req, res, next) => {
  Inventory.update({_id: req.params.lot_id},
   { 

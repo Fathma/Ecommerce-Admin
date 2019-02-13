@@ -1,11 +1,17 @@
 const express = require("express");
 
-const invoice = require("../models/invoice.model");
+const Invoice = require("../models/invoice.model");
 
 // view list of customers
 exports.showInvoiceList = (req, res, next) => {
-   
-    res.render("invoiceList");
-   
+    
+    Invoice.find({})
+    .populate("user")
+    .populate("order")
+    .exec((err, rs)=>{
+        if(err) res.send(err)
+        console.log(rs);
+        res.render("invoiceList",{ invoices:rs });
+    })
 };
 

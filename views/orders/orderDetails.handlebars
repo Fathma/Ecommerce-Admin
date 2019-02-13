@@ -24,6 +24,10 @@
                                             <td>Order ID:</td>
                                             <td>{{order._id}}</td>
                                         </tr>
+                                         <tr>
+                                            <td>Last Invoice No:</td>
+                                            <td>{{order.invoice}}</td>
+                                        </tr>
                                         <tr>
                                             <td>Invoice No:</td>
                                             <td>
@@ -177,7 +181,7 @@
                                             <option value="Processing">Processing</option>
                                             <option value="Shipped">Shipped</option>
                                             <option value="Delivered">Delivered</option>
-                                            <option value="canceled">canceled</option>
+                                            <option value="canceled">Canceled</option>
                                         </select>
                                     </div>
                                     <div class="form-group">

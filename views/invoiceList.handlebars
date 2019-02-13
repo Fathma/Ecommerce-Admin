@@ -3,9 +3,6 @@
         <a href="#"><b>Invoices</a>
     </div>
 
-   
-
-    {{!-- {{# if products}} --}}
     <div style="background-color: white">
         <table style="width:100%" class="table table-hover">
             <tr>
@@ -13,11 +10,11 @@
                 <th>Invoice Date</th>
                 <th>Order ID</th>
                 <th>Order Date</th>
-                <th>Customer</th>
+                <th>Admin</th>
                 <th>Status</th>
-                <th>total</th>
+                <th>Total</th>
             </tr>
-          
+          {{# each invoices}}
             <tr>
                 <td>
                     <a href="#" data-toggle="tooltip" data-placement="top"
@@ -26,44 +23,38 @@
                         title="Edit" style="padding: 0%" class="btn btn-primary">
                         <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
                     </a>
-                    <strong>001</strong>
+                    <strong>{{this._id}}</strong>
                 </td>
 
                 <td>
-                    <strong>10/01/2019</strong>
+                    <strong>{{this.created}}</strong>
                 </td>
 
                 <td>
-                    <strong>123</strong>
+                    <strong>{{this.order._id}}</strong>
                 </td>
 
                 <td>
-                   <strong>01/01/2019</strong>
+                   <strong>{{this.order.created}}</strong>
                 </td>
 
                 <td>
-                    <strong>Md. Ali</strong>
+                    <strong>{{this.user.name}}</strong>
                 </td>
 
                 <td>
-                    <strong></strong>
+                    <strong>{{this.order.currentStatus}}</strong>
                 </td>
+                
                 <td>
-                    <strong>10,000 TK</strong>
+                    <strong>{{this.order.totalAmount}}TK</strong>
                 </td>
                
             </tr>
-            {{!-- each product --}}
-            {{!-- {{/each}} --}}
+           
+            {{/each}}
         </table>
 
     </div>
-    {{!-- {{ else }} --}}
-    {{!-- <div class="row">
-        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
-        </div>
-    </div> --}}
-    {{!-- {{/if}} --}}
 
 </div>

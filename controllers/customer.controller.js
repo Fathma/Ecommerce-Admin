@@ -1,6 +1,6 @@
 const express = require("express");
 
-const Customerr = require("../models/customer");
+const Customerr = require("../models/userCustomer");
 
 // view list of customers
 exports.viewListOfCustomers = (req, res, next) => {
