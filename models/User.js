@@ -24,8 +24,8 @@ const UserSchema = new Schema({
     default: Date.now
   },
   branch: {
-    type: String,
-    required: true
+    type: String
+   
   }
 });
 

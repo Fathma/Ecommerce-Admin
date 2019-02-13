@@ -29,6 +29,38 @@ exports.saveSerialInOrders = (req, res, next) => {
   );
 };
 
+exports.saveEdit = (req, res, next) => {
+
+  Order.find({_id: req.params.oid},(err, docs)=>{
+    var total =0;
+    docs[0].cart.map((items)=>{
+
+      if(items._id != req.params.item_id){
+        total +=items.price;
+      }
+    })
+    console.log(total)
+    Order.update(
+      { _id: req.params.oid, "cart._id": req.params.item_id },
+      { $set: { 
+        "cart.$.quantity": req.body.quantity, 
+        "cart.$.price":  req.body.quantity *  parseInt(req.body.unitprice),
+        "totalAmount":total + (parseInt(req.body.quantity) * parseInt(req.body.unitprice))
+      } },
+      { upsert: true },
+      (err, rs) => {
+        if (err){
+          res.send(err);
+        } else{
+          res.redirect("/orders/orderDetails/" + req.params.oid);
+        }
+        
+      }
+    );
+  })
+  
+}
+
 // returns the page to add serial to an ordered product
 exports.addSerialToProduct = (req, res, next) => {
   allFuctions.get_orders({ _id: req.params.oid }, rs => {
@@ -45,13 +77,28 @@ exports.addSerialToProduct = (req, res, next) => {
   });
 };
 
+exports.getEditOrderPage = (req, res, next) => {
+ 
+    res.render("orders/editOrder", { 
+      oid: req.params.oid,
+      model: req.params.pid,
+      model_name: req.params.pmodel,
+      unitprice: req.params.unitprice,
+      quantity: req.params.quantity,
+      item_id: req.params.item_id,
+      totalAmount: req.params.total
+     });
+ 
+}
+
 // view list of customers
 exports.showOrderDetails = (req, res, next) => {
   allFuctions.get_orders({ _id: req.params.id }, rs => {
     for (var i = 0; i < rs[0].cart.length; i++) {
       rs[0].cart[i].oid = req.params.id;
+      rs[0].cart[i].totalAmount = rs[0].totalAmount;
     }
-    console.log(rs[0].cart[0].oid);
+    console.log( rs[0].cart[0].totalAmount);
     res.render("orders/orderDetails", { order: rs[0], or_id: req.params.id });
   });
 };

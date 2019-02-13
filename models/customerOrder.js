@@ -27,16 +27,6 @@ var CustomerOrderSchema = new Schema({
     history: { type: Array },
     invoice:{ type: Schema.Types.ObjectId, ref: 'Invoice' }
 
-    //     {
-    //     date: { type: Date, default: Date.now },
-    //     comment: { type: String },
-    //     status: { type: String },
-    //     customerNotified: { type: String }
-    // }
-
-
 });
-
-// CustomerOrderSchema.plugin(mongoosastic);
 
 module.exports = mongoose.model('CustomerOrder', CustomerOrderSchema, 'customerOrders');

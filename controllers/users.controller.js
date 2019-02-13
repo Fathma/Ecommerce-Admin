@@ -35,7 +35,7 @@ exports.login = (req, res, next) => {
 // Register form POST
 exports.userregistration = (req, res, next) => {
   let errors = [];
-
+console.log(req.body.branch);
   if (req.body.password != req.body.password2) {
     errors.push({ text: "Passwords do not match" });
   }
@@ -49,6 +49,7 @@ exports.userregistration = (req, res, next) => {
       errors: errors,
       name: req.body.name,
       email: req.body.email,
+      branch: req.body.branch,
       password: req.body.password,
       password2: req.body.password2,
       role: req.body.role
@@ -63,6 +64,7 @@ exports.userregistration = (req, res, next) => {
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
+          branch: req.body.branch,
           password: req.body.password,
           role: req.body.role
         });
