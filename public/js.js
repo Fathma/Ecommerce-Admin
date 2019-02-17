@@ -1,33 +1,91 @@
+// saving as pdf
 function myFunction() {
-  document.getElementById("buttonID").style.display="none";
-  document.getElementById("footer").style.display="none";
-  
- window.print(
-     
- );
- document.getElementById("footer").style.display="block";
- document.getElementById("buttonID").style.display="block";
+  document.getElementById("buttonID").style.display = "none";
+  document.getElementById("footer").style.display = "none";
+
+  window.print();
+  document.getElementById("footer").style.display = "block";
+  document.getElementById("buttonID").style.display = "block";
 }
 
-// checking during selecting serial number for ordered products
-function set_serial_last(){
-  
-  var product_serial =document.getElementById("Serial");
-  
-  if(document.getElementById("selected").value === "0"){
+// function tableCreate() {
+//   var tbl = document.createElement('table');
+//   tbl.style.width = '100%';
+//   // tbl.setAttribute('border', '1');
+//   var tbdy = document.createElement('tbody');
+//   for (var i = 0; i < 3; i++) {
+//     var tr = document.createElement('tr');
+//     for (var j = 0; j < 2; j++) {
+//     //   if (i == 2 && j == 1) {
+//     //     break
+//     //   } else {
+//         var td = document.createElement('td');
+//         td.innerHTML="sdfjhsdkjfhkjh";
+//         tr.appendChild(td)
+//       // }
+//     }
+//     tbdy.appendChild(tr);
+//   }
+//   tbl.appendChild(tbdy);
+//   document.getElementById("tab").appendChild(tbl)
+// }
+// tableCreate();
 
-  }else{
-    if(product_serial.value === ""){
-        product_serial.value = document.getElementById("selected").value; 
-    }else{
-      if((product_serial.value.split(",")).length === parseInt(document.getElementById("quantity").value)){
+// checking during selecting serial number for ordered products
+function set_serial_last() {
+  var product_serial = document.getElementById("Serial");
+
+  if (document.getElementById("selected").value === "0") {
+  } else {
+    if (product_serial.value === "") {
+      product_serial.value = document.getElementById("selected").value;
+    } else {
+      if (
+        product_serial.value.split(",").length ===
+        parseInt(document.getElementById("quantity").value)
+      ) {
         alert("Quantity of the product is satisfied");
-      }else{
-        product_serial.value = product_serial.value +","+ document.getElementById("selected").value;
+      } else {
+        product_serial.value =
+          product_serial.value +
+          "," +
+          document.getElementById("selected").value;
       }
     }
-    var srr =ArrNoDupe(product_serial.value.split(","));
+    var srr = ArrNoDupe(product_serial.value.split(","));
     product_serial.value = srr;
+  }
+}
+
+// lot edit checking previous serial
+function check_org() {
+  var new_sl = document.getElementById("new_serial").value;
+  var string_data = document.getElementById("pre_all_or_serials").value;
+  var per = string_data.split(",");
+
+  if (per.includes(new_sl)) {
+    document.getElementById("msg_err").value = "exist";
+    document.getElementById("msg").innerHTML = "Already exists!";
+    document.getElementById("msg").style.color = "red";
+  } else {
+    document.getElementById("msg").innerHTML = "No";
+    document.getElementById("msg").innerHTML = "";
+  }
+}
+
+// lot edit checking previous serial
+function check_org_replace() {
+  var new_sl = document.getElementById("replace_serial").value;
+  var string_data = document.getElementById("pre_all_or_serials").value;
+  var per = string_data.split(",");
+
+  if (per.includes(new_sl)) {
+    document.getElementById("msg_err1").value = "exist";
+    document.getElementById("msg1").innerHTML = "Already exists!";
+    document.getElementById("msg1").style.color = "red";
+  } else {
+    document.getElementById("msg1").innerHTML = "No";
+    document.getElementById("msg1").innerHTML = "";
   }
 }
 
@@ -115,15 +173,16 @@ function create_text_fields(i) {
 function set_var() {
   document.getElementById("check").value = "0";
 }
-function check_all_purchase_price(){
+function check_all_purchase_price() {
   // alert(document.getElementById("all_pp").value);
-  var highest_pp= parseInt(document.getElementById("all_pp").value);
-  var input= parseInt(document.getElementById("unit_price").value);
-  
-  if(input < highest_pp){
-    document.getElementById("msg").innerHTML = "Enter a number greater than " + highest_pp;
+  var highest_pp = parseInt(document.getElementById("all_pp").value);
+  var input = parseInt(document.getElementById("unit_price").value);
+
+  if (input < highest_pp) {
+    document.getElementById("msg").innerHTML =
+      "Enter a number greater than " + highest_pp;
     document.getElementById("msg").style.color = "red";
-  }else{
+  } else {
     document.getElementById("msg").innerHTML = "";
   }
 }
@@ -158,39 +217,34 @@ function createtextfields() {
 // change the image on selecting a new image
 function readURL(input) {
   if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-          $('#image')
-              .attr('src', e.target.result)  
-      };
-      reader.readAsDataURL(input.files[0]);
-      readImageFile();
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      $("#image").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(input.files[0]);
+    readImageFile();
   }
 }
 
-
 $(document).ready(function() {
   var doc = new jsPDF();
-var specialElementHandlers = {
-    '#editor': function (element, renderer) {
-        return true;
+  var specialElementHandlers = {
+    "#editor": function(element, renderer) {
+      return true;
     }
-};
+  };
 
-$('#cmd').click(function () {
-    doc.fromHTML($('#content').html(), 15, 15, {
-        'width': 1000,
-            'elementHandlers': specialElementHandlers
+  $("#cmd").click(function() {
+    doc.fromHTML($("#content").html(), 15, 15, {
+      width: 1000,
+      elementHandlers: specialElementHandlers
     });
-    doc.save('sample-file.pdf');
-});
+    doc.save("sample-file.pdf");
+  });
 
-
-
-  // on product model change this function get all the previous serial numbers 
-  // and adds to a hidden textfield 
+  // on product model change this function get all the previous serial numbers
+  // and adds to a hidden textfield
   $("#model").change(function(e) {
-    
     $.get(
       // here model is the product_id
       "/products/check_availablity/" + document.getElementById("model").value,
@@ -201,28 +255,29 @@ $('#cmd').click(function () {
     );
   });
 
-  // // onload
-  // notificationCheck();
+  // onload
+  notificationCheck();
 
-
-  // window.setInterval(function() {
-  //   notificationCheck();
-  // }, 10000);
+  window.setInterval(function() {
+    notificationCheck();
+  }, 10000);
 
   // gets the notifications
   function notificationCheck() {
     $.get("/products/dashboard", {}, function(data_string) {
-    
       if (data_string.count != 0) {
-        document.getElementById("notification").textContent = JSON.stringify( data_string.count);
+        document.getElementById("notification").textContent = JSON.stringify(
+          data_string.count
+        );
       }
-      
-      document.getElementById("lowLive").textContent = JSON.stringify(data_string.quantity);
-     
+
+      document.getElementById("lowLive").textContent = JSON.stringify(
+        data_string.quantity
+      );
+
       if (data_string.quantity === 0) {
         document.getElementById("set_href").href = "#";
       } else {
-        
         document.getElementById("set_href").href = "/products/viewLowLive";
       }
     });
@@ -247,15 +302,13 @@ $('#cmd').click(function () {
       if (
         document.getElementById("check").value === "0" ||
         document.getElementById("check").value !=
-        document.getElementById("quantity").value
+          document.getElementById("quantity").value
       ) {
         createtextfields();
         e.preventDefault();
       } else {
-
         if (data_string === "") {
         } else {
-
           if (
             data_string.split(",").length !=
             ArrNoDupe(data_string.split(",")).length
@@ -290,7 +343,6 @@ $('#cmd').click(function () {
             }
 
             if (exists.length === 0) {
-            
               $.post(
                 "/products/SaveInventory",
                 {
@@ -310,7 +362,7 @@ $('#cmd').click(function () {
             } else {
               alert(exists + "already exists!");
               e.preventDefault();
-            } 
+            }
           }
         }
       }
@@ -345,7 +397,6 @@ $('#cmd').click(function () {
     }
     ddl2.innerHTML = options;
   }
-
 });
 
 // makes an array unique
@@ -353,7 +404,7 @@ function ArrNoDupe(a) {
   var temp = {};
   for (var i = 0; i < a.length; i++) temp[a[i]] = true;
   var r = [];
-  for (var k in temp){
+  for (var k in temp) {
     r.push(k);
   }
   return r;
@@ -361,7 +412,7 @@ function ArrNoDupe(a) {
 
 function checkValidityy() {
   var arr = document.getElementById("serial").value.split(",");
-  alert(arr.length)
+  alert(arr.length);
   var arr2 = ArrNoDupe(arr);
   document.getElementById("serial").value = arr2;
   document.getElementById("quantity").value = arr2.length;
@@ -389,5 +440,3 @@ function set_disable(id) {
     document.getElementById(id).style.color = "#041126";
   }
 }
-
-

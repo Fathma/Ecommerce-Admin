@@ -79,7 +79,7 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 // router.get("/addDiscount/:id/:cid", product_controller.addDiscountpage);
 
 // router.post("/stockEdit/:id", product_controller.getEditStock);
-router.post("/updateInventory", product_controller.updateInventory);
+// router.post("/updateInventory", product_controller.updateInventory);
 
 router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
 
@@ -101,6 +101,10 @@ router.get("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSeri
 // new
 router.post("/saveLive/:id", product_controller.saveLive);
 router.get("/view", product_controller.getAllProducts);
+router.get("/StockLowToHigh", product_controller.StockLowToHigh);
+router.get("/StockHighToLow", product_controller.StockHighToLow);
+
+
 router.get("/newLot", product_controller.newLot);
 router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
 router.post("/SaveInventory", product_controller.saveInventory);

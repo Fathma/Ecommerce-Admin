@@ -22,7 +22,7 @@ var CustomerOrderSchema = new Schema({
     totalAmount: { type: Number },
     currentStatus:{ type: String },
     lastModified:{ type: Date},
-    shippingCost:{ type: Number },
+    shippingCharge:{ type: Number },
     paymentMethod:{ type: String },
     history: { type: Array },
     invoice:{ type: Schema.Types.ObjectId, ref: 'Invoice' }

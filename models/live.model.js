@@ -11,7 +11,8 @@ var LiveSchema = new Schema({
     unitPrice: {type: Number},
     inventory:[{ type: Schema.Types.ObjectId, ref: 'Inventory' }],
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
-    created: { type: Date, default: Date.now }
+    created: { type: Date, default: Date.now },
+    frontQuantity: {type:Number}
 });
 
 module.exports = mongoose.model('Live', LiveSchema, 'lives');

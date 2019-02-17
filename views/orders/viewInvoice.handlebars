@@ -16,33 +16,33 @@
                     <tbody>
                         <tr>
                             <td><b> Order ID:</b></td>
-                            <td>{{order._id}}</td>
+                            <td>{{invoice.order._id}}</td>
                             <td><b>Invoice No:</b></td>
-                            <td>{{invoice}}</td>
+                            <td>{{invoice._id}}</td>
                         </tr>
                         <tr>
                             <td><b>Customer:</b></td>
-                            <td>{{order.user.profile.name}}</td>
+                            <td>{{invoice.order.user.profile.name}}</td>
                             <td><b>Stock Location:</b></td>
-                            <td>{{user.branch}}</td>
+                            <td>{{invoice.user.branch}}</td>
                         </tr>
                         <tr>
                             <td><b>E-Mail:</b></td>
-                            <td>{{order.user.email}}</td>
+                            <td>{{invoice.order.user.email}}</td>
                             <td><b>Sales Person:</b></td>
-                            <td>{{user.name}}</td>
+                            <td>{{invoice.user.name}}</td>
                         </tr>
                         <tr>
                             <td><b>Telephone:</b></td>
-                            <td>{{order.user.contact}}</td>
+                            <td>{{invoice.order.user.contact}}</td>
                             <td><b>Entry By:</b></td>
-                            <td>{{user.name}}</td>
+                            <td>{{invoice.user.name}}</td>
                         </tr>
                         <tr>
                             <td><b>Payment Method:</b></td>
-                            <td>{{order.paymentMethod}}</td>
+                            <td>{{invoice.order.paymentMethod}}</td>
                             <td><b>Address:</b></td>
-                            <td>{{order.address}}</td>
+                            <td>{{invoice.order.user.address}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -61,7 +61,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{# each order.cart}}
+                                {{# each invoice.order.cart}}
 
                                 <tr>
                                     <td>{{this.num}}</td>
@@ -84,11 +84,11 @@
                                 {{/each}}
                                 <tr>
                                     <td colspan="4" class="text-right">Shipping Cost:</td>
-                                    <td class="text-right">{{order.shippingCharge}}TK</td>
+                                    <td class="text-right">{{invoice.order.shippingCharge}}TK</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" class="text-right">Total:</td>
-                                    <td class="text-right">{{order.totalAmount}}TK</td>
+                                    <td class="text-right">{{invoice.order.totalAmount}}TK</td>
                                 </tr>
 
                             </tbody>

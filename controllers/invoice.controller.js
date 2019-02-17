@@ -6,6 +6,7 @@ const Invoice = require("../models/invoice.model");
 exports.showInvoiceList = (req, res, next) => {
     
     Invoice.find({})
+    .sort({ "created": -1 })
     .populate("user")
     .populate("order")
     .exec((err, rs)=>{

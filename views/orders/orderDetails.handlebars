@@ -26,7 +26,7 @@
                                         </tr>
                                         <tr>
                                             <td>Last Invoice No:</td>
-                                            <td>{{order.invoice}}</td>
+                                            <td><a href="/orders/ViewInvoice/{{order.invoice}}">{{order.invoice}}</a></td>
                                         </tr>
                                         <tr>
                                             <td>Invoice No:</td>
@@ -129,7 +129,7 @@
                                         {{/each}}
                                         <tr>
                                             <td colspan="4" class="text-right">Shipping Cost:</td>
-                                            <td class="text-right">{{order.shippingCost}}TK</td>
+                                            <td class="text-right">{{order.shippingCharge}}TK</td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-right">Total:</td>

@@ -45,6 +45,7 @@
                         <div class="well">
                             <h1>Change Purchase Price </h1>
                             <form action="/products/EditPP/{{product.id}}/{{product.product_id._id}}" method="POST">
+                            
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label for="PP">Enter A Serial Number:</label>
@@ -64,7 +65,9 @@
                                 <form action="/products/EditAddOne/{{product.id}}/{{product.product_id._id}}" method="POST">
                                     <div class="form-group">
                                         <label for="new_serial">Enter A Serial Number:</label>
-                                        <input type="text" name="new_serial" class="form-control">
+                                        <input type="text" onblur="check_org()" name="new_serial" id="new_serial" class="form-control">
+                                        <input type="hidden" name="msg_err" id="msg_err" class="form-control">
+                                        <p id="msg"></p>
                                     </div>
                                     <button type="submit" class="btn btn-primary"> Update</button>
                                 </form>
@@ -77,17 +80,21 @@
                             <div class="well">
                                 <h1>Replace a Serial</h1>
                                 <form action="/products/EditReplace/{{product.id}}/{{product.product_id._id}}" method="POST">
+                                
                                     <div class="form-group">
-                                        <label for="new_serial">Enter A Serial Number:</label>
+                                        <label for="new_serial">Select a Previous Serial Number:</label>
                                         <select name="pre_serial">
                                             {{# each product.serial}}
                                             <option value="{{this}}">{{this}}</option>
                                             {{/each}}
                                         </select>
                                     </div>
+
                                     <div class="form-group">
                                         <label for="replace_serial">Enter A Serial Number:</label>
-                                        <input type="text" name="replace_serial" class="form-control">
+                                        <input type="text" name="replace_serial" id="replace_serial" onblur="check_org_replace()" class="form-control">
+                                        <input type="hidden" name="msg_err1" id="msg_err1" class="form-control">
+                                        <p id="msg1"></p>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary"> Update</button>

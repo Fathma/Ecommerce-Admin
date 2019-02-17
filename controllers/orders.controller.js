@@ -30,36 +30,37 @@ exports.saveSerialInOrders = (req, res, next) => {
 };
 
 exports.saveEdit = (req, res, next) => {
+  Order.find({ _id: req.params.oid }, (err, docs) => {
+    // console.log(docs.shippingCharge);
+    var total = 0;
 
-  Order.find({_id: req.params.oid},(err, docs)=>{
-    var total =0;
-    docs[0].cart.map((items)=>{
-
-      if(items._id != req.params.item_id){
-        total +=items.price;
+    docs[0].cart.map(items => {
+      if (items._id != req.params.item_id) {
+        total += items.price;
       }
-    })
-    console.log(total)
+    });
+
     Order.update(
       { _id: req.params.oid, "cart._id": req.params.item_id },
-      { $set: { 
-        "cart.$.quantity": req.body.quantity, 
-        "cart.$.price":  req.body.quantity *  parseInt(req.body.unitprice),
-        "totalAmount":total + (parseInt(req.body.quantity) * parseInt(req.body.unitprice))
-      } },
+      {
+        $set: {
+          "cart.$.quantity": req.body.quantity,
+          "cart.$.price": req.body.quantity * parseInt(req.body.unitprice),
+          totalAmount:
+            total + parseInt(req.body.quantity) * parseInt(req.body.unitprice)
+        }
+      },
       { upsert: true },
       (err, rs) => {
-        if (err){
+        if (err) {
           res.send(err);
-        } else{
+        } else {
           res.redirect("/orders/orderDetails/" + req.params.oid);
         }
-        
       }
     );
-  })
-  
-}
+  });
+};
 
 // returns the page to add serial to an ordered product
 exports.addSerialToProduct = (req, res, next) => {
@@ -78,18 +79,38 @@ exports.addSerialToProduct = (req, res, next) => {
 };
 
 exports.getEditOrderPage = (req, res, next) => {
- 
-    res.render("orders/editOrder", { 
-      oid: req.params.oid,
-      model: req.params.pid,
-      model_name: req.params.pmodel,
-      unitprice: req.params.unitprice,
-      quantity: req.params.quantity,
-      item_id: req.params.item_id,
-      totalAmount: req.params.total
-     });
- 
-}
+  res.render("orders/editOrder", {
+    oid: req.params.oid,
+    model: req.params.pid,
+    model_name: req.params.pmodel,
+    unitprice: req.params.unitprice,
+    quantity: req.params.quantity,
+    item_id: req.params.item_id,
+    totalAmount: req.params.total
+  });
+};
+
+// view list of customers
+exports.ViewInvoice = (req, res, next) => {
+  Invoice.find({ _id: req.params.id })
+    .populate("user")
+    .populate({
+      path: "order",
+      populate: { path: "user" }
+    })
+    .populate({
+      path: "order",
+      populate: { path: "cart.product" }
+    })
+    .exec((err, rs) => {
+      var count = 1;
+      for (var i = 0; i < rs[0].order.cart.length; i++) {
+        rs[0].order.cart[i].num = count;
+        count++;
+      }
+      res.render("orders/viewInvoice", { invoice: rs[0] });
+    });
+};
 
 // view list of customers
 exports.showOrderDetails = (req, res, next) => {
@@ -98,44 +119,45 @@ exports.showOrderDetails = (req, res, next) => {
       rs[0].cart[i].oid = req.params.id;
       rs[0].cart[i].totalAmount = rs[0].totalAmount;
     }
-    console.log( rs[0].cart[0].totalAmount);
+
     res.render("orders/orderDetails", { order: rs[0], or_id: req.params.id });
   });
 };
 
 // view list of customers
 exports.generateInvoice = (req, res, next) => {
-
-  var invoice ={
-    user:req.user._id,
+  var invoice = {
+    user: req.user._id,
     order: req.params.oid
-  }
+  };
 
   new Invoice(invoice).save().then(invoice => {
-    Order.update({ _id: req.params.oid },{$set:{"invoice":invoice._id}}, (err, docs)=>{
-      allFuctions.get_orders({ _id: req.params.oid }, rs => {
-        var count = 1;
-        for (var i = 0; i < rs[0].cart.length; i++) {
-          rs[0].cart[i].num = count;
-          count++;
-        }
-        res.render("orders/invoice", {
-          title: "Invoice",
-          order: rs[0],
-          user: req.user,
-          invoice: invoice._id
+    Order.update(
+      { _id: req.params.oid },
+      { $set: { invoice: invoice._id } },
+      (err, docs) => {
+        allFuctions.get_orders({ _id: req.params.oid }, rs => {
+          var count = 1;
+          for (var i = 0; i < rs[0].cart.length; i++) {
+            rs[0].cart[i].num = count;
+            count++;
+          }
+          res.render("orders/invoice", {
+            title: "Invoice",
+            order: rs[0],
+            user: req.user,
+            invoice: invoice._id
+          });
         });
-      });
-    })
-  })
-
-  
+      }
+    );
+  });
 };
 
 // updateting order history
 exports.updateHistory = (req, res, next) => {
   var status = req.body.status;
-  
+
   if (req.body.notify === "1") {
     var notify = "Yes";
     Email.sendEmail(
@@ -154,8 +176,8 @@ exports.updateHistory = (req, res, next) => {
     status: req.body.status,
     customerNotified: notify
   };
-  
-  if(status === "Delivered"){
+
+  if (status === "Delivered") {
     Order.findOneAndUpdate(
       { _id: req.params.oid },
       {
@@ -167,20 +189,24 @@ exports.updateHistory = (req, res, next) => {
       (err, rs) => {
         if (err) {
           console.log(err);
-        }else{
-          rs.cart.map((item)=>{
-            var arr =item.serial;
-            Live.update({product_id: item.product},{$pull:{serial:{$in:arr}}},(err, rs)=>{
-              if(err){
-                res.send(err)
-              }else{
-                console.log("update")
+        } else {
+          rs.cart.map(item => {
+            var arr = item.serial;
+            Live.update(
+              { product_id: item.product },
+              { $pull: { serial: { $in: arr } } },
+              (err, rs) => {
+                if (err) {
+                  res.send(err);
+                } else {
+                  console.log("update");
+                }
               }
-            })
-          })
+            );
+          });
         }
         res.redirect("/orders/orderDetails/" + req.params.oid);
       }
-    );  
+    );
   }
 };

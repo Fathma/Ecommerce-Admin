@@ -58,9 +58,20 @@ exports.changeStatus = (condition,  object, res, cb) => {
   );
 };
 
+// adds the live and remaining
+exports.get_inventories_total=(docs,cb)=>{
+  var arr=[];
+  docs.map((rs)=>{
+    rs.total = rs.remaining+rs.live;
+    arr.push(rs)
+  })
+  cb(arr);
+}
+
 // orders
 exports.get_orders = (condition, cb)=>{
   Order.find(condition)
+  .sort({ "created": 1 })
   // .populate('cart.product')
   .populate({
       path: "cart.product",
