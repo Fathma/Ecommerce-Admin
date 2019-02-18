@@ -73,7 +73,7 @@
                 <th>Selling Price</th>
                 <th>Offline</th>
                 <th>Live</th>
-                <th>Quantity</th>
+                <th>Total</th>
                 <th>Action</th>
             </tr>
             {{# each products}}
@@ -96,16 +96,32 @@
                     <strong>{{this.product_id.unitPrice}}TK</strong>
                 </td>
                 <td>
+                      {{# if this.original_serial}}
                     <a href="/products/stockEditPage/{{this._id}}/{{this.product_id._id}}"
                         class="btn btn-outline-success">{{this.remaining}}</a>
+                        {{else}}
+                        <a href="/products/stockEditNoSerialPage/{{this._id}}/{{this.product_id._id}}"
+                        class="btn btn-outline-success">{{this.remaining}}</a>
+                        {{/if}}
                 </td>
 
                 <td>
+                    {{# if this.original_serial}}
                     <a href="/products/RestoreLivepage/{{this.live_id._id}}"
                         class="btn btn-outline-success">{{this.live_id.quantity}}</a>
+                    {{else}}
+                        {{!-- <a href="/products/RestoreLiveNoSerialpage/{{this.live_id._id}}" --}}
+                         <a href="/#"
+                    class="btn btn-outline-success">{{this.live_id.quantity}}</a>
+                    {{/if}}
                 </td>
                 <td>
-                    <strong>{{this.total}}</strong>
+                    {{# if this.live_id.quantity}}
+                        <strong>{{this.total}}</strong>
+                    {{else}}
+                    <strong>{{this.remaining}}</strong>
+                    {{/if}}
+                    
                 </td>
                 <td>
                     {{# if this.product_id.isActive}}
@@ -116,8 +132,6 @@
                     <a href="/products/liveStockEdit/{{this._id}}/{{this.product_id._id}}" class="btn btn-default">Edit
                         Live</a>
                 </td>
-                 
-
             </tr> {{/if}} {{/each}}
         </table>
     </div> {{ else }}

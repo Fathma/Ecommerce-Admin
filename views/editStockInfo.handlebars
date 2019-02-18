@@ -10,8 +10,12 @@
                     <div class="row">
                         <div class="well">
                             <form action="/products/stockEdit/{{product.id}}" method="POST">
-                                <input type="hidden" name="pre_all_or_serials" id="pre_all_or_serials" value="{{original_serial}}">
+                               
                                 <input type="hidden" name="pre_all_serials" id="pre_all_serials" value="{{serial_string}}">
+                                <div class="form-group">
+                                    <label for="model">All Serial</label>
+                                    <input type="text" class="form-control" name="pre_all_or_serials" id="pre_all_or_serials" value="{{original_serial}}"  readonly>
+                                </div>
                                 <div class="form-group">
                                     <label for="model">Model</label>
                                     <input type="text" name="model" class="form-control" value="{{product.product_id.model}}"
@@ -65,11 +69,11 @@
                                 <form action="/products/EditAddOne/{{product.id}}/{{product.product_id._id}}" method="POST">
                                     <div class="form-group">
                                         <label for="new_serial">Enter A Serial Number:</label>
-                                        <input type="text" onblur="check_org()" name="new_serial" id="new_serial" class="form-control">
+                                        <input type="text" onkeyup="check_org()" name="new_serial" id="new_serial" class="form-control">
                                         <input type="hidden" name="msg_err" id="msg_err" class="form-control">
                                         <p id="msg"></p>
                                     </div>
-                                    <button type="submit" class="btn btn-primary"> Update</button>
+                                    <button type="submit" onclick="check_org()" class="btn btn-primary"> Update</button>
                                 </form>
                             </div>
                         </div>
@@ -92,12 +96,12 @@
 
                                     <div class="form-group">
                                         <label for="replace_serial">Enter A Serial Number:</label>
-                                        <input type="text" name="replace_serial" id="replace_serial" onblur="check_org_replace()" class="form-control">
+                                        <input type="text" name="replace_serial" id="replace_serial" onkeyup="check_org_replace()" class="form-control">
                                         <input type="hidden" name="msg_err1" id="msg_err1" class="form-control">
                                         <p id="msg1"></p>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary"> Update</button>
+                                    <button type="submit" onclick="check_org_replace()" class="btn btn-primary"> Update</button>
                                 </form>
                             </div>
                         </div>

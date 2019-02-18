@@ -39,13 +39,17 @@ function set_serial_last() {
   } else {
     if (product_serial.value === "") {
       product_serial.value = document.getElementById("selected").value;
+      document.getElementById("new_msg").innerHTML ="You have to select " + document.getElementById("quantity").value;
     } else {
-      if (
-        product_serial.value.split(",").length ===
-        parseInt(document.getElementById("quantity").value)
+      if (product_serial.value.split(",").length === parseInt(document.getElementById("quantity").value)
       ) {
+        document.getElementById("new_msg").innerHTML = "";
         alert("Quantity of the product is satisfied");
-      } else {
+        
+      } 
+      else {
+        document.getElementById("new_msg").innerHTML ="You have to select " + document.getElementById("quantity").value;
+       
         product_serial.value =
           product_serial.value +
           "," +
@@ -59,6 +63,8 @@ function set_serial_last() {
 
 // lot edit checking previous serial
 function check_org() {
+  document.getElementById("msg_err").value = "";
+  document.getElementById("msg").innerHTML = "";
   var new_sl = document.getElementById("new_serial").value;
   var string_data = document.getElementById("pre_all_or_serials").value;
   var per = string_data.split(",");
@@ -68,13 +74,15 @@ function check_org() {
     document.getElementById("msg").innerHTML = "Already exists!";
     document.getElementById("msg").style.color = "red";
   } else {
-    document.getElementById("msg").innerHTML = "No";
+    document.getElementById("msg_err").value = "No";
     document.getElementById("msg").innerHTML = "";
   }
 }
 
 // lot edit checking previous serial
 function check_org_replace() {
+  document.getElementById("msg_err1").value = "";
+  document.getElementById("msg1").innerHTML = "";
   var new_sl = document.getElementById("replace_serial").value;
   var string_data = document.getElementById("pre_all_or_serials").value;
   var per = string_data.split(",");
@@ -84,7 +92,7 @@ function check_org_replace() {
     document.getElementById("msg1").innerHTML = "Already exists!";
     document.getElementById("msg1").style.color = "red";
   } else {
-    document.getElementById("msg1").innerHTML = "No";
+    document.getElementById("msg_err1").value = "No";
     document.getElementById("msg1").innerHTML = "";
   }
 }

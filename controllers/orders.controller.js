@@ -7,10 +7,48 @@ const Invoice = require("../models/invoice.model");
 const Product = require("../models/Product");
 const Order = require("../models/customerOrder");
 const Email = require("../Email/email");
+var async = require('async');
+
+
+exports.s = (req, res, next) => {
+ var data = {
+  
+  "currentStatus": "New Order",
+  "history": [
+     
+  ],
+  "user":  "5c5ac40d6d91a968f880cc43"
+ ,
+  "cart": [
+      {
+          "product": "5c595870d437a91b00386cf3",
+          "quantity": 1,
+          "unitPrice": 12000,
+          "price": 12000
+        
+      }
+  ],
+  "name": "Md. Jihad Hossain",
+  "phone": 1714848867,
+  "address": "14/6 Tareq Vila(2nd Floor), Dhanmondi 4/A, Dhaka-1209, 14/6 Tareq Vila(2nd Floor)",
+  "city": "Dhaka",
+  "division": "Dhaka",
+  "paymentMethod": "Stripe",
+  "paymentId": "ch_1E17JYCuJbLKcHMCmqMaWpys",
+  "shippingCost": 100,
+  "totalAmount": 12000,
+  
+  
+  "__v": 0
+}
+new Order(data).save().then(product => {})
+   
+};
 
 // view list of customers
 exports.showOrdersPage = (req, res, next) => {
   allFuctions.get_orders({}, rs => {
+   
     res.render("orders/orders", { orders: rs });
   });
 };
@@ -23,6 +61,7 @@ exports.saveSerialInOrders = (req, res, next) => {
     { $set: { "cart.$.serial": serials } },
     { upsert: true },
     (err, rs) => {
+      
       if (err) res.send(err);
       res.redirect("/orders/orderDetails/" + req.params.oid);
     }
@@ -119,7 +158,6 @@ exports.showOrderDetails = (req, res, next) => {
       rs[0].cart[i].oid = req.params.id;
       rs[0].cart[i].totalAmount = rs[0].totalAmount;
     }
-
     res.render("orders/orderDetails", { order: rs[0], or_id: req.params.id });
   });
 };
@@ -192,19 +230,54 @@ exports.updateHistory = (req, res, next) => {
         } else {
           rs.cart.map(item => {
             var arr = item.serial;
-            Live.update(
-              { product_id: item.product },
-              { $pull: { serial: { $in: arr } } },
-              (err, rs) => {
-                if (err) {
-                  res.send(err);
-                } else {
-                  console.log("update");
+            console.log(item.serial)
+            if(item.serial.length != 0){
+              console.log("if")
+              Live.update(
+                { product_id: item.product },
+                { $pull: { serial: { $in: arr } }, $inc: {quantity: -arr.length} },
+                (err, rs) => {
+                  if (err) {
+                    res.send(err);
+                  } else {
+                    console.log("update");
+                  }
                 }
-              }
-            );
+              );
+            }else{
+              console.log("else")
+              Live.update(
+                { product_id: item.product },
+                {  $inc: {quantity: -item.quantity} },
+                (err, rs) => {
+                  if (err) {
+                    res.send(err);
+                  } else {
+                    console.log("update");
+                  }
+                }
+              );
+            }
+            
           });
         }
+        res.redirect("/orders/orderDetails/" + req.params.oid);
+      }
+    );
+  }else{
+    Order.findOneAndUpdate(
+      { _id: req.params.oid },
+      {
+        $addToSet: { history: history },
+        currentStatus: status,
+        lastModified: new Date()
+      },
+      { upsert: true },
+      (err, rs) => {
+        if (err) {
+          console.log(err);
+        } 
+      
         res.redirect("/orders/orderDetails/" + req.params.oid);
       }
     );

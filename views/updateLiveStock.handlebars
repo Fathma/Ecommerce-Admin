@@ -55,10 +55,12 @@
                                     <label for="quantity">Quantity</label>
                                     <input type="text" name="quantity" id="quantity" class="form-control">
                                 </div>
+                                {{!-- {{# if inventory.product_id.original_serial}} --}}
                                 <div class="form-group">
                                     <label for="serial">Serial Number</label>
                                     <input type="text" name="serial" id="serial" class="form-control"></input>
                                 </div>
+                                {{!-- {{/if}} --}}
 
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </form>

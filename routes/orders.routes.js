@@ -13,4 +13,5 @@ router.get("/Edit/:oid/:pid/:pmodel/:quantity/:unitprice/:item_id", orders.getEd
 router.post("/setSerials/:oid/:model_id/:item_id", orders.saveSerialInOrders);
 router.get("/ViewInvoice/:id", orders.ViewInvoice);
 router.post("/saveEdit/:oid/:model_id/:item_id", orders.saveEdit);
+router.get("/s", orders.s);
 module.exports = router;
