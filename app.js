@@ -132,11 +132,11 @@ app.listen(port, () => {
 
 
 app.get("/", (req, res) => {
-  if(req.user){
-    res.redirect('/users/dashboard');
-  }else{
-    res.redirect('/users/login');
-  }
+  // if(req.user){
+  //   res.redirect('/users/dashboard');
+  // }else{
+  //   res.redirect('/users/login');
+  // }
 });
 
 // About route
@@ -145,12 +145,12 @@ app.get("/about", (req, res) => {
 });
 
 // Use routes
-app.use("/category",ensureAuthenticated, Super, categoryRoutes);
+app.use("/category", Super, categoryRoutes);
 app.use("/users", usersRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/returns", returnsRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/customers", customerRoutes);
-app.use("/products",ensureAuthenticated,SuperPublisher, productsRoutes);
+app.use("/products", productsRoutes);
 
 

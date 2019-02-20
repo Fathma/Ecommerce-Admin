@@ -2,12 +2,12 @@ const express = require("express");
 
 const allFuctions = require("../functions/allFuctions");
 const Customer = require("../models/userCustomer");
-const Live = require("../models/live.model");
 const Invoice = require("../models/invoice.model");
 const Product = require("../models/Product");
 const Order = require("../models/customerOrder");
 const Email = require("../Email/email");
 var async = require('async');
+const Inventory = require("../models/inventory.model");
 
 
 exports.s = (req, res, next) => {
@@ -240,7 +240,9 @@ exports.updateHistory = (req, res, next) => {
                   if (err) {
                     res.send(err);
                   } else {
-                    console.log("update");
+                    Inventory.update({ product_id: item.product },{$inc:{live:-arr.length}}, (err, rs)=>{
+                      console.log("update");
+                    })
                   }
                 }
               );
@@ -253,7 +255,9 @@ exports.updateHistory = (req, res, next) => {
                   if (err) {
                     res.send(err);
                   } else {
-                    console.log("update");
+                    Inventory.update({ product_id: item.product },{$inc:{live:-item.quantity}}, (err, rs)=>{
+                      console.log("update");
+                    })
                   }
                 }
               );

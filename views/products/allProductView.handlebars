@@ -14,7 +14,6 @@
                             class="btn btn-default">Sort
                             By<span class="caret"></span></button></a>
                     <ul class="dropdown-menu">
-                        {{!-- <li><a href="/products/lowLiveQuantity">sdfsdfsdf</a></li> --}}
                         <li><a href="/products/View">All Products <img
                                     src="https://img.icons8.com/ios/20/000000/open-box.png" class="pull-right"></a></li>
                         <li><a href="/products/Online">Online Products <img
@@ -27,9 +26,11 @@
                         <li><a href="/products/StockLowToHigh">Stock <img
                                     src="https://img.icons8.com/ios/18/000000/positive-dynamic.png"
                                     class="pull-right"></a></li>
-                        <li><a href="/products/StockHighToLow">Stock <img
-                                    src="https://img.icons8.com/ios/18/000000/negative-dynamic.png"
-                                    class="pull-right"></a></li>
+                        <li>
+                            <a href="/products/StockHighToLow">Stock <img src="https://img.icons8.com/ios/18/000000/negative-dynamic.png"
+                                    class="pull-right">
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -73,7 +74,6 @@
                 <th>Selling Price</th>
                 <th>Offline</th>
                 <th>Live</th>
-                <th>Total</th>
                 <th>Action</th>
             </tr>
             {{# each products}}
@@ -107,22 +107,21 @@
 
                 <td>
                     {{# if this.original_serial}}
-                    <a href="/products/RestoreLivepage/{{this.live_id._id}}"
-                        class="btn btn-outline-success">{{this.live_id.quantity}}</a>
+                    <a href="/products/RestoreLivepage/{{this.product_id._id}}"
+                        class="btn btn-outline-success">{{this.product_id.live.quantity}}</a>
                     {{else}}
                         {{!-- <a href="/products/RestoreLiveNoSerialpage/{{this.live_id._id}}" --}}
-                         <a href="/#"
-                    class="btn btn-outline-success">{{this.live_id.quantity}}</a>
+                    <a href="/#" class="btn btn-outline-success">{{this.live_id.quantity}}</a>
                     {{/if}}
                 </td>
-                <td>
+                {{!-- <td>
                     {{# if this.live_id.quantity}}
                         <strong>{{this.total}}</strong>
                     {{else}}
                     <strong>{{this.remaining}}</strong>
                     {{/if}}
                     
-                </td>
+                </td> --}}
                 <td>
                     {{# if this.product_id.isActive}}
                     <a href="/products/unactive/{{this.product_id._id}}" class="btn btn-default ">Offline</a>
@@ -138,9 +137,18 @@
     <div class="row">
         <div>
             <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
-            <p>1. To a add a new lot click the button on the right. <a class="btn btn-success "
-                    href="/products/newLot">New
-                    Lot</a></p>
+            <p>1. To a add a new lot click the button on the right.  <div class="dropdown">
+                <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-success" data-target="hash"
+                    href="hash" aria-expanded="true">New Lot <span class="caret"></span></a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li>
+                        <a href="/products/newLot">With Serial</a>
+                    </li>
+                    <li>
+                        <a href="/products/saveInventoryNoSerialPage">Without Serial</a>
+                    </li>
+                </ul>
+            </div></p>
             <p>2. For new product information entry click the button on the right. <a class="btn btn-success"
                     href="/products/showfields">New Product</a></p>
         </div>

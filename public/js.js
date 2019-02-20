@@ -258,6 +258,7 @@ $(document).ready(function() {
       "/products/check_availablity/" + document.getElementById("model").value,
       {},
       function(data) {
+
         document.getElementById("pre_serial").value = JSON.stringify(data.data);
       }
     );

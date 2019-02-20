@@ -8,13 +8,10 @@ var InventorySchema = new Schema({
     stockQuantity: {type:Number},
     purchasePrice: {type: Number},
     remaining: {type: Number},
-    live:{ type: Number },
-    unitPrice:{type:Number, default:0},
     original_serial:{type:Array},
     serial:{type:Array},
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
-    created: { type: Date, default: Date.now },
-    live_id: { type: Schema.Types.ObjectId, ref: 'Live' },
+    created: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Inventory', InventorySchema, 'inventories');

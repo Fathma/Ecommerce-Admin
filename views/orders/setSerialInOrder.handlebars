@@ -1,6 +1,6 @@
 <div class="box" >
     <div class="register-logo">
-        <a href="#"><b>Add</b>NewLot With Serial</a>
+        <a href="#"><b>Add</b>Serial</a>
     </div>
     <div class="box-body">
 
@@ -22,7 +22,7 @@
                             <input type="text" name="model" id="model" value="{{model_name}}" class="form-control"
                                 required>
                         </div>
-                      
+                      {{# if Serial}}
                          <div class="form-group">
                             <label for="Serial">Serial Numbers</label>
                             <input type="text" name="Serial" id="Serial" class="form-control"
@@ -38,7 +38,7 @@
                                 </select>
                                 <p id="new_msg"></p>
                         </div>
-
+                        {{/if}}
                         <button  type="submit" class="btn btn-primary">Submit</button>
 
                     </form>

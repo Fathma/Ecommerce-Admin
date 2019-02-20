@@ -17,40 +17,40 @@ var ProductSchema = new Schema({
     shippingInfo: {type:String, default:'None'},
     image: String,
     weight:  {type:String},
+    // v1
+    frontQuantity: {type:Number, default:0},
+    live: { 
+        quantity: {type:Number,default:0},
+        serial: {type: Array,default:[]},
+        admin: { type: Schema.Types.ObjectId, ref: 'users' },
+        created: { type: Date, default: Date.now }, 
+    },
     
-    live: { type: Schema.Types.ObjectId, ref: 'Live' },
+    unitPrice: { type: Number , default:0},
+    isActive:{ type: Boolean, default: false },
     
-    unitPrice: { type: Number },
-    isActive:{ type: Boolean, required: false },
     status: { type: Boolean, required: false },
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
     
-    
-    isActive: Boolean,
-   
-    
     created: { type: Date, default: Date.now },
 
-    
-
-
 });
 
 
-ProductSchema
-.virtual('avarageRating')
-.get(function(){
-    var rating = 0;
-    if(this.reviews.length == 0){
-        rating = 0;
-    } else{
-        this.reviews.map((reviw) =>{
-            rating += reviw.rating;
-        });
-        rating = rating / this.reviews.length;
-    }
-    return rating;
-});
+// ProductSchema
+// .virtual('avarageRating')
+// .get(function(){
+//     var rating = 0;
+//     if(this.reviews.length == 0){
+//         rating = 0;
+//     } else{
+//         this.reviews.map((reviw) =>{
+//             rating += reviw.rating;
+//         });
+//         rating = rating / this.reviews.length;
+//     }
+//     return rating;
+// });
 
 
 

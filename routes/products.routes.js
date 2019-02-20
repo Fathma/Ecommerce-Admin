@@ -52,9 +52,9 @@ const storage = new GridFsStorage(
 const upload = multer({ storage });
 
 
-// router.get("/delete/:id", ensureAuthenticated, product_controller.deleteProduct);
-// router.get("/showfields/:cat", ensureAuthenticated, product_controller.showProductRegistrationFields);
-// router.get("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFieldspage);
+// router.get("/delete/:id",  product_controller.deleteProduct);
+// router.get("/showfields/:cat",  product_controller.showProductRegistrationFields);
+// router.get("/showfields",  product_controller.showProductRegistrationFieldspage);
 // router.get("/stock", product_controller.getAllProductStock);
 // router.get("/Sale", product_controller.getSaleProductsPage);
 
@@ -71,6 +71,8 @@ router.post("/EditPP/:lot_id/:pid", product_controller.EditPP);
 
 router.get("/Online", product_controller.getOnlineProductsPage);
 router.get("/offline", product_controller.getOfflineProductsPage);
+
+
 router.get("/active/:id", product_controller.makeActive);
 router.get("/unactive/:id", product_controller.makeNotActive);
 
@@ -90,11 +92,19 @@ router.get("/dashboard", product_controller.lowLiveQuantity);
 router.get("/showDashboard", product_controller.showDashboard);
 router.get("/viewLowLive", product_controller.lowLiveQuantityDetails);
 // router.post("/Discount/:id", product_controller.addDiscount);
-router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
+
+// lot 
 router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
+
+router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
+router.post("/SaveInventory", product_controller.saveInventory);
+
+// live
 router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
+router.post("/saveLive/:id", product_controller.saveLive);
+
 router.get("/RestoreLivepage/:id", product_controller.getRestoreLivepage);
-router.get("/RestoreLiveNoSerialpage/:id", product_controller.RestoreLiveNoSerialpage);
+// router.get("/RestoreLiveNoSerialpage/:id", product_controller.RestoreLiveNoSerialpage);
 
 router.post("/Restore/:id", product_controller.getRestoreLive);
 // router.post("/RestoreNoSerial/:id", product_controller.RestoreNoSerial);
@@ -103,20 +113,19 @@ router.post("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSer
 router.get("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
 router.get("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
 // new
-router.post("/saveLive/:id", product_controller.saveLive);
+
 router.get("/view", product_controller.getAllProducts);
 router.get("/StockLowToHigh", product_controller.StockLowToHigh);
 router.get("/StockHighToLow", product_controller.StockHighToLow);
 
 
 router.get("/newLot", product_controller.newLot);
-router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
-router.post("/SaveInventory", product_controller.saveInventory);
+
 router.get("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.post("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.get("/getProductByCat/:cat", product_controller.getProductByCat);
 router.post("/getProductByCat/:cat", product_controller.getProductByCat);
-router.post("/showfields", ensureAuthenticated, product_controller.showProductRegistrationFields);
+router.post("/showfields",  product_controller.showProductRegistrationFields);
 router.post("/regiSave", upload.single("imagePath"), product_controller.SaveProduct);
 
 // update product information
