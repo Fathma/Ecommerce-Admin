@@ -43,6 +43,6 @@
     "url": "https://github.com/jihaddeveloper/e-commerce"
   },
   "engines": {
-    "node": "8.11.4"
+    "node": "8.x"
   }
 }
