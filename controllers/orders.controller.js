@@ -10,41 +10,6 @@ var async = require('async');
 const Inventory = require("../models/inventory.model");
 
 
-exports.s = (req, res, next) => {
- var data = {
-  
-  "currentStatus": "New Order",
-  "history": [
-     
-  ],
-  "user":  "5c5ac40d6d91a968f880cc43"
- ,
-  "cart": [
-      {
-          "product": "5c595870d437a91b00386cf3",
-          "quantity": 1,
-          "unitPrice": 12000,
-          "price": 12000
-        
-      }
-  ],
-  "name": "Md. Jihad Hossain",
-  "phone": 1714848867,
-  "address": "14/6 Tareq Vila(2nd Floor), Dhanmondi 4/A, Dhaka-1209, 14/6 Tareq Vila(2nd Floor)",
-  "city": "Dhaka",
-  "division": "Dhaka",
-  "paymentMethod": "Stripe",
-  "paymentId": "ch_1E17JYCuJbLKcHMCmqMaWpys",
-  "shippingCost": 100,
-  "totalAmount": 12000,
-  
-  
-  "__v": 0
-}
-new Order(data).save().then(product => {})
-   
-};
-
 // view list of customers
 exports.showOrdersPage = (req, res, next) => {
   allFuctions.get_orders({}, rs => {
@@ -233,32 +198,34 @@ exports.updateHistory = (req, res, next) => {
             console.log(item.serial)
             if(item.serial.length != 0){
               console.log("if")
-              Live.update(
+              Product.update(
                 { product_id: item.product },
-                { $pull: { serial: { $in: arr } }, $inc: {quantity: -arr.length} },
+                { $pull: { "live.serial": { $in: arr } }, $inc: { "live.quantity": -arr.length} },
                 (err, rs) => {
                   if (err) {
                     res.send(err);
-                  } else {
-                    Inventory.update({ product_id: item.product },{$inc:{live:-arr.length}}, (err, rs)=>{
-                      console.log("update");
-                    })
-                  }
+                  } 
+                  // else {
+                  //   Inventory.update({ product_id: item.product },{$inc:{live:-arr.length}}, (err, rs)=>{
+                  //     console.log("update");
+                  //   })
+                  // }
                 }
               );
             }else{
               console.log("else")
               Live.update(
                 { product_id: item.product },
-                {  $inc: {quantity: -item.quantity} },
+                {  $inc: { "live.quantity": -item.quantity} },
                 (err, rs) => {
                   if (err) {
                     res.send(err);
-                  } else {
-                    Inventory.update({ product_id: item.product },{$inc:{live:-item.quantity}}, (err, rs)=>{
-                      console.log("update");
-                    })
                   }
+                  //  else {
+                  //   Inventory.update({ product_id: item.product },{$inc:{live:-item.quantity}}, (err, rs)=>{
+                  //     console.log("update");
+                  //   })
+                  // }
                 }
               );
             }

@@ -45,6 +45,36 @@ const storage = new GridFsStorage(
   });
 const upload = multer({ storage });
 
+function get_total(){
+
+}
+
+exports.productsView =(req, res)=>{
+ 
+ Product.find((err, docs)=>{
+    let arrr= [];
+    docs.map(async (items)=>{
+      console.log("arr");
+      // getting data
+      await Inventory.find({product_id:items._id}, (err, rs)=>{
+         rs.map((inv)=>{
+          if(items.total === undefined){
+            items.total = inv.remaining;
+          }else{
+            items.total += inv.remaining;
+          }
+        })
+      })
+      await arrr.push(items);
+      console.log(arrr.length);
+      // res.render("products/productWiseView",{ products: arr });
+    })
+    console.log(arrr);
+  })
+
+ 
+}
+
 // get low quantity
 exports.lowLiveQuantity=async (req, res, next) => {
   var condition = {"live.quantity":{$lt:3}};
@@ -87,6 +117,22 @@ exports.newLot= (req, res, next) => {
     res.render("addNewLot", {product:rs[0]});
   })
 };
+// get live stock edit page No serial
+exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
+  var arr=[]
+  var rs = await allFuctions.get_inventory_list_new({product_id:req.params.pid},{},"product_id")
+  rs.map((inventory)=>{
+    arr.push(inventory.purchasePrice);
+  })
+  await arr.sort();
+  var docs = await allFuctions.get_inventory_list_new({_id:req.params.id},{},"product_id")
+
+  res.render("updateLiveNoSerial", {
+      title: "Update Live",
+      inventory: docs[0],
+      highest_pp: arr[arr.length-1]
+    });
+};
 
 // get live stock edit page
 exports.getLiveStockEditpage=async (req, res, next) => {
@@ -103,6 +149,15 @@ exports.getLiveStockEditpage=async (req, res, next) => {
       inventory: docs[0],
       highest_pp: arr[arr.length-1]
     });
+};
+
+// get live stock edit page
+exports.RestoreLiveNoserialPage = async (req, res, next) => {
+  let docs = await allFuctions.get_live({_id:req.params.id});
+  res.render("liveToInventoryNoSerial", {
+    title: "Restore live serial",
+    live: docs[0]
+  });
 };
 
 // get live stock edit page
@@ -135,59 +190,7 @@ exports.getRestoreLive =async (req, res, next) => {
     
   })
  
-    res.redirect("/products/RestoreLivepage/"+req.params.id);
-  // // deletes selected serials from live
-  // Product.findOneAndUpdate({_id:req.params.id},{ $pull:{ serial:{ $in:live_serials } } , 
-  //   quantity:parseInt(req.body.live_quantity)-live_serials.length, frontQuantity:parseInt(req.body.live_frontquantity)-live_serials.length },
-  //   (err,docs)=>{
-  //     var inventories = docs.inventory;
-      
-  //     async.eachSeries(inventories, function updateObject (rs, done) {
-  //       console.log(rs)
-  //       Inventory.find({_id: rs}, (err2,inventory)=>{
-  //         live_serials.map((selected_serial)=>{
-  //           if(includes(inventory[0].original_serial, selected_serial)){
-  //             console.log("yes")
-  //             Inventory.update({_id: rs}, { $addToSet:{ "serial":selected_serial}, 
-  //             remaining:inventory[0].remaining + live_serials.length,  live: inventory[0].live - live_serials.length}, (err3,result)=>{
-                
-  //             })
-  //           }
-  //         })
-  //       })
-  //     }, function allDone (err) {
-      
-  //         // this will be called when all the updates are done or an error occurred during the iteration
-  //     });
-  //     res.redirect("/products/RestoreLivepage/"+req.body.liveId);
-  // })
-  
-  // var live_serials=(req.body.serial).split(",");
-  // // deletes selected serials from live
-  // Live.findOneAndUpdate({_id:req.params.id},{ $pull:{ serial:{ $in:live_serials } } , 
-  //   quantity:parseInt(req.body.live_quantity)-live_serials.length, frontQuantity:parseInt(req.body.live_frontquantity)-live_serials.length },
-  //   (err,docs)=>{
-  //     var inventories = docs.inventory;
-      
-  //     async.eachSeries(inventories, function updateObject (rs, done) {
-  //       console.log(rs)
-  //       Inventory.find({_id: rs}, (err2,inventory)=>{
-  //         live_serials.map((selected_serial)=>{
-  //           if(includes(inventory[0].original_serial, selected_serial)){
-  //             console.log("yes")
-  //             Inventory.update({_id: rs}, { $addToSet:{ "serial":selected_serial}, 
-  //             remaining:inventory[0].remaining + live_serials.length,  live: inventory[0].live - live_serials.length}, (err3,result)=>{
-                
-  //             })
-  //           }
-  //         })
-  //       })
-  //     }, function allDone (err) {
-      
-  //         // this will be called when all the updates are done or an error occurred during the iteration
-  //     });
-  //     res.redirect("/products/RestoreLivepage/"+req.body.liveId);
-  // })
+  res.redirect("/products/RestoreLivepage/"+req.params.id);
 };
 
 exports.StockHighToLow= (req, res, next) => {
@@ -272,14 +275,53 @@ exports.makeDisable = (req, res, next) => {
 
 // updateing stock quantity and price of prducts with no serial
 exports.stockEditNoSerial =(req, res, next) => {
+  var pre_Q = parseInt(req.body.pre_all_Q);
+  var quan = parseInt(req.body.quantity);
   var obj ={
     purchasePrice:req.body.purchase_price,
     remaining: req.body.quantity,
     stockQuantity :req.body.quantity
   }
-  Inventory.update({_id:req.params.lot},{$set:obj}, (err, docs)=>{
-    res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
-  })
+  if(quan >pre_Q){
+    quantity = quan-pre_Q;
+    var new_s=[]
+    for( var i=0; i<quantity; i++ ){
+      new_s.push(mongoose.Types.ObjectId())
+    }
+    
+    Inventory.update({_id:req.params.lot},{ $addToSet: { serial: { $each: new_s }, original_serial: { $each: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
+      if(err){
+        res.send(err)
+      }else{
+        res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
+      }
+    
+    })
+  }
+  if(quan <pre_Q){
+    quantity = pre_Q-quan;
+    var new_s=[]
+    Inventory.find({_id:req.params.lot},(eer, rs)=>{
+      for(var i=0; i<quantity; i++){
+        new_s.push(rs[0].serial[i]);
+       
+      }
+      console.log(new_s);
+      Inventory.update({_id:req.params.lot},{ $pull: { serial: { $in: new_s }, original_serial: { $in: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
+      if(err){
+        res.send(err)
+      }else{
+        res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
+      }
+    
+    })
+    })
+   
+    
+    
+  }
+ 
+  
 }
 
 // returns Edit stock page
@@ -553,12 +595,20 @@ exports.saveLive =async (req, res, next) => {
 
 // get lot without serial page
 exports.saveInventoryNoSerial= (req, res, next) => {
+  var quantity = parseInt(req.body.quantity);
+  var serials= [];
+  for(var i=0; i<quantity; i++){
+    serials.push(mongoose.Types.ObjectId())
+  }
   var inventory = {
-    product_id:req.body.model,
-    stockQuantity:req.body.quantity,
+    product_id: req.body.model,
+    stockQuantity: req.body.quantity,
     purchasePrice: req.body.purchase_price,
     remaining: req.body.quantity,
     admin: req.user._id,
+    original_serial: serials,
+    serial: serials,
+    warranted:false
   }
  
   new Inventory(inventory).save().then(inventory => {
@@ -592,6 +642,7 @@ exports.saveInventory = (req, res, next) => {
       serial: serials,
       original_serial:serials,
       admin: req.user._id,
+      warranted: true,
     }
    
     new Inventory(inventory).save().then(inventory => {

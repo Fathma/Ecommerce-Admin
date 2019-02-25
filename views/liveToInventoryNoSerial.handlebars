@@ -10,11 +10,11 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="well">
-                            <h4>Select Serial numbers</h4>
+                            <h4>Select Serial numbers No Serial</h4>
                             <div class="btn-group-vertical">
-                                {{# each live.serial}}
-                                <a class="btn" type="button" id="serial{{@index}}" onclick="set_disable(this.id)" class="btn btn-secondary">
-                                    {{this}}
+                                {{# each live.live.serial}}
+                                <a class="btn" type="button" id="serial{{@index}}" onclick="set_disableNoSerial(this.id)" class="btn btn-secondary">
+                                    {{this.serial}}
                                 </a>
                                 {{/each}}
                             </div>
@@ -23,26 +23,21 @@
                     <div class="col-sm-8">
 
                         <div class="well">
-                            <form action="/products/RestoreNoSerial/{{live._id}}" method="POST">
+                            <form action="/products/Restore/{{live._id}}" method="POST">
                                 {{!-- {{!-- <input type="hidden" name="all_pp" id="all_pp"  value="{{highest_pp}}"> --}}
-                                <input type="hidden" name="live_quantity" value="{{live.quantity}}"> 
+                                <input type="hidden" name="live_quantity" value="{{live.live.quantity}}"> 
                                 <input type="hidden" name="live_frontquantity" value="{{live.frontQuantity}}"> 
+                                
 
                                 <div class="form-group">
                                     <label for="model">Model</label>
-                                    <input type="text" name="model" class="form-control" value="{{live.product_id.model}}"
+                                    <input type="text" name="model" class="form-control" value="{{live.model}}"
                                         readonly>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="lot_number">Live ID</label>
-                                    <input type="text" name="liveId" class="form-control" value="{{live._id}}"
-                                        readonly>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="new_q">Quatity to Restore</label>
-                                    <input type="text" name="new_q" id="new_q" class="form-control"></input>
+                                    <label for="serial">Serial Number</label>
+                                    <input type="text" name="serial" id="serial" class="form-control"></input>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Update</button>

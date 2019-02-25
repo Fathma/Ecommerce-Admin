@@ -12,6 +12,7 @@
                             <form action="/products/stockEditNoSerial/{{product.id}}/{{product.product_id._id}}" method="POST">
                                
                                 <input type="hidden" name="pre_all_serials" id="pre_all_serials" value="{{serial_string}}">
+                                 <input type="hidden" name="pre_all_Q" id="pre_all_Q" value="{{product.remaining}}">
                                 {{!-- <div class="form-group">
                                     <label for="model">All Serial</label>
                                     <input type="text" class="form-control" name="pre_all_or_serials" id="pre_all_or_serials" value="{{original_serial}}"  readonly>

@@ -44,11 +44,11 @@ mongoose.connect(dbConfig.mongoURI, (err) =>{
 });
 
 //Dev tools
-if (app.get('env') === 'production') {
-  app.use(logger('combined'));
-} else {
-  app.use(logger('dev'));
-}//Morgan to see Routes in shell/command/bash. 
+// if (app.get('env') === 'production') {
+//   app.use(logger('combined'));
+// } else {
+  app.use(morgan('dev'));
+// }//Morgan to see Routes in shell/command/bash. 
 app.use(bodyParser.urlencoded({
   extended: true
 }));

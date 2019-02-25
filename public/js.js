@@ -264,33 +264,34 @@ $(document).ready(function() {
     );
   });
 
-  // onload
-  notificationCheck();
+  // // onload
+  // notificationCheck();
 
-  window.setInterval(function() {
-    notificationCheck();
-  }, 10000);
+  // window.setInterval(function() {
+  //   alert("dfkjh");
+  //   notificationCheck();
+  // }, 10000);
 
-  // gets the notifications
-  function notificationCheck() {
-    $.get("/products/dashboard", {}, function(data_string) {
-      if (data_string.count != 0) {
-        document.getElementById("notification").textContent = JSON.stringify(
-          data_string.count
-        );
-      }
+  // // gets the notifications
+  // function notificationCheck() {
+  //   $.get("/products/dashboard", {}, function(data_string) {
+  //     if (data_string.count != 0) {
+  //       document.getElementById("notification").textContent = JSON.stringify(
+  //         data_string.count
+  //       );
+  //     }
 
-      document.getElementById("lowLive").textContent = JSON.stringify(
-        data_string.quantity
-      );
+  //     document.getElementById("lowLive").textContent = JSON.stringify(
+  //       data_string.quantity
+  //     );
 
-      if (data_string.quantity === 0) {
-        document.getElementById("set_href").href = "#";
-      } else {
-        document.getElementById("set_href").href = "/products/viewLowLive";
-      }
-    });
-  }
+  //     if (data_string.quantity === 0) {
+  //       document.getElementById("set_href").href = "#";
+  //     } else {
+  //       document.getElementById("set_href").href = "/products/viewLowLive";
+  //     }
+  //   });
+  // }
 
   // saving Inventory with serial numbers
   $("form").submit(function(e) {
@@ -432,18 +433,43 @@ function checkValidityy() {
 function set_disable(id) {
   var all = [];
   if (document.getElementById("serial").value != "") {
+
     var val =
       document.getElementById("serial").value +
       "," +
       parseInt(document.getElementById(id).innerHTML);
-
+    
     var values = ArrNoDupe(val.split(","));
 
     document.getElementById("serial").value = values;
     document.getElementById("quantity").value = values.length;
     document.getElementById(id).style.color = "#041126";
-  } else {
+  } 
+  else {
     all.push(parseInt(document.getElementById(id).innerHTML));
+    document.getElementById("serial").value = all[0];
+    document.getElementById("quantity").value = "1";
+    document.getElementById(id).style.color = "#041126";
+  }
+}
+
+function set_disableNoSerial(id) {
+  var all = [];
+  if (document.getElementById("serial").value != "") {
+
+    var val =
+      document.getElementById("serial").value +
+      "," +
+      (document.getElementById(id).innerHTML).trim();
+    
+    var values = ArrNoDupe(val.split(","));
+
+    document.getElementById("serial").value = values;
+    document.getElementById("quantity").value = values.length;
+    document.getElementById(id).style.color = "#041126";
+  } 
+  else {
+    all.push((document.getElementById(id).innerHTML).trim());
     document.getElementById("serial").value = all[0];
     document.getElementById("quantity").value = "1";
     document.getElementById(id).style.color = "#041126";

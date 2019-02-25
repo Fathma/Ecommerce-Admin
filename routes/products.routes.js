@@ -62,6 +62,7 @@ const upload = multer({ storage });
 // router.get("/singleProduct/:id", product_controller.singleProduct);
 
 // serial number
+router.get("/productsView", product_controller.productsView);
 router.get("/Edit/:id", product_controller.getEditpage);
 router.post("/EditAddOne/:lot_id/:pid", product_controller.editAddNew);
 router.post("/EditReplace/:lot_id/:pid", product_controller.EditReplace);
@@ -101,9 +102,11 @@ router.post("/SaveInventory", product_controller.saveInventory);
 
 // live
 router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
+router.get("/liveStockEditNoSerial/:id/:pid", product_controller.getLiveStockEditNoSerialpage);
 router.post("/saveLive/:id", product_controller.saveLive);
 
 router.get("/RestoreLivepage/:id", product_controller.getRestoreLivepage);
+router.get("/RestoreLiveNoserialPage/:id", product_controller.RestoreLiveNoserialPage);
 // router.get("/RestoreLiveNoSerialpage/:id", product_controller.RestoreLiveNoSerialpage);
 
 router.post("/Restore/:id", product_controller.getRestoreLive);
