@@ -22,7 +22,8 @@
                             <input type="text" name="model" id="model" value="{{model_name}}" class="form-control"
                                 required>
                         </div>
-                      {{# if Serial}}
+                        {{!-- {{warranted}}
+                      {{# if warranted}} --}}
                          <div class="form-group">
                             <label for="Serial">Serial Numbers</label>
                             <input type="text" name="Serial" id="Serial" class="form-control"
@@ -33,12 +34,12 @@
                                 <select id="selected" onchange="set_serial_last()">
                                     <option value="0" selected>select Serial Numbers</option>
                                     {{# each serial}}
-                                    <option value="{{this}}">{{this}}</option>
+                                    <option value="{{this.serial}}">{{this.serial}}</option>
                                     {{/each}}
                                 </select>
                                 <p id="new_msg"></p>
                         </div>
-                        {{/if}}
+                        {{!-- {{/if}} --}}
                         <button  type="submit" class="btn btn-primary">Submit</button>
 
                     </form>

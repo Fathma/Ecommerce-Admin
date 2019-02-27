@@ -44,11 +44,7 @@ exports.get_inventories_total = (docs,cb)=>{
 
 // orders
 exports.get_orders = (condition, cb)=>{
-  var obj ={
-    path: "cart.product",
-    populate: { path: "live" }
-  }
-  Order.find(condition).sort({ "created": 1 }).populate(obj).populate("user").exec((err, rs)=>{ cb(rs); })
+  Order.find(condition).sort({ "created": 1 }).populate("cart.product").populate("user").exec((err, rs)=>{ cb(rs); })
 }
 
 // exports.update_live = async (condition, setvalue) =>{

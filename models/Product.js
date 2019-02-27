@@ -25,7 +25,7 @@ var ProductSchema = new Schema({
         admin: { type: Schema.Types.ObjectId, ref: 'users' },
         created: { type: Date, default: Date.now }, 
     },
-    
+    warranted: { type: Boolean},
     unitPrice: { type: Number , default:0},
     isActive:{ type: Boolean, default: false },
     

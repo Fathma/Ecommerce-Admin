@@ -131,13 +131,13 @@ app.use(function(req, res, next){
 const port = 3000 || process.env.port;
 
 app.listen(port, () => {
-  console.log('The server is live on http://127.0.0.1:5000/');
+  console.log('The server is live on http://127.0.0.1:3000/');
 });
 
 
 app.get("/", (req, res) => {
   // if(req.user){
-  //   res.redirect('/users/dashboard');
+    res.redirect('/users/dashboard');
   // }else{
   //   res.redirect('/users/login');
   // }

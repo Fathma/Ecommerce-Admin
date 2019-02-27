@@ -84,7 +84,7 @@
                             <select class="form-control" name="subCategg" id="subCategg">
                                 <option value="null">select one</option>
                                 {{# each categories}}
-                                <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
+                                <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
                                 {{/each}}
                             </select>
                         </div>
@@ -94,7 +94,7 @@
                             <label for="brandg">Brand<span style="color: red">*</span></label>
                             <select class="form-control" name="brandg" required>
                                 {{# each brand}}
-                                <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
+                                <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
                                 {{/each}}
                             </select>
                             
@@ -115,7 +115,7 @@
                     <input type="hidden" name="sub" value="{{sub}}">
                     <input type="hidden" name="status" value="{{status}}">
                     <input type="hidden" name="cattN" value="{{cattN}}">
-                    <input type="hidden" name="subN" value="{{subN}}">
+                    <input type="text" name="subN" value="{{subN}}">
                     <input type="hidden" name="brandN" value="{{brandN}}">
 
                     <div class="form-group">

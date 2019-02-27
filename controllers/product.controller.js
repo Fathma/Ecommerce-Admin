@@ -286,7 +286,7 @@ exports.stockEditNoSerial =(req, res, next) => {
     quantity = quan-pre_Q;
     var new_s=[]
     for( var i=0; i<quantity; i++ ){
-      new_s.push(mongoose.Types.ObjectId())
+      new_s.push((mongoose.Types.ObjectId()).toString())
     }
     
     Inventory.update({_id:req.params.lot},{ $addToSet: { serial: { $each: new_s }, original_serial: { $each: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
@@ -303,10 +303,9 @@ exports.stockEditNoSerial =(req, res, next) => {
     var new_s=[]
     Inventory.find({_id:req.params.lot},(eer, rs)=>{
       for(var i=0; i<quantity; i++){
-        new_s.push(rs[0].serial[i]);
-       
+        new_s.push((rs[0].serial[i]).toString());
       }
-      console.log(new_s);
+      
       Inventory.update({_id:req.params.lot},{ $pull: { serial: { $in: new_s }, original_serial: { $in: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
       if(err){
         res.send(err)
@@ -316,12 +315,7 @@ exports.stockEditNoSerial =(req, res, next) => {
     
     })
     })
-   
-    
-    
   }
- 
-  
 }
 
 // returns Edit stock page
@@ -432,6 +426,7 @@ exports.EditReplace = (req, res, next)=>{
 // getting product models by Category
 exports.getProductByCat = (req, res, next)=>{
   allFuctions.find({category: req.params.cat},(rs)=>{
+    console.log(rs)
     res.render("addNewLot", {product:rs});
   })
 };
@@ -520,6 +515,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
     {category: category[0]},
     {brand: brand[0]}
   ]
+  console.log(subcategory[1])
 
   if (req.body.subCategg != "0") {
     obj.push({subcategory: subcategory[0]});
@@ -561,6 +557,7 @@ exports.saveLive =async (req, res, next) => {
   var remaining = req.body.remaining;
   var serial_obj = (req.body.serial).split(",");
   var live_serial = [];
+
   serial_obj.map((serial_no)=>{
     var obj = {
       serial: serial_no,
@@ -571,26 +568,15 @@ exports.saveLive =async (req, res, next) => {
   var inc_ob = { frontQuantity: +quantity, "live.quantity": +quantity };
   var set_ob = { unitPrice: unitPrice, "live.admin": req.user._id };
   
-  // without serial
-  if(serial_obj.length === 1 && serial_obj[0] === ""){
-    Product.update({_id: product_id}, { $inc: inc_ob, $set: set_ob }, {upsert:true},(err, docs)=>{
-      Inventory.update({_id:req.body.lot_number},  { "remaining":(parseInt(remaining)-quantity),"unitPrice":unitPrice },{ upsert: true },function(err, docs){
-        if(err){ console.log(err);}
+  Product.update({_id: product_id}, { $addToSet: { "live.serial": live_serial }, $inc: inc_ob, $set: set_ob}, {upsert:true},(err, docs)=>{
+    Inventory.update({_id:req.body.lot_number}, {$pull: { serial: { $in: serial_obj } }, $set:{"remaining":(parseInt(remaining)-quantity)}},
+    { upsert: true },
+        function(err, docs){
+        if(err){ res.send(err);}
         req.flash("success_msg", "Live Product Added");
         res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
-      }) 
-    })
-  // with serial
-  }else{
-    Product.update({_id: product_id}, { $addToSet: { "live.serial": live_serial }, $inc: inc_ob, $set: set_ob}, {upsert:true},(err, docs)=>{
-      Inventory.update({_id:req.body.lot_number}, { $pull: { serial: { $in: serial_obj }}, "remaining":(parseInt(remaining)-quantity),"unitPrice": unitPrice },{ upsert: true },
-          function(err, docs){
-          if(err){ console.log(err);}
-          req.flash("success_msg", "Live Product Added");
-          res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
-      }) 
-    })
-  }
+    }) 
+  })
 };
 
 // get lot without serial page
@@ -598,7 +584,7 @@ exports.saveInventoryNoSerial= (req, res, next) => {
   var quantity = parseInt(req.body.quantity);
   var serials= [];
   for(var i=0; i<quantity; i++){
-    serials.push(mongoose.Types.ObjectId())
+    serials.push((mongoose.Types.ObjectId()).toString())
   }
   var inventory = {
     product_id: req.body.model,
@@ -608,12 +594,14 @@ exports.saveInventoryNoSerial= (req, res, next) => {
     admin: req.user._id,
     original_serial: serials,
     serial: serials,
-    warranted:false
+    
   }
- 
-  new Inventory(inventory).save().then(inventory => {
-    res.redirect("/products/saveInventoryNoSerialPage");
-  });
+  Product.update({_id:req.body.model}, { $set:{ warranted: false } },{ upsert:true }, (err, rs)=>{
+    new Inventory(inventory).save().then(inventory => {
+      res.redirect("/products/saveInventoryNoSerialPage");
+    });
+  })
+  
 };
 
 exports.check_availablity= (req, res, next) => {
@@ -641,13 +629,18 @@ exports.saveInventory = (req, res, next) => {
       remaining: req.body.quantity,
       serial: serials,
       original_serial:serials,
-      admin: req.user._id,
-      warranted: true,
+      admin: req.user._id
     }
-   
-    new Inventory(inventory).save().then(inventory => {
-        res.json({})
-    });
+    Product.update({_id:req.body.model}, { $set:{ warranted: true } },{ upsert:true }, (err, rs)=>{
+      if(err){
+        console.log((err))
+      }else{
+        new Inventory(inventory).save().then(inventory => {
+          res.json({})
+        });
+      }
+    })
+    
 };
 
 //saves product details
@@ -829,6 +822,7 @@ exports.SaveProduct= (req, res, next) => {
     })
   })           
   pro.then(() => {
+    console.log(req.body.subN)
     var newProduct = {
       name: req.body.title,
       category: selected_category,
@@ -841,7 +835,7 @@ exports.SaveProduct= (req, res, next) => {
       shippingInfo: req.body.shippingInfo,
       features: data,
       categoryName: req.body.cattN,
-      subcategoryName:  req.body.subN,
+      subcategoryName: req.body.subN,
       brandName: req.body.brandN,
       weight: req.body.weight,
       

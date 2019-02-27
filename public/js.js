@@ -389,6 +389,7 @@ $(document).ready(function() {
       },
       function(data) {
         configureDropDownL(document.getElementById("subCategg"), data);
+    
       }
     );
   });
@@ -400,9 +401,9 @@ $(document).ready(function() {
     for (i = 0; i < data[0].subCategories.length; i++) {
       options +=
         "<option onClick='getAllSerials()'value=\"" +
-        data[0].subCategories[i]._id +
+        data[0].subCategories[i]._id +","+ data[0].subCategories[i].name+
         '">' +
-        data[0].subCategories[i].name +
+        data[0].subCategories[i].name
         "</>";
     }
     ddl2.innerHTML = options;
