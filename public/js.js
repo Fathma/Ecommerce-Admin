@@ -264,34 +264,34 @@ $(document).ready(function() {
     );
   });
 
-  // // onload
-  // notificationCheck();
+  // onload
+  notificationCheck();
 
-  // window.setInterval(function() {
-  //   alert("dfkjh");
-  //   notificationCheck();
-  // }, 10000);
+  window.setInterval(function() {
+    alert("dfkjh");
+    notificationCheck();
+  }, 10000);
 
-  // // gets the notifications
-  // function notificationCheck() {
-  //   $.get("/products/dashboard", {}, function(data_string) {
-  //     if (data_string.count != 0) {
-  //       document.getElementById("notification").textContent = JSON.stringify(
-  //         data_string.count
-  //       );
-  //     }
+  // gets the notifications
+  function notificationCheck() {
+    $.get("/products/dashboard", {}, function(data_string) {
+      if (data_string.count != 0) {
+        document.getElementById("notification").textContent = JSON.stringify(
+          data_string.count
+        );
+      }
 
-  //     document.getElementById("lowLive").textContent = JSON.stringify(
-  //       data_string.quantity
-  //     );
+      document.getElementById("lowLive").textContent = JSON.stringify(
+        data_string.quantity
+      );
 
-  //     if (data_string.quantity === 0) {
-  //       document.getElementById("set_href").href = "#";
-  //     } else {
-  //       document.getElementById("set_href").href = "/products/viewLowLive";
-  //     }
-  //   });
-  // }
+      if (data_string.quantity === 0) {
+        document.getElementById("set_href").href = "#";
+      } else {
+        document.getElementById("set_href").href = "/products/viewLowLive";
+      }
+    });
+  }
 
   // saving Inventory with serial numbers
   $("form").submit(function(e) {
