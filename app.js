@@ -128,7 +128,7 @@ app.use(function(req, res, next){
 });
 
 //Port For the Application
-const port = 3000 || process.env.port;
+const port = process.env.PORT || 3000  ;
 
 app.listen(port, () => {
   console.log('The server is live on http://127.0.0.1:3000/');
