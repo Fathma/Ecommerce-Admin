@@ -268,7 +268,7 @@ $(document).ready(function() {
   notificationCheck();
 
   window.setInterval(function() {
-    alert("dfkjh");
+   
     notificationCheck();
   }, 10000);
 
