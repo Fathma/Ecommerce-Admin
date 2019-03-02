@@ -14,7 +14,8 @@ exports.addCategory = (req, res, next) => {
   var category = {
     name: req.body.cat,
     subCategories: [],
-    brands: []
+    brands: [],
+    givenCategory: req.body.cat
   };
   new Cat(category).save().then(category => {});
   res.redirect("/category/Entry");

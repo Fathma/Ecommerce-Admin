@@ -526,8 +526,7 @@ exports.saveLive =async (req, res, next) => {
   
   Product.update({_id: product_id}, { $addToSet: { "live.serial": live_serial }, $inc: inc_ob, $set: set_ob}, {upsert:true},(err, docs)=>{
     Inventory.update({_id:req.body.lot_number}, {$pull: { serial: { $in: serial_obj } }, $set:{"remaining":(parseInt(remaining)-quantity)}},
-    { upsert: true },
-        function(err, docs){
+    { upsert: true },function(err, docs){
         if(err){ res.send(err);}
         req.flash("success_msg", "Live Product Added");
         res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
@@ -549,15 +548,13 @@ exports.saveInventoryNoSerial= (req, res, next) => {
     remaining: req.body.quantity,
     admin: req.user._id,
     original_serial: serials,
-    serial: serials,
-    
+    serial: serials
   }
   Product.update({_id:req.body.model}, { $set:{ warranted: false } },{ upsert:true }, (err, rs)=>{
     new Inventory(inventory).save().then(inventory => {
       res.redirect("/products/saveInventoryNoSerialPage");
     });
   })
-  
 };
 
 exports.check_availablity= (req, res, next) => {
@@ -573,7 +570,7 @@ exports.check_availablity= (req, res, next) => {
       }
     })
     res.json({data:pre_arr});
-})
+  })
 }
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
