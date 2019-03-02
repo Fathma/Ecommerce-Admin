@@ -381,17 +381,19 @@ $(document).ready(function() {
 
   // creating subcategory on the basis of selected category
   $("#categg").change(function() {
-    var cat_id = document.getElementById("categg").value.split(",");
-    $.get(
-      "/category/getSub/" + cat_id[0],
-      {
-        cat_id: cat_id
-      },
-      function(data) {
-        configureDropDownL(document.getElementById("subCategg"), data);
-    
-      }
-    );
+    if(document.getElementById("categg").value != null){
+      var cat_id = document.getElementById("categg").value.split(",");
+      $.get(
+        "/category/getSub/" + cat_id[0],
+        {
+          cat_id: cat_id
+        },
+        function(data) {
+          configureDropDownL(document.getElementById("subCategg"), data);
+      
+        }
+      );
+    }
   });
 
   // creates dropdown

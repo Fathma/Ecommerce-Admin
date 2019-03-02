@@ -45,39 +45,9 @@ const storage = new GridFsStorage(
   });
 const upload = multer({ storage });
 
-function get_total(){
-
-}
-
-exports.productsView =(req, res)=>{
- 
- Product.find((err, docs)=>{
-    let arrr= [];
-    docs.map(async (items)=>{
-      console.log("arr");
-      // getting data
-      await Inventory.find({product_id:items._id}, (err, rs)=>{
-         rs.map((inv)=>{
-          if(items.total === undefined){
-            items.total = inv.remaining;
-          }else{
-            items.total += inv.remaining;
-          }
-        })
-      })
-      await arrr.push(items);
-      console.log(arrr.length);
-      // res.render("products/productWiseView",{ products: arr });
-    })
-    console.log(arrr);
-  })
-
- 
-}
-
-// get low quantity
+// get low quantity for notification
 exports.lowLiveQuantity=async (req, res, next) => {
-  var condition = {"live.quantity":{$lt:3}};
+  var condition = {"live.quantity":{$lt:3}, isActive: true};
   let docs = await allFuctions.get_live(condition);
   var count=0;
   if(docs.length != 0){ count++; }
@@ -86,29 +56,28 @@ exports.lowLiveQuantity=async (req, res, next) => {
 
 // get low quantity details
 exports.lowLiveQuantityDetails= (req, res, next) => {
-  // allFuctions.get_all_inventory_list({"live.quantity":{$lt:3}},{},(docs)=>{
-    Inventory.find().populate({path:"product_id", match:{"live.quantity":{$lt:3}}}).populate("admin").exec((err, rs)=>{ 
-      res.render("products/allProductView", {
-        title: "All Product",
-        products: rs
-      });
+  Inventory.find().populate({path:"product_id", match:{"live.quantity":{$lt:3}}}).populate("admin").exec((err, rs)=>{ 
+    res.render("products/allProductView", {
+      title: "All Product",
+      products: rs
+    });
   })
 };
 
-// get lot without serial page
+// get dashboard 
 exports.showDashboard =async (req, res, next) => {
-  let docs = await allFuctions.get_live({"live.quantity":{$lt:3}});
+  let docs = await allFuctions.get_live({"live.quantity":{$lt:3}, isActive: true});
   res.render("dashboard",{lowlive:docs.length, data: docs});
-};
-
-// get lot without serial page
-exports.saveInventoryNoSerialPage= (req, res, next) => {
-  res.render("addNewLotNoSerial");
 };
 
 // get Registration page
 exports.showProductRegistrationFieldspage= (req, res, next) => {
   res.render("products/reg");
+};
+
+// get lot without serial page
+exports.saveInventoryNoSerialPage= (req, res, next) => {
+  res.render("addNewLotNoSerial");
 };
 
 // get new lot page
@@ -117,6 +86,7 @@ exports.newLot= (req, res, next) => {
     res.render("addNewLot", {product:rs[0]});
   })
 };
+
 // get live stock edit page No serial
 exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
   var arr=[]
@@ -176,7 +146,6 @@ exports.getRestoreLive =async (req, res, next) => {
   var live_serials=(req.body.serial).split(",");
   var product_update_serial = []
   await Product.findOne({_id:req.params.id}, async (err, docs)=>{
-
     await docs.live.serial.map((obj)=>{
       live_serials.map(async (selected)=>{
         if(obj.serial === selected){
@@ -187,12 +156,12 @@ exports.getRestoreLive =async (req, res, next) => {
         }
       })
     })
-    
   })
  
   res.redirect("/products/RestoreLivepage/"+req.params.id);
 };
 
+// get inventory list high to low
 exports.StockHighToLow= (req, res, next) => {
   allFuctions.get_all_inventory_list({},{ "remaining": -1 }, (docs)=>{
     allFuctions.get_inventories_total(docs, (result)=>{
@@ -202,9 +171,9 @@ exports.StockHighToLow= (req, res, next) => {
       });
     })
   })
-  
 };
 
+// get inventory list low to high
 exports.StockLowToHigh= (req, res, next) => {
   allFuctions.get_all_inventory_list({},{ "remaining": 1 }, (docs)=>{
     allFuctions.get_inventories_total(docs, (result)=>{
@@ -216,11 +185,9 @@ exports.StockLowToHigh= (req, res, next) => {
   })
 };
 
-
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
-   
     allFuctions.get_inventories_total(docs, (result)=>{
       res.render("products/allProductView", {
         title: "All Product",
@@ -282,38 +249,36 @@ exports.stockEditNoSerial =(req, res, next) => {
     remaining: req.body.quantity,
     stockQuantity :req.body.quantity
   }
-  if(quan >pre_Q){
+  if( quan > pre_Q ){
     quantity = quan-pre_Q;
     var new_s=[]
     for( var i=0; i<quantity; i++ ){
       new_s.push((mongoose.Types.ObjectId()).toString())
     }
     
-    Inventory.update({_id:req.params.lot},{ $addToSet: { serial: { $each: new_s }, original_serial: { $each: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
+    Inventory.update({ _id: req.params.lot },{ $addToSet: { serial: { $each: new_s }, original_serial: { $each: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
       if(err){
         res.send(err)
       }else{
         res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
       }
-    
     })
   }
-  if(quan <pre_Q){
+  if( quan < pre_Q ){
     quantity = pre_Q-quan;
     var new_s=[]
-    Inventory.find({_id:req.params.lot},(eer, rs)=>{
+    Inventory.find({ _id: req.params.lot },(eer, rs)=>{
       for(var i=0; i<quantity; i++){
         new_s.push((rs[0].serial[i]).toString());
       }
       
       Inventory.update({_id:req.params.lot},{ $pull: { serial: { $in: new_s }, original_serial: { $in: new_s }},$set:obj },{upsert:true}, (err, docs)=>{
-      if(err){
-        res.send(err)
-      }else{
-        res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
-      }
-    
-    })
+        if(err){
+          res.send(err)
+        }else{
+          res.redirect("/products/stockEditNoSerialPage/"+req.params.lot+"/"+req.params.pid);
+        }
+      })
     })
   }
 }
@@ -329,14 +294,11 @@ exports.stockEditNoSerialPage =async (req, res, next) => {
   } catch (error) {
     res.send(error)
   }
-
 };
 
 // returns Edit stock page
 exports.getEditStockPage =async (req, res, next) => {
- let docs = await allFuctions.get_inventory_list_new({ _id: req.params.lot_id }, {}, "product_id")
-
-  // allFuctions.get_inventory_list({ _id: req.params.lot_id }, {}, "product_id", (docs)=>{
+  let docs = await allFuctions.get_inventory_list_new({ _id: req.params.lot_id }, {}, "product_id")
   var serial_string="";
   for(var i=0; i<docs[0].serial.length; i++){
     serial_string += docs[0].serial[i];
@@ -344,9 +306,7 @@ exports.getEditStockPage =async (req, res, next) => {
       serial_string += ",";
     }
   }
-  let rs = await  allFuctions.get_inventory_list_new({product_id: req.params.pid }, {}, "product_id")
-    // allFuctions.get_inventory_list({product_id: req.params.pid }, {}, "product_id", (rs)=>{
-      
+  let rs = await  allFuctions.get_inventory_list_new({product_id: req.params.pid }, {}, "product_id") 
   var all_serials = "";
   rs.map((lot)=>{
     if(lot._id === req.params.lot_id){}
@@ -365,20 +325,17 @@ exports.getEditStockPage =async (req, res, next) => {
     serial_string: serial_string,
     original_serial:all_serials,
   });
-    // })
-  // })
 };
 
+// edit Purchase Price of inventory with serial
 exports.EditPP = (req, res, next)=>{
-  Inventory.update({_id: req.params.lot_id },
-    {$set:{purchasePrice: req.body.PP}
-   }, {upsert:true}, (err,rs)=>{
+  Inventory.update({ _id: req.params.lot_id },{ $set:{ purchasePrice: req.body.PP } }, { upsert: true }, (err,rs)=>{
     if(err){
       res.send(err);
     }else{
       res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
     }
-   })
+  })
 }
 
 // Delete One serial
@@ -389,13 +346,13 @@ exports.EditDelete = (req, res, next)=>{
         original_serial: req.body.pre_serial_del, 
         serial:req.body.pre_serial_del
       },
-      $inc:{ remaining:-1 } }, {upsert:true}, (err,rs)=>{
+      $inc:{ remaining:-1 } }, { upsert:true }, (err,rs)=>{
       if(err){
         res.send(err);
       }else{
         res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
       }
-   })
+  })
 }
 
 // replace one serial number from inventory
@@ -515,7 +472,6 @@ exports.showProductRegistrationFields = (req, res, next) => {
     {category: category[0]},
     {brand: brand[0]}
   ]
-  console.log(subcategory[1])
 
   if (req.body.subCategg != "0") {
     obj.push({subcategory: subcategory[0]});
@@ -622,25 +578,24 @@ exports.check_availablity= (req, res, next) => {
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
   var serials= (req.body.serial).split(",");
-    var inventory = {
-      product_id:req.body.model,
-      stockQuantity:req.body.quantity,
-      purchasePrice: req.body.purchase_price,
-      remaining: req.body.quantity,
-      serial: serials,
-      original_serial:serials,
-      admin: req.user._id
+  var inventory = {
+    product_id:req.body.model,
+    stockQuantity:req.body.quantity,
+    purchasePrice: req.body.purchase_price,
+    remaining: req.body.quantity,
+    serial: serials,
+    original_serial:serials,
+    admin: req.user._id
+  }
+  Product.update({_id:req.body.model}, { $set:{ warranted: true } },{ upsert:true }, (err, rs)=>{
+    if(err){
+      console.log((err))
+    }else{
+      new Inventory(inventory).save().then(inventory => {
+        res.json({})
+      });
     }
-    Product.update({_id:req.body.model}, { $set:{ warranted: true } },{ upsert:true }, (err, rs)=>{
-      if(err){
-        console.log((err))
-      }else{
-        new Inventory(inventory).save().then(inventory => {
-          res.json({})
-        });
-      }
-    })
-    
+  }) 
 };
 
 //saves product details
@@ -878,6 +833,30 @@ exports.SaveProduct= (req, res, next) => {
     res.redirect("/category/Entry");
   }
 };
+
+// Product wise view
+exports.productsView =(req, res)=>{
+  Product.find((err, docs)=>{
+     let arrr= [];
+     docs.map(async (items)=>{
+       console.log("arr");
+       // getting data
+       await Inventory.find({product_id:items._id}, (err, rs)=>{
+          rs.map((inv)=>{
+           if(items.total === undefined){
+             items.total = inv.remaining;
+           }else{
+             items.total += inv.remaining;
+           }
+         })
+       })
+       await arrr.push(items);
+       console.log(arrr.length);
+       // res.render("products/productWiseView",{ products: arr });
+     })
+     console.log(arrr);
+   })
+ }
 // 892
 // // single product view
 // exports.singleProduct = (req, res) => {
