@@ -63,7 +63,7 @@
                         {{#if user}}
                         <li class="nav-item">
                             <a id="dLabel" data-toggle="dropdown" data-target="hash" href="hash" aria-expanded="true">
-                                <img src="https://img.icons8.com/ios/20/ffffff/appointment-reminders.png"><span id="notification"></span></a>
+                                <img src="https://img.icons8.com/ios/20/ffffff/appointment-reminders-filled.png"><span id="notification"></span></a>
                             <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
                                 <li>
                                     <a id="set_href">Low Live<span name="lowLive" id="lowLive" style="padding: 5%; color:red"></span></a>
@@ -72,7 +72,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="/users/register" class="nav-link">User Registration</a>
+                            <a href="/users/register" class="nav-link"><img src="https://img.icons8.com/ios/20/ffffff/add-user-group-man-man-filled.png"></a>
                         </li>
 
                         <li class="nav-item">
@@ -113,7 +113,7 @@
                 {{#if user}}
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class="active treeview">
+                    <li class="treeview">
                         <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                             <span class="pull-right-container">
@@ -126,7 +126,7 @@
                     </li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-cubes"></i>
                             <span>Product</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -141,7 +141,7 @@
 
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-shopping-cart"></i>
                             <span>Sales</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -161,7 +161,7 @@
                     </li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-pie-chart"></i>
                             <span>Reports</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -181,7 +181,7 @@
                     </li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-folder"></i>
+                            <i class="fa fa-users"></i>
                             <span>Customers' Information</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -194,7 +194,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="treeview">
+                    {{!-- <li class="treeview">
                         <a href="#">
                             <i class="fa fa-folder"></i>
                             <span>Payment Methods</span>
@@ -210,7 +210,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
                 {{else}}
                 <h4 style="color:lightskyblue">Please Log in first to Get Access</h4>
