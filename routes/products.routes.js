@@ -62,6 +62,7 @@ const upload = multer({ storage });
 // router.get("/singleProduct/:id", product_controller.singleProduct);
 
 // serial number
+router.get("/stockInfo/:id", product_controller.stockInfo);
 router.get("/productsView", product_controller.productsView);
 router.get("/Edit/:id", product_controller.getEditpage);
 router.post("/EditAddOne/:lot_id/:pid", product_controller.editAddNew);

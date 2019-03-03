@@ -108,6 +108,7 @@ exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
 exports.getLiveStockEditpage=async (req, res, next) => {
   var arr=[]
   var rs = await allFuctions.get_inventory_list_new({product_id:req.params.pid},{},"product_id")
+  console.log(rs.product_id)
   rs.map((inventory)=>{
     arr.push(inventory.purchasePrice);
   })
@@ -188,8 +189,10 @@ exports.StockLowToHigh= (req, res, next) => {
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
+    docs.total_stock = 0;
     docs.map((inventory)=>{
       var count=0;
+      
       inventory.product_id.live.serial.map((serial)=>{
         if((inventory._id).toString() === (serial.inventory).toString()){
           count++;
@@ -197,12 +200,31 @@ exports.getAllProducts = (req, res, next) => {
       })
       inventory.count=count;
     })
-    
+   
     res.render("products/allProductView", {
       title: "All Product",
       products: docs
     });
   })
+};
+
+// 
+exports.stockInfo = (req, res, next) => {
+ 
+    Product.findOne({ _id: req.params.id },(err, docs)=>{
+      docs.invtry = [];
+      docs.total_stock = 0;
+      docs.total = docs.live.quantity;
+      Inventory.find({ product_id: req.params.id }, (err2, inv)=>{
+        inv.map((inven)=>{
+          docs.invtry.push(inven);
+          docs.total_stock +=inven.remaining;
+          docs.total += inven.remaining;
+        })
+
+       res.render("viewSerial", {product:docs})
+      })
+    })
 };
 
 // returns Edit page from product info
