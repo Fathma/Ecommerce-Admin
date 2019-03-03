@@ -188,13 +188,20 @@ exports.StockLowToHigh= (req, res, next) => {
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
-    allFuctions.get_inventories_total(docs, (result)=>{
-      console.log(result)
-      res.render("products/allProductView", {
-        title: "All Product",
-        products: result
-      });
+    docs.map((inventory)=>{
+      var count=0;
+      inventory.product_id.live.serial.map((serial)=>{
+        if((inventory._id).toString() === (serial.inventory).toString()){
+          count++;
+        }
+      })
+      inventory.count=count;
     })
+    
+    res.render("products/allProductView", {
+      title: "All Product",
+      products: docs
+    });
   })
 };
 
