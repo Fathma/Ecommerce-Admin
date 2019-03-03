@@ -136,11 +136,11 @@ app.listen(port, () => {
 
 
 app.get("/", (req, res) => {
-  // if(req.user){
-    res.redirect('/users/dashboard');
-  // }else{
-  //   res.redirect('/users/login');
-  // }
+  if(req.user){
+    res.redirect('/products/showDashboard');
+  }else{
+    res.redirect('/users/login');
+  }
 });
 
 // About route
