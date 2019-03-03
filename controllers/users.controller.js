@@ -26,7 +26,7 @@ exports.getDashbash = (req, res, next) => {
 exports.login = (req, res, next) => {
   
   passport.authenticate("local", {
-    successRedirect: "/users/dashboard",
+    successRedirect: "/products/showDashboard",
     failureRedirect: "/users/login",
     failureFlash: true
   })(req, res, next);
