@@ -189,6 +189,7 @@ exports.StockLowToHigh= (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
     allFuctions.get_inventories_total(docs, (result)=>{
+      console.log(result)
       res.render("products/allProductView", {
         title: "All Product",
         products: result

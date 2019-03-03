@@ -96,10 +96,11 @@
                     <strong>{{this.product_id.unitPrice}}TK</strong>
                 </td>
                 <td>
-                      {{# if this.warranted}}
+                    
+                      {{# if this.product_id.warranted}}
                     <a href="/products/stockEditPage/{{this._id}}/{{this.product_id._id}}"
                         class="btn btn-outline-success">{{this.remaining}}</a>
-                        {{else}}
+                         {{else}}
                         <a href="/products/stockEditNoSerialPage/{{this._id}}/{{this.product_id._id}}"
                         class="btn btn-outline-success">{{this.remaining}}</a>
                         {{/if}}
