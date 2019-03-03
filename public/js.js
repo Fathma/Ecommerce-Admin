@@ -119,7 +119,7 @@ function setvisible() {
     input.id = "v" + nums;
     input.name = "v" + nums;
     input.type = "text";
-    input.required = true;
+    // input.required = true;
     input.className = "form-control";
 
     div.appendChild(input1);

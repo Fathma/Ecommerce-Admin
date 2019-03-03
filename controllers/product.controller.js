@@ -479,7 +479,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
   }else{
     var sub="null";
   }
- 
+  
   Feature.find({$and:obj},function(err, docs1) {
     var render_obj ={
       title: "Registration",
@@ -497,7 +497,7 @@ exports.showProductRegistrationFields = (req, res, next) => {
       render_obj.status ="notexist";
      
     }else{
-      render_obj.num = 0;
+      render_obj.num =  docs1[0].feature.length;
       render_obj.status ="exist";
       render_obj.features = docs1[0].feature;
     }
@@ -551,9 +551,13 @@ exports.saveInventoryNoSerial= (req, res, next) => {
     serial: serials
   }
   Product.update({_id:req.body.model}, { $set:{ warranted: false } },{ upsert:true }, (err, rs)=>{
-    new Inventory(inventory).save().then(inventory => {
-      res.redirect("/products/saveInventoryNoSerialPage");
-    });
+    if(err){
+      console.log(err)
+    }else{
+      new Inventory(inventory).save().then(inventory => {
+        res.redirect("/products/saveInventoryNoSerialPage");
+      });
+    }
   })
 };
 
@@ -610,9 +614,11 @@ exports.SaveProduct= (req, res, next) => {
       {category:selected_category},
       {brand:selected_brand}
     ] ;
+    console.log(num)
     // getting previously added feature and corresponding values
     if (num > 0) {
       if(req.body.feature0_value === ""){}else{
+        
         data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
       }
       if (num > 1) {
@@ -725,38 +731,66 @@ exports.SaveProduct= (req, res, next) => {
     } 
   })
   pro.then(()=>{
+
     // getting newly added features and updating to feature collection and the feature 
     // and value is being stored in data[] whic will be added in product collection
     if(req.body.new_feat > 0){
-      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_1 + "\",\"value\":\"" + req.body.v1 + "\"}"));
-      features_new.push(req.body.new_feat_1);
+      if(req.body.new_feat_1 === "" || req.body.v1 === ''){}else{
+       
+        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_1 + "\",\"value\":\"" + req.body.v1 + "\"}"));
+        features_new.push(req.body.new_feat_1);
+      }
+     
         if(req.body.new_feat > 1){
-          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_2 + "\",\"value\":\"" + req.body.v2 + "\"}"));
-          features_new.push(req.body.new_feat_2);
+          if(req.body.new_feat_2 === "" || req.body.v2 === ""){}else{
+            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_2 + "\",\"value\":\"" + req.body.v2 + "\"}"));
+            features_new.push(req.body.new_feat_2);
+          }
+         
           if(req.body.new_feat > 2){
-            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_3 + "\",\"value\":\"" + req.body.v3 + "\"}"));
-            features_new.push(req.body.new_feat_3);
+            if(req.body.new_feat_3 === "" || req.body.v3 === ""){}else{
+              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_3 + "\",\"value\":\"" + req.body.v3 + "\"}"));
+              features_new.push(req.body.new_feat_3);
+            }
+           
             if(req.body.new_feat > 3){
-              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_4 + "\",\"value\":\"" + req.body.v4 + "\"}"));
-              features_new.push(req.body.new_feat_4);
+              if(req.body.new_feat_4 === "" || req.body.v4 === ""){}else{
+                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_4 + "\",\"value\":\"" + req.body.v4 + "\"}"));
+                features_new.push(req.body.new_feat_4);
+              }
+              
               if(req.body.new_feat > 4){
-                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_5 + "\",\"value\":\"" + req.body.v5 + "\"}"));
-                features_new.push(req.body.new_feat_5);
+                if(req.body.new_feat_5 === "" || req.body.v5 === ""){}else{
+                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_5 + "\",\"value\":\"" + req.body.v5 + "\"}"));
+                  features_new.push(req.body.new_feat_5);
+                }
                 if(req.body.new_feat > 5){
-                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_6 + "\",\"value\":\"" + req.body.v6 + "\"}"));
-                  features_new.push(req.body.new_feat_6);
+                  if(req.body.new_feat_6 === "" || req.body.v6 === ""){}else{
+                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_6 + "\",\"value\":\"" + req.body.v6 + "\"}"));
+                    features_new.push(req.body.new_feat_6);
+                  }
+                  
                   if(req.body.new_feat > 6){
-                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_7 + "\",\"value\":\"" + req.body.v7 + "\"}"));
-                    features_new.push(req.body.new_feat_7);
+                    if(req.body.new_feat_7 === "" || req.body.v7 === ""){}else{
+                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_7 + "\",\"value\":\"" + req.body.v7 + "\"}"));
+                      features_new.push(req.body.new_feat_7);
+                    }
+                   
                     if(req.body.new_feat > 7){
-                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_8 + "\",\"value\":\"" + req.body.v8 + "\"}"));
-                      features_new.push(req.body.new_feat_8);
+                      if(req.body.new_feat_8 === "" || req.body.v8 === ""){}else{
+                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_8 + "\",\"value\":\"" + req.body.v8 + "\"}"));
+                        features_new.push(req.body.new_feat_8);
+                      }
                       if(req.body.new_feat > 8){
-                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_9 + "\",\"value\":\"" + req.body.v9 + "\"}"));
-                        features_new.push(req.body.new_feat_9);
+                        if(req.body.new_feat_9 === "" || req.body.v9 === ""){}else{
+                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_9 + "\",\"value\":\"" + req.body.v9 + "\"}"));
+                          features_new.push(req.body.new_feat_9);
+                        }
                         if(req.body.new_feat > 9){
-                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
-                          features_new.push(req.body.new_feat_10);                                     
+                          if(req.body.new_feat_10 === "" || req.body.v10 === "" ){}else{
+                            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
+                            features_new.push(req.body.new_feat_10);  
+                          }                                  
                       }
                     }
                   }
@@ -767,6 +801,7 @@ exports.SaveProduct= (req, res, next) => {
         }
       }
     }
+   
   }) 
   pro.then(() => {
     Feature.update({$and:obj},{ $addToSet:{ "feature": { $each: features_new }}},{ upsert: true },function(err, docs){
@@ -774,7 +809,7 @@ exports.SaveProduct= (req, res, next) => {
     })
   })           
   pro.then(() => {
-    console.log(req.body.subN)
+    console.log(data)
     var newProduct = {
       name: req.body.title,
       category: selected_category,
@@ -790,7 +825,6 @@ exports.SaveProduct= (req, res, next) => {
       subcategoryName: req.body.subN,
       brandName: req.body.brandN,
       weight: req.body.weight,
-      
     };
     
     if( req.body.sub === "null" ){}
