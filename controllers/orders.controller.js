@@ -164,11 +164,7 @@ exports.generateInvoice = (req, res, next) => {
 
 // updateting order history
 exports.updateHistory = (req, res, next) => {
- 
-
-
-
-                var status = req.body.status;
+  var status = req.body.status;
 
   if (req.body.notify === "1") {
     var notify = "Yes";
@@ -200,25 +196,25 @@ exports.updateHistory = (req, res, next) => {
         Order.populate(rs2, "cart.product", (err1, rs) => {
 
           if (status === "Delivered") {
+           
             rs.cart.map(item => {
-              if (item.product.warranted) {
+             
+              if (item.product.warranted ) {
                 var arr = item.serial;
-              
                 Product.findOne({ _id: item.product._id }, async (err, docs)=>{
                   var all = [];
-                  console.log(arr)
+                  console.log(err)
                   await arr.map((selected)=>{
                     docs.live.serial.map((obj)=>{
                       console.log(obj)
                       if(obj.serial === selected){
-                        
                         all.push(obj)
                         console.log(all)
                       }
                     })
                   })
-                  console.log(all)
-                  await Product.update( { _id: item.product._id }, { $pull: { "live.serial": { $in: all } }, $inc: { "live.quantity": -arr.length} },{upsert: true},
+                  console.log(docs.live.quantity-item.quantity);
+                  await Product.update( { _id: item.product._id }, { $pull: { "live.serial": { $in: all } }, $set: { "live.quantity": docs.live.quantity-item.quantity} },{upsert: true},
                     (err, rs) => {
                       if (err) {
                         res.send(err);
@@ -228,9 +224,9 @@ exports.updateHistory = (req, res, next) => {
                     }
                   );
                 })
-
               } 
               else {
+              
                 var all = [];
                 Product.findOne(
                   { _id: item.product._id },

@@ -119,15 +119,6 @@
                         class="btn btn-outline-success">{{this.product_id.live.quantity}} </a>
                     {{/if}}
                 </td>
-
-                {{!-- <td>
-                    {{# if this.live_id.quantity}}
-                        <strong>{{this.total}}</strong>
-                    {{else}}
-                    <strong>{{this.remaining}}</strong>
-                    {{/if}}
-                    
-                </td> --}}
                 <td>
                     {{# if this.product_id.isActive}}
                     <a href="/products/unactive/{{this.product_id._id}}" class="btn btn-default ">Offline</a>
