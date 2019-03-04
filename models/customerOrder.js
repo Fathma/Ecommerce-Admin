@@ -11,8 +11,7 @@ var CustomerOrderSchema = new Schema({
         unitPrice: { type: Number },
         price:{ type: Number },
         serial:{type:Array}
-    }
-    ],
+    }],
     name: { type: String },
     phone: { type: Number },
     address: { type: String },

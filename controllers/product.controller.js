@@ -165,29 +165,66 @@ exports.getRestoreLive =async (req, res, next) => {
 // get inventory list high to low
 exports.StockHighToLow= (req, res, next) => {
   allFuctions.get_all_inventory_list({},{ "remaining": -1 }, (docs)=>{
-    allFuctions.get_inventories_total(docs, (result)=>{
+    docs.total_stock = 0;
+    docs.map((inventory)=>{
+      if(inventory.product_id){
+        var count=0;
+        inventory.product_id.live.serial.map((serial)=>{
+          if((inventory._id).toString() === (serial.inventory).toString()){
+            count++;
+          }
+        })
+        inventory.count=count;
+      }
+    })
       res.render("products/allProductView", {
         title: "All Product",
-        products: result
+        products: docs
       });
-    })
+    
   })
 };
 
 // get inventory list low to high
 exports.StockLowToHigh= (req, res, next) => {
   allFuctions.get_all_inventory_list({},{ "remaining": 1 }, (docs)=>{
-    allFuctions.get_inventories_total(docs, (result)=>{
+    docs.total_stock = 0;
+    docs.map((inventory)=>{
+      if(inventory.product_id){
+        var count=0;
+        inventory.product_id.live.serial.map((serial)=>{
+          if((inventory._id).toString() === (serial.inventory).toString()){
+            count++;
+          }
+        })
+        inventory.count=count;
+      }
+    })
       res.render("products/allProductView", {
         title: "All Product",
-        products: result
+        products: docs
       });
-    })
+  
   })
 };
 
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
+  // Inventory.find( )
+  // .populate({
+  //   path:"product_id",
+  //   match: { "model": { $regex: /77/i } }
+  // })
+  // .exec((err, docs)=>{
+  //   docs.map((items)=>{
+    
+  //     if(items.product_id != null){
+  //       console.log(items.product_id.model)
+  //     }
+  //   })
+   
+  // })
+  
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
    
     docs.total_stock = 0;
@@ -470,13 +507,24 @@ exports.getOnlineProductsPage =async (req, res, next) => {
     match: { isActive:true }
   };
 
-  let rs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
+  let docs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
   
-  allFuctions.get_inventories_total(rs, (result)=>{
+  docs.total_stock = 0;
+    docs.map((inventory)=>{
+      if(inventory.product_id){
+        var count=0;
+        inventory.product_id.live.serial.map((serial)=>{
+          if((inventory._id).toString() === (serial.inventory).toString()){
+            count++;
+          }
+        })
+        inventory.count=count;
+      }
+    })
     res.render("products/allProductView", {
       title: "Offline Products",
-      products: result
-    });
+      products: docs
+    
   })
 };
 
@@ -486,13 +534,25 @@ exports.getOfflineProductsPage =async (req, res, next) => {
     path:"product_id",
     match: { isActive:false }
   };
-  let rs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
-  allFuctions.get_inventories_total(rs, (result)=>{
+  let docs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
+  docs.total_stock = 0;
+    docs.map((inventory)=>{
+      if(inventory.product_id){
+        var count=0;
+        inventory.product_id.live.serial.map((serial)=>{
+          if((inventory._id).toString() === (serial.inventory).toString()){
+            count++;
+          }
+        })
+        inventory.count=count;
+      }
+    })
+  
     res.render("products/allProductView", {
       title: "Offline Products",
-      products: result
+      products: docs
     });
-  })
+ 
 };
 
 // shows the number of fields user wants

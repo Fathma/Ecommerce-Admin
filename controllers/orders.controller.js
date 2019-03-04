@@ -194,12 +194,9 @@ exports.updateHistory = (req, res, next) => {
       } 
       else {
         Order.populate(rs2, "cart.product", (err1, rs) => {
-
           if (status === "Delivered") {
-           
             rs.cart.map(item => {
-             
-              if (item.product.warranted ) {
+              if (item.product.warranted) {
                 var arr = item.serial;
                 Product.findOne({ _id: item.product._id }, async (err, docs)=>{
                   var all = [];
@@ -226,7 +223,6 @@ exports.updateHistory = (req, res, next) => {
                 })
               } 
               else {
-              
                 var all = [];
                 Product.findOne(
                   { _id: item.product._id },
@@ -238,7 +234,7 @@ exports.updateHistory = (req, res, next) => {
                       { _id: item.product._id },
                       {
                         $pull: { "live.serial": { $in: all } },
-                        $inc: { "live.quantity": -item.quantity }
+                        $set: { "live.quantity": docs.live.quantity-item.quantity} 
                       },
                       { upsert: true },
                       (err, rs) => {
