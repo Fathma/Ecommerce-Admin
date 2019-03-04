@@ -87,6 +87,8 @@ exports.newLot= (req, res, next) => {
   })
 };
 
+
+
 // get live stock edit page No serial
 exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
   var arr=[]
@@ -158,7 +160,6 @@ exports.getRestoreLive =async (req, res, next) => {
       })
     })
   })
- 
   res.redirect("/products/RestoreLivepage/"+req.params.id);
 };
 
@@ -208,22 +209,56 @@ exports.StockLowToHigh= (req, res, next) => {
   })
 };
 
+exports.getSearchResult = (req, res)=>{
+   var search =  new RegExp(req.body.searchData, "i")
+   var data =[];
+   Inventory.find( )
+  .populate({
+    path:"product_id",
+    match: { 
+      $or:[
+      {"title": { $regex: search }} ,
+      {"model": { $regex: search }} ,
+      {"description": { $regex: search }},
+      {"warranty": { $regex: search }},
+      {"weight": { $regex: search }},
+      {"features.value": { $regex: search }}
+    ]
+  }})
+  .exec((err, docs)=>{
+    if(docs){
+      docs.map((items)=>{
+    
+        if(items.product_id != null){
+          data.push(items);
+        }
+      })
+      data.total_stock = 0;
+      data.map((inventory)=>{
+        if(inventory.product_id){
+          var count=0;
+          inventory.product_id.live.serial.map((serial)=>{
+            if((inventory._id).toString() === (serial.inventory).toString()){
+              count++;
+            }
+          })
+          inventory.count=count;
+        }
+      })
+     
+      res.render("products/allProductView", {
+        title: "All Product",
+        products: data
+      });
+    }
+    
+   
+  })
+}
+
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
-  // Inventory.find( )
-  // .populate({
-  //   path:"product_id",
-  //   match: { "model": { $regex: /77/i } }
-  // })
-  // .exec((err, docs)=>{
-  //   docs.map((items)=>{
-    
-  //     if(items.product_id != null){
-  //       console.log(items.product_id.model)
-  //     }
-  //   })
-   
-  // })
+  
   
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
    

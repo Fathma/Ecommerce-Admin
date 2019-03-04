@@ -85,6 +85,7 @@ router.get("/unactive/:id", product_controller.makeNotActive);
 // router.post("/stockEdit/:id", product_controller.getEditStock);
 // router.post("/updateInventory", product_controller.updateInventory);
 
+router.post("/search", product_controller.getSearchResult);
 router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
 router.get("/stockEditNoSerialPage/:lot/:pid", product_controller.stockEditNoSerialPage);
 router.post("/stockEditNoSerial/:lot/:pid", product_controller.stockEditNoSerial);
