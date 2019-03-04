@@ -32,24 +32,34 @@ exports.changeStatus = (condition,  object, res, cb) => {
   );
 };
 
+exports.get_allProduct_page= (res, docs , title)=>{
+  res.render("products/allProductView", {
+    title: title,
+    products: docs
+  });
+}
+
 // adds the live and remaining
-exports.get_inventories_total = (docs,cb)=>{
-  var arr=[];
-  docs.map((rs)=>{
-    rs.total = rs.remaining+rs.live;
-    arr.push(rs)
+exports.live_wise_inventory = (docs,cb)=>{
+  docs.total_stock = 0;
+  docs.map((inventory)=>{
+    if(inventory.product_id){
+      var count=0;
+      inventory.product_id.live.serial.map((serial)=>{
+        if((inventory._id).toString() === (serial.inventory).toString()){
+          count++;
+        }
+      })
+      inventory.count=count;
+    }
   })
-  cb(arr);
+  cb(docs)
 }
 
 // orders
 exports.get_orders = (condition, cb)=>{
   Order.find(condition).sort({ "created": 1 }).populate("cart.product").populate("user").exec((err, rs)=>{ cb(rs); })
 }
-
-// exports.update_live = async (condition, setvalue) =>{
-//   return await Product.update(condition, setvalue , {upsert:true})
-// }
 
 // function for getting live data
 exports.get_live = async (condition)=>{

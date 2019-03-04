@@ -35,9 +35,35 @@
                 </li>
             </ul>
         </div>
+        <div  class="col-sm-1">
+             <div class="dropdown">
+                        <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-sm btn-default" data-target="hash"
+                            href="hash" aria-expanded="true">Select A Category <span class="caret"></span></a>
+                        <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                            {{# each S_categories}}
+                            {{# if this.subCategories}}
+                            <li class="dropdown-submenu pull-right1">
+                                <a tabindex="-1" href="/products/getProductByCat_filter/{{this._id}}">{{this.name}}</a>
+                                <ul class="dropdown-menu">
+                                    {{# each this.subCategories}}
+                                    <li>
+                                        <a href="/products/getProductBySubcat_filter/{{id}}">{{name}}</a>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                            {{else}}
+                            <li>
+                                <a href="/products/getProductByCat_filter/{{this._id}}">{{this.name}}</a>
+                            </li>
+                            {{/if}}
+                            {{/each}}
+                        </ul>
+                    </div>
+        </div>
        
 
-        <div class="col-sm-10">
+        <div class="col-sm-9">
             <div class="dropdown pull-right">
                 <a id="dLabel" role="button" data-toggle="dropdown" class=" btn btn-success" data-target="hash"
                     href="hash" aria-expanded="true">New Lot <span class="caret"></span></a>
@@ -84,7 +110,7 @@
             <tr>
                 <td>
                     <a href="/products/Edit/{{this.product_id._id}}" data-toggle="tooltip" data-placement="top"
-                        title="Edit" style="padding: 0%" class="btn btn-primary">
+                        title="Edit Product" style="padding: 0%" class="btn btn-primary">
                         <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
                     </a>
                     <a href="/products/stockInfo/{{this.product_id._id}}"><strong>{{this.product_id.model}}</strong></a>
@@ -102,10 +128,10 @@
 
                     {{# if this.product_id.warranted}}
                     <a href="/products/stockEditPage/{{this._id}}/{{this.product_id._id}}"
-                        class="btn btn-outline-success">{{this.remaining}}</a>
+                        class="btn btn-outline-success" data-toggle="tooltip" title="Edit Inventory">{{this.remaining}}</a>
                     {{else}}
                     <a href="/products/stockEditNoSerialPage/{{this._id}}/{{this.product_id._id}}"
-                        class="btn btn-outline-success">{{this.remaining}}</a>
+                        class="btn btn-outline-success" data-toggle="tooltip" title="Edit Inventory">{{this.remaining}}</a>
                     {{/if}}
                 </td>
                 <td>
@@ -114,11 +140,11 @@
                 <td>
                     {{# if this.product_id.warranted}}
                     <a href="/products/RestoreLivepage/{{this.product_id._id}}"
-                        class="btn btn-outline-success">{{this.product_id.live.quantity}}</a>
+                        class="btn btn-outline-success" data-toggle="tooltip" title="Back to Inventory">{{this.product_id.live.quantity}}</a>
                     {{else}}
                     {{!-- <a href="/products/RestoreLiveNoSerialpage/{{this.live_id._id}}" --}}
                     <a href="/products/RestoreLiveNoserialPage/{{this.product_id._id}}"
-                        class="btn btn-outline-success">{{this.product_id.live.quantity}} </a>
+                        class="btn btn-outline-success" data-toggle="tooltip" title="Back to Inventory">{{this.product_id.live.quantity}} </a>
                     {{/if}}
                 </td>
                 <td>

@@ -51,19 +51,19 @@ const storage = new GridFsStorage(
   });
 const upload = multer({ storage });
 
-
+// general
+router.get("/dashboard", product_controller.lowLiveQuantity);
+router.get("/showDashboard", product_controller.showDashboard);
 // router.get("/delete/:id",  product_controller.deleteProduct);
 // router.get("/showfields/:cat",  product_controller.showProductRegistrationFields);
 // router.get("/showfields",  product_controller.showProductRegistrationFieldspage);
 // router.get("/stock", product_controller.getAllProductStock);
 // router.get("/Sale", product_controller.getSaleProductsPage);
 
-
 // router.get("/singleProduct/:id", product_controller.singleProduct);
 
 // serial number
 router.get("/stockInfo/:id", product_controller.stockInfo);
-router.get("/productsView", product_controller.productsView);
 router.get("/Edit/:id", product_controller.getEditpage);
 router.post("/EditAddOne/:lot_id/:pid", product_controller.editAddNew);
 router.post("/EditReplace/:lot_id/:pid", product_controller.EditReplace);
@@ -91,8 +91,8 @@ router.get("/stockEditNoSerialPage/:lot/:pid", product_controller.stockEditNoSer
 router.post("/stockEditNoSerial/:lot/:pid", product_controller.stockEditNoSerial);
 
 router.get("/check_availablity/:model", product_controller.check_availablity);
-router.get("/dashboard", product_controller.lowLiveQuantity);
-router.get("/showDashboard", product_controller.showDashboard);
+
+
 router.get("/viewLowLive", product_controller.lowLiveQuantityDetails);
 // router.post("/Discount/:id", product_controller.addDiscount);
 
@@ -123,9 +123,9 @@ router.get("/view", product_controller.getAllProducts);
 router.get("/StockLowToHigh", product_controller.StockLowToHigh);
 router.get("/StockHighToLow", product_controller.StockHighToLow);
 
-
+router.get("/getProductByCat_filter/:cat", product_controller.getProductByCat_filter);
 router.get("/newLot", product_controller.newLot);
-
+router.get("/getProductBySubcat_filter/:sub_cat", product_controller.getProductBySub_filter);
 router.get("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.post("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.get("/getProductByCat/:cat", product_controller.getProductByCat);

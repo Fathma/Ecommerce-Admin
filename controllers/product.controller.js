@@ -57,10 +57,7 @@ exports.lowLiveQuantity=async (req, res, next) => {
 // get low quantity details
 exports.lowLiveQuantityDetails= (req, res, next) => {
   Inventory.find().populate({path:"product_id", match:{"live.quantity":{$lt:3}}}).populate("admin").exec((err, rs)=>{ 
-    res.render("products/allProductView", {
-      title: "All Product",
-      products: rs
-    });
+    allFuctions.get_allProduct_page(res, rs, "Inventories")
   })
 };
 
@@ -87,8 +84,6 @@ exports.newLot= (req, res, next) => {
   })
 };
 
-
-
 // get live stock edit page No serial
 exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
   var arr=[]
@@ -110,7 +105,7 @@ exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
 exports.getLiveStockEditpage=async (req, res, next) => {
   var arr=[]
   var rs = await allFuctions.get_inventory_list_new({product_id:req.params.pid},{},"product_id")
-  console.log(rs.product_id)
+ 
   rs.map((inventory)=>{
     arr.push(inventory.purchasePrice);
   })
@@ -141,8 +136,6 @@ exports.getRestoreLivepage = async (req, res, next) => {
     live: docs[0]
   });
 };
-
-
 
 // this is to get selected serials and restore them in inventory and update the remaining live quantity 
 exports.getRestoreLive =async (req, res, next) => {
@@ -178,34 +171,16 @@ exports.StockHighToLow= (req, res, next) => {
         inventory.count=count;
       }
     })
-      res.render("products/allProductView", {
-        title: "All Product",
-        products: docs
-      });
-    
+    allFuctions.get_allProduct_page(res, docs)
   })
 };
 
 // get inventory list low to high
 exports.StockLowToHigh= (req, res, next) => {
   allFuctions.get_all_inventory_list({},{ "remaining": 1 }, (docs)=>{
-    docs.total_stock = 0;
-    docs.map((inventory)=>{
-      if(inventory.product_id){
-        var count=0;
-        inventory.product_id.live.serial.map((serial)=>{
-          if((inventory._id).toString() === (serial.inventory).toString()){
-            count++;
-          }
-        })
-        inventory.count=count;
-      }
-    })
-      res.render("products/allProductView", {
-        title: "All Product",
-        products: docs
-      });
-  
+   allFuctions.live_wise_inventory(docs, (rs)=>{
+     allFuctions.get_allProduct_page(res, rs, "Inventories")
+   })
   })
 };
 
@@ -228,77 +203,45 @@ exports.getSearchResult = (req, res)=>{
   .exec((err, docs)=>{
     if(docs){
       docs.map((items)=>{
-    
         if(items.product_id != null){
           data.push(items);
         }
       })
-      data.total_stock = 0;
-      data.map((inventory)=>{
-        if(inventory.product_id){
-          var count=0;
-          inventory.product_id.live.serial.map((serial)=>{
-            if((inventory._id).toString() === (serial.inventory).toString()){
-              count++;
-            }
-          })
-          inventory.count=count;
-        }
+
+      allFuctions.live_wise_inventory(data, (rs)=>{
+        allFuctions.get_allProduct_page(res, data, "Inventories")
       })
-     
-      res.render("products/allProductView", {
-        title: "All Product",
-        products: data
-      });
     }
-    
-   
   })
 }
 
 // returns allproduct page
 exports.getAllProducts = (req, res, next) => {
-  
-  
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
-   
-    docs.total_stock = 0;
-    docs.map((inventory)=>{
-      if(inventory.product_id){
-        var count=0;
-        inventory.product_id.live.serial.map((serial)=>{
-          if((inventory._id).toString() === (serial.inventory).toString()){
-            count++;
-          }
-        })
-        inventory.count=count;
-      }
+    allFuctions.live_wise_inventory(docs, (rs)=>{
+      allFuctions.get_allProduct_page(res, rs, "Inventories")
     })
-   
-    res.render("products/allProductView", {
-      title: "All Product",
-      products: docs
-    });
   })
 };
 
-// 
+// Total stock and live info of a product
 exports.stockInfo = (req, res, next) => {
- 
-    Product.findOne({ _id: req.params.id },(err, docs)=>{
-      docs.invtry = [];
-      docs.total_stock = 0;
-      docs.total = docs.live.quantity;
-      Inventory.find({ product_id: req.params.id }, (err2, inv)=>{
-        inv.map((inven)=>{
-          docs.invtry.push(inven);
-          docs.total_stock +=inven.remaining;
-          docs.total += inven.remaining;
-        })
+  Product.findOne({ _id: req.params.id },(err, docs)=>{
 
-       res.render("viewSerial", {product:docs})
+    docs.invtry = [];
+    docs.total_stock = 0;
+    docs.total = docs.live.quantity;
+
+    Inventory.find({ product_id: req.params.id }, (err2, inv)=>{
+      inv.map((inven)=>{
+        docs.invtry.push(inven);
+        docs.total_stock +=inven.remaining;
+        docs.total += inven.remaining;
       })
+
+      res.render("viewSerial", {product:docs})
     })
+  })
 };
 
 // returns Edit page from product info
@@ -499,6 +442,48 @@ exports.getProductBySubcat = (req, res, next)=>{
   })
 };
 
+// getting product models by Sub category
+exports.getProductBySub_filter = (req, res, next)=>{
+  
+  Inventory.find({})
+  .populate({
+    path:"product_id",
+    match:{"subcategory": req.params.sub_cat}
+  })
+  .exec((err, rs)=>{
+    var data = [];
+    rs.map((inven)=>{
+      if(inven.product_id != null){
+        data.push(inven)
+      } 
+    })
+    allFuctions.live_wise_inventory(data, (docs)=>{
+      allFuctions.get_allProduct_page(res, docs, "Sub Category")
+    })
+  })
+};
+
+// getting product models by Sub category
+exports.getProductByCat_filter = (req, res, next)=>{
+  
+  Inventory.find({})
+  .populate({
+    path:"product_id",
+    match:{"category": req.params.cat}
+  })
+  .exec((err, rs)=>{
+    var data = [];
+    rs.map((inven)=>{
+      if(inven.product_id != null){
+        data.push(inven)
+      } 
+    })
+    allFuctions.live_wise_inventory(data, (docs)=>{
+      allFuctions.get_allProduct_page(res, docs, "Category")
+    })
+  })
+};
+
 // getting product models by Category
 exports.getProductByCatNoSerial = (req, res, next)=>{
   allFuctions.find({category: req.params.cat},(rs)=>{
@@ -543,23 +528,8 @@ exports.getOnlineProductsPage =async (req, res, next) => {
   };
 
   let docs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
-  
-  docs.total_stock = 0;
-    docs.map((inventory)=>{
-      if(inventory.product_id){
-        var count=0;
-        inventory.product_id.live.serial.map((serial)=>{
-          if((inventory._id).toString() === (serial.inventory).toString()){
-            count++;
-          }
-        })
-        inventory.count=count;
-      }
-    })
-    res.render("products/allProductView", {
-      title: "Offline Products",
-      products: docs
-    
+    allFuctions.live_wise_inventory(docs, (rs)=>{
+      allFuctions.get_allProduct_page(res, rs, "Inventories")
   })
 };
 
@@ -570,24 +540,10 @@ exports.getOfflineProductsPage =async (req, res, next) => {
     match: { isActive:false }
   };
   let docs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
-  docs.total_stock = 0;
-    docs.map((inventory)=>{
-      if(inventory.product_id){
-        var count=0;
-        inventory.product_id.live.serial.map((serial)=>{
-          if((inventory._id).toString() === (serial.inventory).toString()){
-            count++;
-          }
-        })
-        inventory.count=count;
-      }
-    })
-  
-    res.render("products/allProductView", {
-      title: "Offline Products",
-      products: docs
-    });
- 
+  allFuctions.live_wise_inventory(docs, (rs)=>{
+    allFuctions.get_allProduct_page(res, rs, "Inventories")
+    
+  }) 
 };
 
 // shows the number of fields user wants
@@ -688,6 +644,7 @@ exports.saveInventoryNoSerial= (req, res, next) => {
   })
 };
 
+// check availability
 exports.check_availablity= (req, res, next) => {
   var pre_arr="";
   allFuctions.get_all_inventory_list({product_id:req.params.model},{},(rs)=>{
@@ -703,6 +660,7 @@ exports.check_availablity= (req, res, next) => {
     res.json({data:pre_arr});
   })
 }
+
 // Save Inventory
 exports.saveInventory = (req, res, next) => {
   var serials= (req.body.serial).split(",");
@@ -741,7 +699,7 @@ exports.SaveProduct= (req, res, next) => {
       {category:selected_category},
       {brand:selected_brand}
     ] ;
-    console.log(num)
+  
     // getting previously added feature and corresponding values
     if (num > 0) {
       if(req.body.feature0_value === ""){}else{
@@ -936,7 +894,7 @@ exports.SaveProduct= (req, res, next) => {
     })
   })           
   pro.then(() => {
-    console.log(data)
+    
     var newProduct = {
       name: req.body.title,
       category: selected_category,
@@ -960,10 +918,7 @@ exports.SaveProduct= (req, res, next) => {
     }
     
     new Product(newProduct).save().then(product => {
-    Category.update(
-      { _id: selected_category },
-      { $addToSet: { brands: selected_brand} },
-      { upsert: true },
+    Category.update({ _id: selected_category }, { $addToSet: { brands: selected_brand} },{ upsert: true },
       function(err, docs) {
         if (err) { res.send(err); }
         if (req.body.sub === "null") {}
@@ -982,7 +937,11 @@ exports.SaveProduct= (req, res, next) => {
   })
   pro.then(() => {
     gfs.remove({ filename: req.file.filename }, (err) => {
-      if (err) req.flash("error_msg", "Something went wrong! Try again.");
+      if (err){
+        req.flash("error_msg", "Something went wrong! Try again.");
+      }else{
+        req.flash("success_msg", "Product Added");
+      } 
       res.redirect("/category/Entry");
     })
   })
@@ -992,29 +951,6 @@ exports.SaveProduct= (req, res, next) => {
   }
 };
 
-// Product wise view
-exports.productsView =(req, res)=>{
-  Product.find((err, docs)=>{
-     let arrr= [];
-     docs.map(async (items)=>{
-       console.log("arr");
-       // getting data
-       await Inventory.find({product_id:items._id}, (err, rs)=>{
-          rs.map((inv)=>{
-           if(items.total === undefined){
-             items.total = inv.remaining;
-           }else{
-             items.total += inv.remaining;
-           }
-         })
-       })
-       await arrr.push(items);
-       console.log(arrr.length);
-       // res.render("products/productWiseView",{ products: arr });
-     })
-     console.log(arrr);
-   })
- }
 // 892
 // // single product view
 // exports.singleProduct = (req, res) => {

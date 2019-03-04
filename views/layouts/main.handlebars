@@ -66,11 +66,11 @@
                         <li class="nav-items">
                             <form class="navbar-form" action="/products/search" method="POST">
                                 {{!-- <div class="input-group add-on"> --}}
-                                    <input class="form-control" placeholder="Search" name="searchData" 
-                                        type="text">
-                                    {{!-- <div class="input-group-btn"> --}}
-                                        <button class="btn btn-default" type="submit"><img src="https://img.icons8.com/cotton/17/000000/search.png"></button>
-                                    {{!-- </div> --}}
+                                <input class="form-control" placeholder="Search" name="searchData" type="text">
+                                {{!-- <div class="input-group-btn"> --}}
+                                <button class="btn btn-default" type="submit"><img
+                                        src="https://img.icons8.com/cotton/17/000000/search.png"></button>
+                                {{!-- </div> --}}
                                 {{!-- </div> --}}
                             </form>
                         </li>
@@ -212,23 +212,6 @@
                             </li>
                         </ul>
                     </li>
-                    {{!-- <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-folder"></i>
-                            <span>Payment Methods</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li>
-                                <a href="/products/stock"><i class="fa fa-circle-o"></i>Payment Methods</a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-circle-o"></i>Add
-                                </a>
-                            </li>
-                        </ul>
-                    </li> --}}
                 </ul>
                 {{else}}
                 <h4 style="color:lightskyblue">Please Log in first to Get Access</h4>
@@ -297,7 +280,11 @@
 <script src="assets/js/dashboard.js"></script>
  //AdminLTE for demo purposes 
 <script src="assets/js/demo.js"></script>-->
-
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
         <script src="/js.js"></script>
         <style type="text/css" media="print">
             @page {
