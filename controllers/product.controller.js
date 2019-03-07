@@ -231,6 +231,7 @@ exports.StockLowToHigh= (req, res, next) => {
 };
 
 exports.getSearchResult = (req, res)=>{
+ 
    var search =  new RegExp(req.body.searchData, "i")
    var data =[];
    Inventory.find( )
@@ -238,6 +239,7 @@ exports.getSearchResult = (req, res)=>{
     path:"product_id",
     match: { 
       $or:[
+     
       {"title": { $regex: search }} ,
       {"model": { $regex: search }} ,
       {"description": { $regex: search }},
@@ -255,7 +257,8 @@ exports.getSearchResult = (req, res)=>{
       })
 
       allFuctions.live_wise_inventory(data, (rs)=>{
-        allFuctions.get_allProduct_page(res, data, "Inventories")
+        
+        allFuctions.get_allProduct_page(res, rs, "Inventories")
       })
     }
   })
@@ -305,7 +308,7 @@ exports.getEditpage = (req, res, next) => {
 exports.makeNotActive = (req, res, next) => {
   var obj = { isActive: false };
   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-    res.redirect("/products/view");
+    res.redirect("/products/viewProducts");
   });
 };
 
@@ -313,25 +316,25 @@ exports.makeNotActive = (req, res, next) => {
 exports.makeActive = (req, res, next) => {
   var obj = { isActive: true };
   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-    res.redirect("/products/view");
+    res.redirect("/products/viewProducts");
   });
 };
 
-// returns product Enable
-exports.makeEnable = (req, res, next) => {
-  var obj = { status: false };
-  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-    res.redirect("/products/view");
-  });
-};
+// // returns product Enable
+// exports.makeEnable = (req, res, next) => {
+//   var obj = { status: false };
+//   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+//     res.redirect("/products/view");
+//   });
+// };
 
-// makes product Disable
-exports.makeDisable = (req, res, next) => {
-  var obj = { status: true };
-  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-    res.redirect("/products/view");
-  });
-};
+// // makes product Disable
+// exports.makeDisable = (req, res, next) => {
+//   var obj = { status: true };
+//   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+//     res.redirect("/products/view");
+//   });
+// };
 
 // updateing stock quantity and price of prducts with no serial
 exports.stockEditNoSerial =(req, res, next) => {
@@ -724,6 +727,12 @@ exports.saveInventory = (req, res, next) => {
   }) 
 };
 
+// viewProducts
+exports.viewProducts = (req, res)=>{
+  Product.find((err, docs)=>{
+    res.render("products/viewProducts", {products:docs})
+  })
+}
 //saves product details
 exports.SaveProduct= (req, res, next) => {
   var selected_brand= req.body.brand;

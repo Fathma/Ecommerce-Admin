@@ -134,7 +134,6 @@ app.listen(port, () => {
   console.log('The server is live on http://127.0.0.1:3000/');
 });
 
-
 app.get("/", (req, res) => {
   if(req.user){
     res.redirect('/products/showDashboard');

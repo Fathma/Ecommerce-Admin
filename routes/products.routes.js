@@ -80,6 +80,8 @@ router.get("/StockHighToLow", product_controller.StockHighToLow);
 router.get("/getProductByCat_filter/:cat", product_controller.getProductByCat_filter);
 router.get("/viewStock/:id", product_controller.viewStock);
 router.get("/stockInfo/:id", product_controller.stockInfo);
+router.get("/viewProducts", product_controller.viewProducts);
+
 
 // validation
 router.get("/check_availablity/:model", product_controller.check_availablity);
@@ -100,5 +102,9 @@ router.get("/RestoreLiveNoserialPage/:id", product_controller.RestoreLiveNoseria
 router.post("/Restore/:id", product_controller.getRestoreLive);
 
 router.post("/update/:pid/:feat_num", upload.single("image"), product_controller.update_product);
+
+router.post("/search", product_controller.getSearchResult);
+router.get("/active/:id", product_controller.makeActive);
+router.get("/unactive/:id", product_controller.makeNotActive);
 
 module.exports = router;

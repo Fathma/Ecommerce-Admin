@@ -1,0 +1,60 @@
+<div class="container-fluid" style="width:100%;min-height: 700px">
+    <div class="register-logo">
+        <a href="#"><b>Products</a>
+    </div>
+
+   
+
+    {{!-- {{# if products}} --}}
+    <div style="background-color: white">
+        <table style="width:100%" class="table table-hover">
+            <tr>
+                <th>Product_id</th>
+                <th>Model</th>
+                
+                <th>Date Modified</th>
+                <th>Action</th>
+               
+            </tr>
+            {{# each products}}
+            <tr>
+                <td>
+                   <a href="/products/Edit/{{this._id}}" data-toggle="tooltip" data-placement="top"
+                        title="Edit Product" style="padding: 0%" class="btn btn-primary">
+                        <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
+                    </a>
+                    <strong>{{this._id}}</strong>
+                </td>
+
+                <td>
+                    <strong>{{this.model}}</strong>
+                </td>
+
+                <td>
+                   <strong>{{this.created}}</strong>
+                </td>
+
+                <td>
+                     {{# if this.isActive}}
+                    <a href="/products/unactive/{{this._id}}" class="btn btn-default ">Offline</a>
+                    {{else}}
+                    <a href="/products/active/{{this._id}}" class="btn btn-default">Online</a>
+                    {{/if}}
+                </td>
+               
+            </tr>
+            {{/each}}
+            {{!-- each product --}}
+            {{!-- {{/each}} --}}
+        </table>
+
+    </div>
+    {{!-- {{ else }} --}}
+    {{!-- <div class="row">
+        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
+        </div>
+    </div> --}}
+    {{!-- {{/if}} --}}
+
+</div>
