@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Product = require("../models/Product");
-const SubCategory = require("../models/subCategory.model");
 const multer = require("multer");
 const { ensureAuthenticated } = require("../helpers/auth");
 const path = require('path');
@@ -9,16 +7,10 @@ const crypto = require('crypto');
 const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const mongoose = require('mongoose');
-var mongo = require('mongodb');
-var Brand = require("../models/brand.model");
-var Feature = require("../models/features.model");
-var Cat = require("../models/category.model");
-
 
 const product_controller = require('../controllers/product.controller');
 
 mongoose.Promise = global.Promise;
-
 
 const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
 
@@ -29,6 +21,7 @@ conn.once('open', function () {
   gfs.collection('fs');
 })
 var filename;
+
 // create storage engine
 const storage = new GridFsStorage(
   {
@@ -54,220 +47,58 @@ const upload = multer({ storage });
 // general
 router.get("/dashboard", product_controller.lowLiveQuantity);
 router.get("/showDashboard", product_controller.showDashboard);
-// router.get("/delete/:id",  product_controller.deleteProduct);
-// router.get("/showfields/:cat",  product_controller.showProductRegistrationFields);
-// router.get("/showfields",  product_controller.showProductRegistrationFieldspage);
-// router.get("/stock", product_controller.getAllProductStock);
-// router.get("/Sale", product_controller.getSaleProductsPage);
 
-// router.get("/singleProduct/:id", product_controller.singleProduct);
-
-// serial number
-router.get("/stockInfo/:id", product_controller.stockInfo);
-router.get("/Edit/:id", product_controller.getEditpage);
-router.post("/EditAddOne/:lot_id/:pid", product_controller.editAddNew);
-router.post("/EditReplace/:lot_id/:pid", product_controller.EditReplace);
-router.post("/EditDelete/:lot_id/:pid", product_controller.EditDelete);
-router.post("/EditPP/:lot_id/:pid", product_controller.EditPP);
-// router.get("/stockEditPage", product_controller.addLotPage);
-
-router.get("/Online", product_controller.getOnlineProductsPage);
-router.get("/offline", product_controller.getOfflineProductsPage);
-
-
-router.get("/active/:id", product_controller.makeActive);
-router.get("/unactive/:id", product_controller.makeNotActive);
-
-// router.get("/RemoveFromSale/:id/:cid", product_controller.removeFromSale);
-// router.get("/makeSale/:id/:cid", product_controller.makeOnSale);
-// router.get("/addDiscount/:id/:cid", product_controller.addDiscountpage);
-
-// router.post("/stockEdit/:id", product_controller.getEditStock);
-// router.post("/updateInventory", product_controller.updateInventory);
-
-router.post("/search", product_controller.getSearchResult);
+// Edit (Inventory With Serial number)
 router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
+router.get( "/Edit/:id", product_controller.getEditpage );
+router.post( "/EditAddOne/:lot_id/:pid", product_controller.editAddNew );
+router.post( "/EditReplace/:lot_id/:pid", product_controller.EditReplace );
+router.post( "/EditDelete/:lot_id/:pid", product_controller.EditDelete );
+router.post( "/EditPP/:lot_id/:pid", product_controller.EditPP );
+router.get("/newLot", product_controller.newLot);
+
+// Edit (Inventory Without Serial number)
 router.get("/stockEditNoSerialPage/:lot/:pid", product_controller.stockEditNoSerialPage);
 router.post("/stockEditNoSerial/:lot/:pid", product_controller.stockEditNoSerial);
 
-router.get("/check_availablity/:model", product_controller.check_availablity);
-
-
+// views
+router.get("/view", product_controller.getAllProducts);
+router.get("/Online", product_controller.getOnlineProductsPage);
+router.get("/offline", product_controller.getOfflineProductsPage);
 router.get("/viewLowLive", product_controller.lowLiveQuantityDetails);
-// router.post("/Discount/:id", product_controller.addDiscount);
-
-// lot 
-router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
-
-router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
-router.post("/SaveInventory", product_controller.saveInventory);
-
-// live
-router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
-router.get("/liveStockEditNoSerial/:id/:pid", product_controller.getLiveStockEditNoSerialpage);
-router.post("/saveLive/:id", product_controller.saveLive);
-
-router.get("/RestoreLivepage/:id", product_controller.getRestoreLivepage);
-router.get("/RestoreLiveNoserialPage/:id", product_controller.RestoreLiveNoserialPage);
-// router.get("/RestoreLiveNoSerialpage/:id", product_controller.RestoreLiveNoSerialpage);
-
-router.post("/Restore/:id", product_controller.getRestoreLive);
-// router.post("/RestoreNoSerial/:id", product_controller.RestoreNoSerial);
 router.post("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
 router.post("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
 router.get("/getProductBySubcatNoSL/:sub_cat", product_controller.getProductBySubcatNoSerial);
 router.get("/getProductByCatNoSL/:cat", product_controller.getProductByCatNoSerial);
-// new
-
-router.get("/view", product_controller.getAllProducts);
-router.get("/StockLowToHigh", product_controller.StockLowToHigh);
-router.get("/StockHighToLow", product_controller.StockHighToLow);
-
-router.get("/getProductByCat_filter/:cat", product_controller.getProductByCat_filter);
-router.get("/newLot", product_controller.newLot);
 router.get("/getProductBySubcat_filter/:sub_cat", product_controller.getProductBySub_filter);
 router.get("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.post("/getProductBySubcat/:sub_cat", product_controller.getProductBySubcat);
 router.get("/getProductByCat/:cat", product_controller.getProductByCat);
 router.post("/getProductByCat/:cat", product_controller.getProductByCat);
+router.get("/StockLowToHigh", product_controller.StockLowToHigh);
+router.get("/StockHighToLow", product_controller.StockHighToLow);
+router.get("/getProductByCat_filter/:cat", product_controller.getProductByCat_filter);
+router.get("/viewStock/:id", product_controller.viewStock);
+router.get("/stockInfo/:id", product_controller.stockInfo);
+
+// validation
+router.get("/check_availablity/:model", product_controller.check_availablity);
 router.post("/showfields",  product_controller.showProductRegistrationFields);
+
+// Save
 router.post("/regiSave", upload.single("imagePath"), product_controller.SaveProduct);
+router.post("/SaveInventory", product_controller.saveInventory);
+router.post("/saveInventoryNoSerial", product_controller.saveInventoryNoSerial);
+router.get("/saveInventoryNoSerialPage", product_controller.saveInventoryNoSerialPage);
+router.post("/saveLive/:id", product_controller.saveLive);
 
-// update product information
-router.post("/update/:pid/:feat_num", upload.single("image"), (req, res, next) => {
+// live
+router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
+router.get("/liveStockEditNoSerial/:id/:pid", product_controller.getLiveStockEditNoSerialpage);
+router.get("/RestoreLivepage/:id", product_controller.getRestoreLivepage);
+router.get("/RestoreLiveNoserialPage/:id", product_controller.RestoreLiveNoserialPage);
+router.post("/Restore/:id", product_controller.getRestoreLive);
 
-  var num = parseInt(req.params.feat_num, 10);
-  var data = [];
-  
-  if (num > 0) {
-    data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
-    if (num > 1) {
-      data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
-      if (num > 2) {
-        data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
-        if (num > 3) {
-          data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
-          if (num > 4) {
-            data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
-            if (num > 5) {
-              data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
-              if (num > 6) {
-                data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
-                if (num > 7) {
-                  data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
-                  if (num > 8) {
-                    data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
-                    if (num > 9) {
-                      data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
-                      if (num > 10) {
-                        data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
-                        if (num > 11) {
-                          data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
-                          if (num > 12) {
-                            data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
-                            if (num > 13) {
-                              data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
-                              if (num > 14) {
-                                data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
-                                if (num > 15) {
-                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
-                                  if (num > 16) {
-                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
-                                    if (num > 17) {
-                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
-                                      if (num > 18) {
-                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
-                                        if (num > 19) {
-                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  var pro = new Promise(function (resolve, reject) {
-    if (req.file) {
-      const readstream = gfs.createReadStream(req.file.filename);
-      readstream.on('data', (chunk) => {
-      array = chunk.toString('base64');
-     
-      resolve();
-      })
-    } else {
-      array = "";
-      resolve();
-    }
-  })
-  pro.then(() => {
-    // SubCategory.findOne({ name: req.body.sub_cat }, function (err, ncategory) {
-
-    //   if (err) return next(err);
-    //   var obj;
-      // Brand.findOne({ name: req.body.brand }, function (err, nbrand) {
-        if (array != "") {
-          obj = {
-            'name': req.body.title1,
-            // 'subcategory': ncategory._id,
-            // 'category': ncategory.category,
-            'image': array,
-            // 'brand': nbrand._id,
-            'weight': req.body.weight,
-            'model': req.body.model,
-            'warranty': req.body.warranty,
-            'description': req.body.description,
-            'shippingInfo': req.body.shippingInfo,
-            'features': data
-          }
-        }else{
-          obj={
-            'name': req.body.title1,
-            'weight': req.body.weight,
-            // 'subcategory': ncategory._id,
-            // 'category': ncategory.category,
-            // 'brand': nbrand._id,
-            'model': req.body.model,
-            'warranty': req.body.warranty,
-            'description': req.body.description,
-            'shippingInfo': req.body.shippingInfo,
-            'features': data
-          }
-        }
-          Product.findOneAndUpdate({ _id: mongo.ObjectID(req.params.pid) },
-            {
-              $set: obj
-            }, { upsert: true },
-            function (err, docs) {
-              if (err) {
-                res.send(err);
-              }
-            })
-        
-      // })
-    })
-  // })
-  pro.then(() => {
-    if (req.file) {
-      gfs.remove({ filename: req.file.filename }, (err) => {
-        if (err) console.log(err)
-        res.redirect("/products/Edit/"+req.params.pid)
-      })
-    }
-  })
-
-});
+router.post("/update/:pid/:feat_num", upload.single("image"), product_controller.update_product);
 
 module.exports = router;

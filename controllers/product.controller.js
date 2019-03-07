@@ -1,7 +1,6 @@
 //Imports
 var mongo = require("mongodb");
 const Product = require("../models/Product");
-const Brand = require("../models/brand.model");
 const SubCategory = require("../models/subCategory.model");
 const Feature = require("../models/features.model");
 const Inventory = require("../models/inventory.model");
@@ -13,8 +12,6 @@ const path = require('path');
 const crypto = require('crypto');
 const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
-var includes = require('array-includes');
-var async = require('async');
 
 const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
 
@@ -54,10 +51,57 @@ exports.lowLiveQuantity=async (req, res, next) => {
   res.json({quantity: docs.length, count:count})
 };
 
+// view total stock information
+exports.viewStock = (req, res) =>{
+  var arr=[];
+  Inventory.findOne({_id: req.params.id}).populate("product_id").exec((err, docs)=>{
+    docs.original_serial.map((sl)=>{
+      var count = 0;
+      var id="";
+      id+=(docs.product_id.categoryName.split(""))[0]+"0";
+      if(docs.product_id.subcategoryName === ""){
+        id+="1"+count;
+      }else{
+        id+=(docs.product_id.subcategoryName.split(""))[0]+"1"+count;
+      }
+      
+      id+=(docs.product_id.brandName.split(""))[0]+"2";
+      id+= sl;
+      var obj = {
+        s_id : id,
+        sl:sl,
+        p_name:docs.product_id.model,
+        pp: docs.purchasePrice
+      }
+      if(docs.serial.includes(sl.toString())){
+        obj.status = "In Stock"
+      }else{
+        docs.product_id.live.serial.map((srl)=>{
+          if(srl.serial.toString() === sl.toString()){
+            obj.status = "In Live";
+          }else{
+            obj.status = "Sold";
+          }
+        })
+      }
+      arr.push(obj);
+      count++;
+    })
+    docs.arr=arr;
+    res.render("viewStock", {lot:docs}) 
+  })
+}
+
 // get low quantity details
 exports.lowLiveQuantityDetails= (req, res, next) => {
   Inventory.find().populate({path:"product_id", match:{"live.quantity":{$lt:3}}}).populate("admin").exec((err, rs)=>{ 
-    allFuctions.get_allProduct_page(res, rs, "Inventories")
+    var data = [];
+    rs.map((item)=>{
+      if(item.product_id != null){ data.push(item); }
+    })
+    allFuctions.live_wise_inventory(data,(docs)=>{
+      allFuctions.get_allProduct_page(res, docs, "Inventories")
+    })
   })
 };
 
@@ -88,9 +132,11 @@ exports.newLot= (req, res, next) => {
 exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
   var arr=[]
   var rs = await allFuctions.get_inventory_list_new({product_id:req.params.pid},{},"product_id")
-  rs.map((inventory)=>{
-    arr.push(inventory.purchasePrice);
+
+  rs.map((inventory)=>{ 
+    arr.push(inventory.purchasePrice); 
   })
+
   await arr.sort();
   var docs = await allFuctions.get_inventory_list_new({_id:req.params.id},{},"product_id")
 
@@ -393,7 +439,8 @@ exports.EditDelete = (req, res, next)=>{
         original_serial: req.body.pre_serial_del, 
         serial:req.body.pre_serial_del
       },
-      $inc:{ remaining:-1 } }, { upsert:true }, (err,rs)=>{
+      $inc:{ remaining:-1 } 
+    }, { upsert:true }, (err,rs)=>{
       if(err){
         res.send(err);
       }else{
@@ -407,14 +454,12 @@ exports.EditReplace = (req, res, next)=>{
   if(req.body.msg_err1 === "No"){
   Inventory.update({_id: req.params.lot_id },{$addToSet:{original_serial:req.body.replace_serial, serial:req.body.replace_serial}}, 
     {upsert:true}, (err,rs)=>{
-      if(err){
-        res.send(err);
-      } else {
+      if(err){ res.send(err); } 
+      else {
         Inventory.update({_id: req.params.lot_id },{$pull:{original_serial: req.body.pre_serial, serial:req.body.pre_serial}}, 
           {upsert:true}, (err,rs)=>{
-          if(err){
-            res.send(err);
-          }else{
+          if(err){ res.send(err); }
+          else{
             res.redirect("/products/stockEditPage/"+ req.params.lot_id+"/"+req.params.pid)
           }
         })
@@ -430,7 +475,6 @@ exports.EditReplace = (req, res, next)=>{
 // getting product models by Category
 exports.getProductByCat = (req, res, next)=>{
   allFuctions.find({category: req.params.cat},(rs)=>{
-    console.log(rs)
     res.render("addNewLot", {product:rs});
   })
 };
@@ -444,7 +488,6 @@ exports.getProductBySubcat = (req, res, next)=>{
 
 // getting product models by Sub category
 exports.getProductBySub_filter = (req, res, next)=>{
-  
   Inventory.find({})
   .populate({
     path:"product_id",
@@ -465,7 +508,6 @@ exports.getProductBySub_filter = (req, res, next)=>{
 
 // getting product models by Sub category
 exports.getProductByCat_filter = (req, res, next)=>{
-  
   Inventory.find({})
   .populate({
     path:"product_id",
@@ -508,12 +550,11 @@ exports.editAddNew = (req, res, next) => {
 
   if(req.body.msg_err === "No"){
     Inventory.update({ _id: lot_id },{ $addToSet: addToSet_obj, $inc: inc_obj}, { upsert:true }, (err,docs)=>{
-       if(err){
-        res.send(err);
-       } else{
+      if(err){ res.send(err); }
+      else{
         res.redirect("/products/stockEditPage/"+ lot_id+"/"+pid)
-       }
-     })
+      }
+    })
   }else{
     req.flash("error_msg", "Given serial number already exists!");
     res.redirect("/products/stockEditPage/"+ lot_id+"/"+pid)
@@ -542,7 +583,6 @@ exports.getOfflineProductsPage =async (req, res, next) => {
   let docs = await allFuctions.get_inventory_list_new({},{ "product_id": 1 },populate_obj)
   allFuctions.live_wise_inventory(docs, (rs)=>{
     allFuctions.get_allProduct_page(res, rs, "Inventories")
-    
   }) 
 };
 
@@ -610,9 +650,9 @@ exports.saveLive =async (req, res, next) => {
   Product.update({_id: product_id}, { $addToSet: { "live.serial": live_serial }, $inc: inc_ob, $set: set_ob}, {upsert:true},(err, docs)=>{
     Inventory.update({_id:req.body.lot_number}, {$pull: { serial: { $in: serial_obj } }, $set:{"remaining":(parseInt(remaining)-quantity)}},
     { upsert: true },function(err, docs){
-        if(err){ res.send(err);}
-        req.flash("success_msg", "Live Product Added");
-        res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
+      if(err){ res.send(err); }
+      req.flash("success_msg", "Live Product Added");
+      res.redirect("/Products/liveStockEdit/"+req.body.lot_number+"/"+req.params.id);
     }) 
   })
 };
@@ -816,7 +856,6 @@ exports.SaveProduct= (req, res, next) => {
     } 
   })
   pro.then(()=>{
-
     // getting newly added features and updating to feature collection and the feature 
     // and value is being stored in data[] whic will be added in product collection
     if(req.body.new_feat > 0){
@@ -875,7 +914,67 @@ exports.SaveProduct= (req, res, next) => {
                           if(req.body.new_feat_10 === "" || req.body.v10 === "" ){}else{
                             data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
                             features_new.push(req.body.new_feat_10);  
-                          }                                  
+                          }  
+                          if(req.body.new_feat > 10){
+                            if(req.body.new_feat_11 === "" || req.body.v11 === "" ){}else{
+                              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_11 + "\",\"value\":\"" + req.body.v11 + "\"}"));
+                              features_new.push(req.body.new_feat_11);  
+                            } 
+                            if(req.body.new_feat > 11){
+                              if(req.body.new_feat_12 === "" || req.body.v12 === "" ){}else{
+                                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_12 + "\",\"value\":\"" + req.body.v12 + "\"}"));
+                                features_new.push(req.body.new_feat_12);  
+                              }  
+                              if(req.body.new_feat > 12){
+                                if(req.body.new_feat_13 === "" || req.body.v13 === "" ){}else{
+                                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_13 + "\",\"value\":\"" + req.body.v13 + "\"}"));
+                                  features_new.push(req.body.new_feat_13);  
+                                } 
+                                if(req.body.new_feat > 13){
+                                  if(req.body.new_feat_14 === "" || req.body.v14 === "" ){}else{
+                                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_14 + "\",\"value\":\"" + req.body.v14 + "\"}"));
+                                    features_new.push(req.body.new_feat_14);  
+                                  }   
+                                  if(req.body.new_feat > 14){
+                                    if(req.body.new_feat_15 === "" || req.body.v15 === "" ){}else{
+                                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_15 + "\",\"value\":\"" + req.body.v15 + "\"}"));
+                                      features_new.push(req.body.new_feat_15);  
+                                    } 
+                                    if(req.body.new_feat > 15){
+                                      if(req.body.new_feat_16 === "" || req.body.v16 === "" ){}else{
+                                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_16 + "\",\"value\":\"" + req.body.v16 + "\"}"));
+                                        features_new.push(req.body.new_feat_16);  
+                                      }
+                                      if(req.body.new_feat > 16){
+                                        if(req.body.new_feat_17 === "" || req.body.v17 === "" ){}else{
+                                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_17 + "\",\"value\":\"" + req.body.v17 + "\"}"));
+                                          features_new.push(req.body.new_feat_17);  
+                                        } 
+                                        if(req.body.new_feat > 17){
+                                          if(req.body.new_feat_18 === "" || req.body.v18 === "" ){}else{
+                                            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_18 + "\",\"value\":\"" + req.body.v18 + "\"}"));
+                                            features_new.push(req.body.new_feat_18);  
+                                          }     
+                                          if(req.body.new_feat > 18){
+                                            if(req.body.new_feat_19 === "" || req.body.v19 === "" ){}else{
+                                              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_19 + "\",\"value\":\"" + req.body.v19 + "\"}"));
+                                              features_new.push(req.body.new_feat_19);  
+                                            } 
+                                            if(req.body.new_feat > 19){
+                                              if(req.body.new_feat_20 === "" || req.body.v20 === "" ){}else{
+                                                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_20 + "\",\"value\":\"" + req.body.v20 + "\"}"));
+                                                features_new.push(req.body.new_feat_20);  
+                                              }                                  
+                                          }                                 
+                                        }                             
+                                      }                                 
+                                    }                                  
+                                  }                                 
+                                }                               
+                              }                                 
+                            }                                
+                            }                                 
+                        }                                
                       }
                     }
                   }
@@ -950,6 +1049,124 @@ exports.SaveProduct= (req, res, next) => {
     res.redirect("/category/Entry");
   }
 };
+
+exports.update_product = (req, res, next) => {
+  var num = parseInt(req.params.feat_num, 10);
+  var data = [];
+  
+  if (num > 0) {
+    data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
+    if (num > 1) {
+      data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
+      if (num > 2) {
+        data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
+        if (num > 3) {
+          data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
+          if (num > 4) {
+            data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
+            if (num > 5) {
+              data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
+              if (num > 6) {
+                data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
+                if (num > 7) {
+                  data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
+                  if (num > 8) {
+                    data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
+                    if (num > 9) {
+                      data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
+                      if (num > 10) {
+                        data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
+                        if (num > 11) {
+                          data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
+                          if (num > 12) {
+                            data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
+                            if (num > 13) {
+                              data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
+                              if (num > 14) {
+                                data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
+                                if (num > 15) {
+                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
+                                  if (num > 16) {
+                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
+                                    if (num > 17) {
+                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
+                                      if (num > 18) {
+                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
+                                        if (num > 19) {
+                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  var pro = new Promise(function (resolve, reject) {
+    
+    if (req.file) {
+      const readstream = gfs.createReadStream(req.file.filename);
+      readstream.on('data', (chunk) => {
+      array = chunk.toString('base64');
+      resolve();
+      })
+    } else {
+      array = "";
+      resolve();
+    }
+  })
+  pro.then(() => {
+    
+    if (array != "") {
+      obj = {
+        'name': req.body.title1,
+        'image': array,
+        'weight': req.body.weight,
+        'model': req.body.model,
+        'warranty': req.body.warranty,
+        'description': req.body.description,
+        'shippingInfo': req.body.shippingInfo,
+        'features': data
+      }
+    }else{
+      obj={
+        'name': req.body.title1,
+        'weight': req.body.weight,
+        'model': req.body.model,
+        'warranty': req.body.warranty,
+        'description': req.body.description,
+        'shippingInfo': req.body.shippingInfo,
+        'features': data
+      }
+    }
+    Product.findOneAndUpdate({ _id: mongo.ObjectID(req.params.pid) },{ $set: obj }, { upsert: true },(err, docs)=>{
+      if (err) { res.send(err); }
+    })
+  })
+
+  pro.then(() => {
+    if (req.file) {
+      gfs.remove({ filename: req.file.filename }, (err) => {
+        if (err) console.log(err)
+        res.redirect("/products/Edit/"+req.params.pid)
+      })
+    }else{
+      res.redirect("/products/Edit/"+req.params.pid)
+    }
+  })
+}
 
 // 892
 // // single product view

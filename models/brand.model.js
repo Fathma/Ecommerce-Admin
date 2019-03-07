@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Text = require('../node_modules/text/lib/text');
 
 var BrandSchema = new Schema({
-    name: { type: String, es_type: 'text'},
+    name: { type: String, unique: true },
     created: { type: Date, default: Date.now }
 });
 

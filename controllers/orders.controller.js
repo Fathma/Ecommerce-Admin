@@ -1,14 +1,8 @@
-const express = require("express");
-
 const allFuctions = require("../functions/allFuctions");
-const Customer = require("../models/userCustomer");
 const Invoice = require("../models/invoice.model");
 const Product = require("../models/Product");
 const Order = require("../models/customerOrder");
 const Email = require("../Email/email");
-var async = require('async');
-const Inventory = require("../models/inventory.model");
-
 
 // view list of customers
 exports.showOrdersPage = (req, res, next) => {
@@ -26,7 +20,6 @@ exports.saveSerialInOrders = (req, res, next) => {
     { $set: { "cart.$.serial": serials } },
     { upsert: true },
     (err, rs) => {
-      
       if (err) res.send(err);
       res.redirect("/orders/orderDetails/" + req.params.oid);
     }
@@ -35,7 +28,6 @@ exports.saveSerialInOrders = (req, res, next) => {
 
 exports.saveEdit = (req, res, next) => {
   Order.find({ _id: req.params.oid }, (err, docs) => {
-    // console.log(docs.shippingCharge);
     var total = 0;
 
     docs[0].cart.map(items => {
@@ -50,7 +42,8 @@ exports.saveEdit = (req, res, next) => {
         $set: {
           "cart.$.quantity": req.body.quantity,
           "cart.$.price": req.body.quantity * parseInt(req.body.unitprice),
-          totalAmount: total + parseInt(req.body.quantity) * parseInt(req.body.unitprice)
+          totalAmount:
+            total + parseInt(req.body.quantity) * parseInt(req.body.unitprice)
         }
       },
       { upsert: true },
@@ -69,7 +62,7 @@ exports.saveEdit = (req, res, next) => {
 exports.addSerialToProduct = (req, res, next) => {
   allFuctions.get_orders({ _id: req.params.oid }, rs => {
     Product.find({ _id: req.params.pid }, function(err, docs) {
-      if(docs[0].warranted){
+      if (docs[0].warranted) {
         res.render("orders/setSerialInOrder", {
           order: rs[0],
           model: req.params.pid,
@@ -79,9 +72,9 @@ exports.addSerialToProduct = (req, res, next) => {
           serial: docs[0].live.serial,
           warranted: docs[0].warranted
         });
-      }else{
+      } else {
         req.flash("error_msg", "Unwarranted product!");
-        res.redirect("/orders/orderDetails/"+req.params.oid)
+        res.redirect("/orders/orderDetails/" + req.params.oid);
       }
     });
   });
@@ -122,7 +115,7 @@ exports.ViewInvoice = (req, res, next) => {
 };
 
 // view list of customers
-exports.showOrderDetails = (req, res, next) => {
+exports.showOrderDetails = (req, res) => {
   allFuctions.get_orders({ _id: req.params.id }, rs => {
     for (var i = 0; i < rs[0].cart.length; i++) {
       rs[0].cart[i].oid = req.params.id;
@@ -132,18 +125,15 @@ exports.showOrderDetails = (req, res, next) => {
   });
 };
 
-// view list of customers
-exports.generateInvoice = (req, res, next) => {
+// generate invoice
+exports.generateInvoice = (req, res) => {
   var invoice = {
     user: req.user._id,
     order: req.params.oid
   };
 
   new Invoice(invoice).save().then(invoice => {
-    Order.update(
-      { _id: req.params.oid },
-      { $set: { invoice: invoice._id } },
-      (err, docs) => {
+    Order.update( { _id: req.params.oid }, { $set: { invoice: invoice._id } }, (err, docs) => {
         allFuctions.get_orders({ _id: req.params.oid }, rs => {
           var count = 1;
           for (var i = 0; i < rs[0].cart.length; i++) {
@@ -163,20 +153,13 @@ exports.generateInvoice = (req, res, next) => {
 };
 
 // updateting order history
-exports.updateHistory = (req, res, next) => {
+exports.updateHistory = (req, res) => {
   var status = req.body.status;
 
   if (req.body.notify === "1") {
     var notify = "Yes";
-    Email.sendEmail(
-      "devtestjihad@gmail.com",
-      req.body.email,
-      "ECL update",
-      "<h2>" + req.body.comment + "</h2>"
-    );
-  } else {
-    var notify = "No";
-  }
+    Email.sendEmail( "devtestjihad@gmail.com", req.body.email, "ECL update", "<h2>" + req.body.comment + "</h2>" );
+  } else { var notify = "No"; }
 
   var history = {
     date: new Date(),
@@ -185,93 +168,65 @@ exports.updateHistory = (req, res, next) => {
     customerNotified: notify
   };
 
-  // if (status === "Delivered") {
-  Order.findOneAndUpdate({ _id: req.params.oid },{ $addToSet: { history: history }, currentStatus: status, lastModified: new Date() },
-    { upsert: true },
-    (err, rs2) => {
-      if (err) {
-        console.log(err);
-      } 
+  // updating order history
+  Order.findOneAndUpdate( { _id: req.params.oid },
+    {
+      $addToSet: { history: history },
+      currentStatus: status,
+      lastModified: new Date()
+    }, { upsert: true }, (err, rs2) => {
+      if (err) { res.send(err) } 
       else {
+        // populating product id inside the cart 
         Order.populate(rs2, "cart.product", (err1, rs) => {
+          // if delivered then delete serials from live (for warranted Product)
           if (status === "Delivered") {
             rs.cart.map(item => {
               if (item.product.warranted) {
                 var arr = item.serial;
-                Product.findOne({ _id: item.product._id }, async (err, docs)=>{
+                // find the product id
+                Product.findOne( { _id: item.product._id }, async (err, docs) => {
                   var all = [];
-                  console.log(err)
-                  await arr.map((selected)=>{
-                    docs.live.serial.map((obj)=>{
-                      console.log(obj)
-                      if(obj.serial === selected){
-                        all.push(obj)
-                        console.log(all)
+                  // convert serials into object with inventory id
+                  await arr.map(selected => {
+                    docs.live.serial.map(obj => {
+                      if (obj.serial === selected) {
+                        all.push(obj);
                       }
-                    })
-                  })
-                  console.log(docs.live.quantity-item.quantity);
-                  await Product.update( { _id: item.product._id }, { $pull: { "live.serial": { $in: all } }, $set: { "live.quantity": docs.live.quantity-item.quantity} },{upsert: true},
-                    (err, rs) => {
-                      if (err) {
-                        res.send(err);
-                      } else{
-                        console.log(all)
-                      }
-                    }
-                  );
-                })
-              } 
-              else {
+                    });
+                  });
+                  // delete serials from product live and update quantity
+                  await Product.update( { _id: item.product._id },
+                    {
+                      $pull: { "live.serial": { $in: all } },
+                      $set: { "live.quantity": docs.live.quantity - item.quantity }
+                    },{ upsert: true }, (err, rs) => {
+                      if (err) { res.send(err); } 
+                      else { console.log(all); }
+                  });
+                });
+                // if not delivered then update history only
+              } else {
                 var all = [];
-                Product.findOne(
-                  { _id: item.product._id },
-                  async (err, docs) => {
-                    for (var i = 0; i < item.quantity; i++) {
-                      all.push(item.product.live.serial[i]);
-                    }
-                    Product.update(
-                      { _id: item.product._id },
-                      {
-                        $pull: { "live.serial": { $in: all } },
-                        $set: { "live.quantity": docs.live.quantity-item.quantity} 
-                      },
-                      { upsert: true },
-                      (err, rs) => {
-                        if (err) {
-                          res.send(err);
-                        }
-                        
-                      }
-                    );
+                Product.findOne( { _id: item.product._id }, async (err, docs) => {
+                  for (var i = 0; i < item.quantity; i++) {
+                    all.push(item.product.live.serial[i]);
                   }
-                );
+                  Product.update( { _id: item.product._id },
+                    {
+                      $pull: { "live.serial": { $in: all } },
+                      $set: {
+                        "live.quantity": docs.live.quantity - item.quantity
+                      }
+                    }, { upsert: true }, (err, rs) => {
+                      if (err) { res.send(err); }
+                    });
+                });
               }
             });
           }
           res.redirect("/orders/orderDetails/" + req.params.oid);
         });
       }
-      // res.redirect("/orders/orderDetails/" + req.params.oid);
-    }
-  );
-  // }
-  // else{
-  //   Order.findOneAndUpdate(
-  //     { _id: req.params.oid },
-  //     {
-  //       $addToSet: { history: history },
-  //       currentStatus: status,
-  //       lastModified: new Date()
-  //     },
-  //     { upsert: true },
-  //     (err, rs) => {
-  //       if (err) {
-  //         console.log(err);
-  //       }
-
-  //       res.redirect("/orders/orderDetails/" + req.params.oid);
-  //     }
-  //   );
-  // }
+    });
 };

@@ -11,7 +11,6 @@ exports.showInvoiceList = (req, res, next) => {
     .populate("order")
     .exec((err, rs)=>{
         if(err) res.send(err)
-        console.log(rs);
         res.render("invoiceList",{ invoices:rs });
     })
 };

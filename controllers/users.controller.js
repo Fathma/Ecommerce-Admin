@@ -1,5 +1,3 @@
-const express = require("express");
-const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
@@ -35,7 +33,6 @@ exports.login = (req, res, next) => {
 // Register form POST
 exports.userregistration = (req, res, next) => {
   let errors = [];
-console.log(req.body.branch);
   if (req.body.password != req.body.password2) {
     errors.push({ text: "Passwords do not match" });
   }
@@ -92,6 +89,7 @@ console.log(req.body.branch);
     });
   }
 };
+
 // Logout user
 exports.logout = (req, res, next) => {
   req.logout();

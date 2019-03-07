@@ -9,7 +9,7 @@ exports.addAllPage = (req, res, next) => {
   res.render("products/reg");
 };
 
-// saving category 
+// saving category
 exports.addCategory = (req, res, next) => {
   var category = {
     name: req.body.cat,
@@ -21,7 +21,7 @@ exports.addCategory = (req, res, next) => {
   res.redirect("/category/Entry");
 };
 
-// Saving Sub Category 
+// Saving Sub Category
 exports.addSubCategory = (req, res, next) => {
   var subcategory = {
     name: req.body.subCat,
@@ -49,20 +49,19 @@ exports.addSubCategory = (req, res, next) => {
 
 // Saving Brand
 exports.addBrand = (req, res, next) => {
-  var brand= {
-    name:req.body.brand
-  }
+  var brand = {
+    name: req.body.brand
+  };
   new Brand(brand).save().then(brand => {
-      res.redirect("/category/Entry");
+    res.redirect("/category/Entry");
   });
 };
 
-// getting sub categories on the basis of category 
+// getting sub categories on the basis of category
 exports.getSub = (req, res, next) => {
-  Cat.find({_id: req.params.cat})
+  Cat.find({ _id: req.params.cat })
     .populate("subCategories")
-    .exec(function(err, docs){
-    res.json(docs)
-  })
+    .exec(function(err, docs) {
+      res.json(docs);
+    });
 };
-
