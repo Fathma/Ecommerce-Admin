@@ -1,5 +1,3 @@
-const express = require("express");
-const router = express.Router();
 const Brand = require("../models/brand.model");
 const subCategory = require("../models/subCategory.model");
 const Cat = require("../models/category.model");
@@ -61,7 +59,17 @@ exports.addBrand = (req, res, next) => {
 exports.getSub = (req, res, next) => {
   Cat.find({ _id: req.params.cat })
     .populate("subCategories")
+    .populate("brands")
     .exec(function(err, docs) {
       res.json(docs);
     });
 };
+
+// returns subcategories of and given subcategories 
+exports.getBrand = (req, res)=>{
+  subCategory.find({ _id: req.params.subcat })
+  .populate("brands")
+  .exec(function(err, docs) {
+    res.json(docs);
+  });
+}

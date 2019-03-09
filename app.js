@@ -13,7 +13,8 @@ const morgan = require('morgan');
 var path = require('path');
 var mongoStore = require('connect-mongo')(session);
 const methodOverride = require("method-override");
-
+var HandlebarsIntl = require('handlebars-intl');
+var Handlebars     = require('handlebars');
 // role
 const { ensureAuthenticated } = require("./helpers/auth");
 const { Super } = require("./helpers/rolecheck");
@@ -43,6 +44,7 @@ mongoose.connect(dbConfig.mongoURI, (err) =>{
       console.log('Error in DB connection :' + JSON.stringify(err, undefined, 2));
 });
 
+HandlebarsIntl.registerWith(Handlebars);
 //Dev tools
 // if (app.get('env') === 'production') {
 //   app.use(logger('combined'));
@@ -122,6 +124,7 @@ app.use(function(req, res, next){
       next();
   });
 });
+
 app.use(function(req, res, next){
   res.locals.session = req.session;
   next();
@@ -148,7 +151,7 @@ app.get("/about", (req, res) => {
 });
 
 // Use routes
-app.use("/category", Super, categoryRoutes);
+app.use("/category", categoryRoutes);
 app.use("/users", usersRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/returns", returnsRoutes);

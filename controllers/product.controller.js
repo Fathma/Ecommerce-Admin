@@ -53,8 +53,11 @@ exports.lowLiveQuantity=async (req, res, next) => {
 
 // view total stock information
 exports.viewStock = (req, res) =>{
+  console.log("jfsdhfjhdsjfh");
   var arr=[];
   Inventory.findOne({_id: req.params.id}).populate("product_id").exec((err, docs)=>{
+    
+    
     docs.original_serial.map((sl)=>{
       var count = 0;
       var id="";
@@ -86,6 +89,7 @@ exports.viewStock = (req, res) =>{
       }
       arr.push(obj);
       count++;
+
     })
     docs.arr=arr;
     res.render("viewStock", {lot:docs}) 
@@ -287,7 +291,7 @@ exports.stockInfo = (req, res, next) => {
         docs.total_stock +=inven.remaining;
         docs.total += inven.remaining;
       })
-
+console.log(docs.invtry)
       res.render("viewSerial", {product:docs})
     })
   })
@@ -621,7 +625,6 @@ exports.showProductRegistrationFields = (req, res, next) => {
     if(docs1 === undefined || docs1.length === 0){
       render_obj.num = 0;
       render_obj.status ="notexist";
-     
     }else{
       render_obj.num =  docs1[0].feature.length;
       render_obj.status ="exist";
@@ -729,7 +732,8 @@ exports.saveInventory = (req, res, next) => {
 
 // viewProducts
 exports.viewProducts = (req, res)=>{
-  Product.find((err, docs)=>{
+  Product.find().sort({"created": -1}).exec((err, docs)=>{
+    
     res.render("products/viewProducts", {products:docs})
   })
 }

@@ -108,10 +108,10 @@
                     <strong>{{this._id}}</strong>
                 </td>
                 <td>
-                    <strong>{{this.purchasePrice}}TK</strong>
+                    <strong>{{formatNumber  this.purchasePrice}}TK</strong>
                 </td>
                 <td>
-                    <strong>{{this.product_id.unitPrice}}TK</strong>
+                    <strong>{{formatNumber this.product_id.unitPrice}}TK</strong>
                 </td>
                 <td>
                     {{# if this.product_id.warranted}}

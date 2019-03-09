@@ -2,10 +2,6 @@
     <div class="register-logo">
         <a href="#"><b>Orders</a>
     </div>
-
-   
-
-    {{!-- {{# if products}} --}}
     <div style="background-color: white">
         <table style="width:100%" class="table table-hover">
             <tr>
@@ -19,8 +15,9 @@
             <tr>
                 <td>
                     <a href="/orders/orderDetails/{{this._id}}" data-toggle="tooltip" data-placement="top"
-                        title="Edit" style="padding: 0%" class="btn btn-primary"><img src="https://img.icons8.com/windows/20/ffffff/edit.png"></a>
-    
+                        title="Edit" style="padding: 0%" class="btn btn-primary">
+                        <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
+                    </a>
                     <strong>{{this.user.profile.name}}</strong>
                 </td>
 
@@ -29,30 +26,18 @@
                 </td>
 
                 <td>
-                    <strong>{{this.totalAmount}}TK</strong>
+                    <strong>{{formatNumber this.totalAmount}}TK</strong>
                 </td>
 
                 <td>
-                   <strong>{{this.created}}</strong>
+                   <strong>{{formatDate this.created}}</strong>
                 </td>
 
                 <td>
-                    <strong>{{this.lastModified}}</strong>
+                    <strong>{{formatDate this.lastModified }}</strong>
                 </td>
-               
             </tr>
             {{/each}}
-            {{!-- each product --}}
-            {{!-- {{/each}} --}}
         </table>
-
     </div>
-    {{!-- {{ else }} --}}
-    {{!-- <div class="row">
-        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <h2 id="search-result" onclick="searchPartial()">No Item in found</h2>
-        </div>
-    </div> --}}
-    {{!-- {{/if}} --}}
-
 </div>

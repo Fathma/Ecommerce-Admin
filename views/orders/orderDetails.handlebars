@@ -62,11 +62,11 @@
 
                                         <tr>
                                             <td>Order Date:</td>
-                                            <td>{{order.created}}</td>
+                                            <td>{{formatDate order.created}}</td>
                                         </tr>
                                         <tr>
                                             <td>Modified Date:</td>
-                                            <td>{{order.lastModified}}</td>
+                                            <td>{{formatDate order.lastModified}}</td>
                                         </tr>
                                         <tr>
                                             <td>Payment Method:</td>
@@ -118,23 +118,23 @@
                                                 <br>
                                             </td>
 
-                                            <td class="text-right"><a
-                                                    href="/orders/Edit/{{this.oid}}/{{this.product._id}}/{{this.product.name}}/{{this.quantity}}/{{this.unitPrice}}/{{this._id}}"
+                                            <td class="text-right">
+                                                <a href="/orders/Edit/{{this.oid}}/{{this.product._id}}/{{this.product.name}}/{{this.quantity}}/{{this.unitPrice}}/{{this._id}}"
                                                     data-toggle="tooltip" data-placement="top" title="Edit"
                                                     style="padding: 0%" class="btn btn-primary"> <img
                                                         src="https://img.icons8.com/windows/20/ffffff/edit.png"></a>{{this.quantity}}
                                             </td>
-                                            <td class="text-right">{{this.unitPrice}}TK</td>
-                                            <td class="text-right">{{this.price}}TK</td>
+                                            <td class="text-right">{{formatNumber this.unitPrice}}TK</td>
+                                            <td class="text-right">{{formatNumber this.price}}TK</td>
                                         </tr>
                                         {{/each}}
                                         <tr>
                                             <td colspan="4" class="text-right">Shipping Cost:</td>
-                                            <td class="text-right">{{order.shippingCharge}}TK</td>
+                                            <td class="text-right">{{formatNumber order.shippingCharge}}TK</td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-right">Total:</td>
-                                            <td class="text-right">{{order.totalAmount}}TK</td>
+                                            <td class="text-right">{{formatNumber order.totalAmount}}TK</td>
                                         </tr>
 
                                     </tbody>
@@ -166,7 +166,7 @@
                                         <tbody>
                                             {{# each order.history}}
                                             <tr>
-                                                <td class="text-left">{{this.date}}</td>
+                                                <td class="text-left">{{formatDate this.date}}</td>
                                                 <td class="text-left">{{this.comment}}</td>
 
                                                 <td class="text-left">{{this.status}}</td>

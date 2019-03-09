@@ -45,15 +45,10 @@ function set_serial_last() {
       ) {
         document.getElementById("new_msg").innerHTML = "";
         alert("Quantity of the product is satisfied");
-        
       } 
       else {
         document.getElementById("new_msg").innerHTML ="You have to select " + document.getElementById("quantity").value;
-       
-        product_serial.value =
-          product_serial.value +
-          "," +
-          document.getElementById("selected").value;
+        product_serial.value = product_serial.value +"," + document.getElementById("selected").value;
       }
     }
     var srr = ArrNoDupe(product_serial.value.split(","));
@@ -158,7 +153,7 @@ function addnew() {
       document.getElementById("feats").value + "," + feat;
   }
 }
-function saveSerials() {}
+
 // creating new textField inside a div
 function create_text_fields(i) {
   var label = document.createElement("label");
@@ -178,9 +173,11 @@ function create_text_fields(i) {
   div.appendChild(breakk);
   document.getElementById("space").appendChild(div);
 }
+
 function set_var() {
   document.getElementById("check").value = "0";
 }
+
 function check_all_purchase_price() {
   // alert(document.getElementById("all_pp").value);
   var highest_pp = parseInt(document.getElementById("all_pp").value);
@@ -256,9 +253,7 @@ $(document).ready(function() {
     $.get(
       // here model is the product_id
       "/products/check_availablity/" + document.getElementById("model").value,
-      {},
-      function(data) {
-
+      {}, function(data) {
         document.getElementById("pre_serial").value = JSON.stringify(data.data);
       }
     );
@@ -353,8 +348,7 @@ $(document).ready(function() {
             }
 
             if (exists.length === 0) {
-              $.post(
-                "/products/SaveInventory",
+              $.post( "/products/SaveInventory",
                 {
                   serial: data_string,
                   model: document.getElementById("model").value,
@@ -378,38 +372,6 @@ $(document).ready(function() {
       }
     }
   });
-
-  // creating subcategory on the basis of selected category
-  $("#categg").change(function() {
-    if(document.getElementById("categg").value != null){
-      var cat_id = document.getElementById("categg").value.split(",");
-      $.get(
-        "/category/getSub/" + cat_id[0],
-        {
-          cat_id: cat_id
-        },
-        function(data) {
-          configureDropDownL(document.getElementById("subCategg"), data);
-      
-        }
-      );
-    }
-  });
-
-  // creates dropdown
-  function configureDropDownL(ddl2, data) {
-    var options;
-    options += '<option value="0">Select One</>';
-    for (i = 0; i < data[0].subCategories.length; i++) {
-      options +=
-        "<option onClick='getAllSerials()'value=\"" +
-        data[0].subCategories[i]._id +","+ data[0].subCategories[i].name+
-        '">' +
-        data[0].subCategories[i].name
-        "</>";
-    }
-    ddl2.innerHTML = options;
-  }
 });
 
 // makes an array unique
@@ -436,12 +398,7 @@ function checkValidityy() {
 function set_disable(id) {
   var all = [];
   if (document.getElementById("serial").value != "") {
-
-    var val =
-      document.getElementById("serial").value +
-      "," +
-      parseInt(document.getElementById(id).innerHTML);
-    
+    var val = document.getElementById("serial").value + "," + parseInt(document.getElementById(id).innerHTML);
     var values = ArrNoDupe(val.split(","));
 
     document.getElementById("serial").value = values;
@@ -459,12 +416,7 @@ function set_disable(id) {
 function set_disableNoSerial(id) {
   var all = [];
   if (document.getElementById("serial").value != "") {
-
-    var val =
-      document.getElementById("serial").value +
-      "," +
-      (document.getElementById(id).innerHTML).trim();
-    
+    var val = document.getElementById("serial").value + "," + (document.getElementById(id).innerHTML).trim();
     var values = ArrNoDupe(val.split(","));
 
     document.getElementById("serial").value = values;

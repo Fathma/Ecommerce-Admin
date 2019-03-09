@@ -1,57 +1,114 @@
-
 <div class="box">
     <div class="register-logo">
     </div>
     <div class="box-body">
+
         <div class="row">
             {{# if cat}}
             {{# if brand}}
-            <div class="col-md-7">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
 
                 <div class="well">
                     <h3 class="text-center">Add New Product/ Model</h3>
                     <div class="well">
+
                         <form action="/products/showfields" method="POST">
                             <div class="form-group">
-                                <label for="categg">Category<span style="color: red">*</span></label>
-                                <select class="form-control" name="categg" id="categg" required>
-                                    <option value="null" selected>Select One</option>
-                                    {{# each cat}}
-                                    <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
-                                    {{/each}}
-                                </select>
+                                <div class="col-sm-10">
+                                    <label for="categg">Category<span style="color: red">*</span></label>
+                                    <select class="form-control" name="categg" id="categg" required>
+                                        <option value="null" selected>Select One</option>
+                                        {{# each cat}}
+                                        <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-sm-1"><br>
+                                    <p><a class="btn btn-success" href="#ex1" rel="modal:open">+</a></p>
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="subCategg">Sub Category(optional)</label>
-                                <select class="form-control" name="subCategg" id="subCategg">
-                                    <option value="null">select one</option>
-                                    {{# each categories}}
-                                    <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
-                                    {{/each}}
-                                </select>
+                                <div class="col-sm-10">
+                                    <label for="subCategg">Sub Category(optional)</label>
+                                    <select class="form-control" name="subCategg" id="subCategg">
+                                        <option value="null">select one</option>
+                                        {{# each categories}}
+                                        <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-sm-1"><br>
+                                    <p><a class="btn btn-success" href="#ex2" rel="modal:open">+</a></p>
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="brandg">Brand<span style="color: red">*</span></label>
-                                <select class="form-control" name="brandg" required>
-                                    <option value="null" selected>select one</option>
-                                    {{# each brand}}
-                                    <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
-                                    {{/each}}
-                                </select>
+                                <div class="col-sm-10">
+                                    <label for="brandg">Brand<span style="color: red">*</span></label>
+                                    <select class="form-control" name="brandg" id="brandg" required>
+                                        <option value="null" selected>select one</option>
+                                        {{# each brand}}
+                                        <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-sm-1"><br>
+                                    <p><a class="btn btn-success" href="#ex3" rel="modal:open">+</a></p>
+                                </div>
                             </div>
 
                             {{# if catt}}
-                                <button type="submit" class="btn btn-default ">Submit</button> <br>
-                                <p style="color:red; float:left"> The form has submitted! </p>
+                            <button type="submit" class="btn btn-default ">Submit</button> <br>
+                            <p style="color:red; float:left"> The form has submitted! </p>
                             {{else}}
-                                <button type="submit" class="btn btn-danger ">Submit</button> <br>
-                                <p style="color:red; float:left"> Submit the form before filling up the product Information</p>
+                            <button type="submit" class="btn btn-danger ">Submit</button> <br>
+                            <p style="color:red; float:left"> Submit the form before filling up the product Information
+                            </p>
                             {{/if}}
                         </form>
                     </div>
+                    <div id="ex1" class="modal">
+                        <form>
+                            <div class="form-group">
+                                <label for="cat">Category</label>
+                                <input type="text" name="cat" id="cat" placeholder="Enter New Category" class="form-control" required>
+                            </div>
+                            <a id="myForm1" href="/category/entry" class="btn btn-primary">Submit</a>
+                        </form>
+                        {{!-- <a href="/category/entry" >Close</a> --}}
+                    </div>
+                    <div id="ex2" class="modal">
+                        <form>
+                            <div class="form-group">
+                                <label for="cate">Category<span style="color: red">*</span></label>
+                                <select class="form-control" name="cate" id="cate" required>
+                                    {{# each cat}}
+                                    <option value="{{this._id}}">{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="subCat">Sub Category</label>
+                                <input type="text" name="subCat" id="subCat" class="form-control" required>
+                            </div>
+                            <button id="save_sub" class="btn btn-primary">Submit</button>
+                        </form>
+                        <a href="/category/entry" rel="modal:close">Close</a>
+                    </div>
 
+                    <div id="ex3" class="modal">
+                        <form>
+                            <div class="form-group">
+                                <label for="brand">Brand<span style="color: red">*</span></label>
+                                <input type="text" name="brand" id="brand" class="form-control"
+                                    placeholder="Enter New Brand" required>
+                            </div>
+                            <a id="save_brand" class="btn btn-primary">Submit</a>
+                        </form>
+                    </div>
+                    
                     {{# if cattN}}
                     <form action="/products/regiSave" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="num" value="{{num}}">
@@ -59,7 +116,7 @@
                         <input type="hidden" name="catt" value="{{catt}}">
                         <input type="hidden" name="sub" value="{{sub}}">
                         <input type="hidden" name="status" value="{{status}}">
-                        <input type="hidden" name="subN" value="{{subN}}" >
+                        <input type="hidden" name="subN" value="{{subN}}">
 
                         <div class="form-group">
                             <label for="cattN">Category</label>
@@ -89,12 +146,11 @@
                             <input type="text" name="model" class="form-control" placeholder="Enter Model" required>
                         </div>
 
-
                         {{# each features}}
                         <div class="form-group">
                             <input type="hidden" name="feature{{@index}}_label" value="{{this}}">
                             <label for="feature{{@index}}_value">{{this}}</label>
-                            <input type="text" name="feature{{@index}}_value" class="form-control" placeholder="" >
+                            <input type="text" name="feature{{@index}}_value" class="form-control" placeholder="">
                         </div>
                         {{/each}}
 
@@ -105,7 +161,8 @@
 
                             <div class="col-sm-9">
                                 <input type="hidden" id="new_feat" name="new_feat" value="0">
-                                <input type="text" id="new_feat_label" name="new_feat_label" class="form-control" placeholder="write a new feature name">
+                                <input type="text" id="new_feat_label" name="new_feat_label" class="form-control"
+                                    placeholder="write a new feature name">
                             </div>
 
                             <div class="col-sm-2">
@@ -148,10 +205,12 @@
             </div>
             {{/if}}
             {{/if}}
-            <div class="col-md-5">
+            <div class="col-md-3">
 
-                <div class="well">
-                    <h3 class="text-center">Add New Category</h3>
+            {{!-- <div class="well"> --}}
+            {{!-- <h3 class="text-center"></h3> --}}
+
+            {{!-- <h3 class="text-center">Add New Category</h3>
                     <form method="POST" action="/category/addCategory">
 
                         <div class="form-group">
@@ -161,11 +220,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    </form> --}}
 
-                    {{# if cat}}
+            {{!-- {{# if cat}} --}}
 
-                    <h3 class="text-center">New Sub Category (if Applicable)</h3>
+            {{!-- <h3 class="text-center">New Sub Category (if Applicable)</h3>
                     <form method="POST" action="/category/addSubCategory">
 
                         <div class="form-group">
@@ -185,9 +244,9 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    </form> --}}
 
-                    <h3 class="text-center">New Brand</h3>
+            {{!-- <h3 class="text-center">New Brand</h3>
                     <form method="POST" action="/category/addBrand">
 
                         <div class="form-group">
@@ -196,13 +255,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                    {{/if}}
-                </div>
+                    </form> --}}
+            {{!-- {{/if}} --}}
+            {{!-- </div> --}}
             </div>
-
         </div>
-
     </div>
 </div>
 </div>
