@@ -31,14 +31,14 @@ $(document).ready(function() {
   });
 
   // setting brand dropdown values on the besis of selected subcategory
-  $("#subCategg").change(function() {
-    if (document.getElementById("subCategg").value != null) {
-      var subcat_id = document.getElementById("subCategg").value.split(",");
-      $.get("/category/getBrands/" + subcat_id[0], {}, function(data) {
-        configureDropDownL2(document.getElementById("brandg"), data);
-      });
-    }
-  });
+  // $("#subCategg").change(function() {
+  //   if (document.getElementById("subCategg").value != null) {
+  //     var subcat_id = document.getElementById("subCategg").value.split(",");
+  //     $.get("/category/getBrands/" + subcat_id[0], {}, function(data) {
+  //       configureDropDownL2(document.getElementById("brandg"), data);
+  //     });
+  //   }
+  // });
 
   // creating subcategory and brand on the basis of selected category
   $("#categg").change(function() {
@@ -46,7 +46,7 @@ $(document).ready(function() {
       var cat_id = document.getElementById("categg").value.split(",");
       $.get("/category/getSub/" + cat_id[0], {}, function(data) {
         configureDropDownL(document.getElementById("subCategg"), data);
-        configureDropDownL2(document.getElementById("brandg"), data);
+        // configureDropDownL2(document.getElementById("brandg"), data);
       });
     }
   });
