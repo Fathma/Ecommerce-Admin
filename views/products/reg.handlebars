@@ -25,7 +25,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-1"><br>
-                                    <p><a class="btn btn-success" href="#ex1" rel="modal:open">+</a></p>
+                                    <p><a data-toggle="tooltip" title="New Category" class="btn btn-success" href="#ex1" rel="modal:open">+</a></p>
                                 </div>
                             </div>
 
@@ -40,7 +40,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-1"><br>
-                                    <p><a class="btn btn-success" href="#ex2" rel="modal:open">+</a></p>
+                                    <p><a data-toggle="tooltip" title="New Sub Category" class="btn btn-success" href="#ex2" rel="modal:open">+</a></p>
                                 </div>
                             </div>
 
@@ -55,7 +55,7 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-1"><br>
-                                    <p><a class="btn btn-success" href="#ex3" rel="modal:open">+</a></p>
+                                    <p><a data-toggle="tooltip" title="New Brand" class="btn btn-success" href="#ex3" rel="modal:open">+</a></p>
                                 </div>
                             </div>
 
@@ -95,7 +95,7 @@
                             </div>
                             <button id="save_sub" class="btn btn-primary">Submit</button>
                         </form>
-                        <a href="/category/entry" rel="modal:close">Close</a>
+                        {{!-- <a href="/category/entry" rel="modal:close">Close</a> --}}
                     </div>
 
                     <div id="ex3" class="modal">
@@ -108,7 +108,7 @@
                             <a id="save_brand" class="btn btn-primary">Submit</a>
                         </form>
                     </div>
-                    
+
                     {{# if cattN}}
                     <form action="/products/regiSave" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="num" value="{{num}}">
