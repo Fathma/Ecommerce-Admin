@@ -7,6 +7,8 @@ const session = require("express-session");
 const passport = require("passport");
 const dbConfig = require('./config/database');
 var  Category = require("./models/category.model")
+var  Product = require("./models/Product")
+var  Supplier = require("./models/supplier.model")
 var  SubCategory = require("./models/subCategory.model")
 var  Brand = require("./models/brand.model")
 const morgan = require('morgan');
@@ -15,6 +17,8 @@ var mongoStore = require('connect-mongo')(session);
 const methodOverride = require("method-override");
 var HandlebarsIntl = require('handlebars-intl');
 var Handlebars     = require('handlebars');
+var moment = require('moment');
+moment().format();
 // role
 const { ensureAuthenticated } = require("./helpers/auth");
 const { Super } = require("./helpers/rolecheck");
@@ -29,6 +33,7 @@ const productsRoutes = require("./routes/products.routes");
 const customerRoutes = require("./routes/customer.routes");
 const invoiceRoutes = require("./routes/invoice.routes");
 const returnsRoutes = require("./routes/return.routes");
+const purchaseRoutes = require("./routes/purchase.routes");
 
 // Passport config
 require("./config/passport")(passport);
@@ -45,12 +50,9 @@ mongoose.connect(dbConfig.mongoURI, (err) =>{
 });
 
 HandlebarsIntl.registerWith(Handlebars);
-//Dev tools
-// if (app.get('env') === 'production') {
-//   app.use(logger('combined'));
-// } else {
-  app.use(morgan('dev'));
-// }//Morgan to see Routes in shell/command/bash. 
+
+app.use(morgan('dev'));
+
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -82,13 +84,27 @@ app.use(passport.session());
 
 app.use(flash());
 
+Handlebars.registerHelper('formatTime', function (date, format) {
+  var mmnt = moment(date);
+  return mmnt.format(format);
+});
+
+app.use(function (req, res, next) {
+  Supplier.find()
+  .exec(function (err, docs) {
+     if (err) return next(err);
+     res.locals.Supplier = docs;
+     next();
+  });
+});
+
 app.use(function (req, res, next) {
    Category.find()
    .populate("subCategories")
    .exec(function (err, categories) {
-       if (err) return next(err);
-       res.locals.S_categories = categories;
-       next();
+      if (err) return next(err);
+      res.locals.S_categories = categories;
+      next();
    });
 });
 
@@ -120,7 +136,15 @@ app.use(function(req, res, next){
 app.use(function(req, res, next){
   Brand.find({}, function(err, docs){
     if(err) return next(err);
-      res.locals.brand =docs;
+      res.locals.brand = docs;
+      next();
+  });
+});
+
+app.use(function(req, res, next){
+  Product.find({}, function(err, docs){
+    if(err) return next(err);
+      res.locals.Product = docs;
       next();
   });
 });
@@ -158,5 +182,6 @@ app.use("/returns", returnsRoutes);
 app.use("/invoice", invoiceRoutes);
 app.use("/customers", customerRoutes);
 app.use("/products", productsRoutes);
+app.use("/purchase", purchaseRoutes);
 
 

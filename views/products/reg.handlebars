@@ -14,6 +14,7 @@
                     <div class="well">
 
                         <form action="/products/showfields" method="POST">
+
                             <div class="form-group">
                                 <div class="col-sm-10">
                                     <label for="categg">Category<span style="color: red">*</span></label>
@@ -77,7 +78,7 @@
                             </div>
                             <a id="myForm1" href="/category/entry" class="btn btn-primary">Submit</a>
                         </form>
-                        {{!-- <a href="/category/entry" >Close</a> --}}
+                    
                     </div>
                     <div id="ex2" class="modal">
                         <form>
@@ -95,7 +96,6 @@
                             </div>
                             <button id="save_sub" class="btn btn-primary">Submit</button>
                         </form>
-                        {{!-- <a href="/category/entry" rel="modal:close">Close</a> --}}
                     </div>
 
                     <div id="ex3" class="modal">
@@ -121,14 +121,12 @@
                         <div class="form-group">
                             <label for="cattN">Category</label>
                             <input type="text" name="cattN" class="form-control" value="{{cattN}}" readonly>
-
                         </div>
 
                         {{# if subN}}
                         <div class="form-group">
                             <label for="subNn">Sub Category</label>
                             <input type="text" name="subNn" class="form-control" value="{{subN}}" readonly>
-
                         </div>
                         {{/if}}
                         <div class="form-group">
@@ -178,8 +176,7 @@
 
                         <div class="form-group">
                             <label for="warranty">Warranty</label>
-                            <input type="text" name="warranty" class="form-control" placeholder="Enter Warranty"
-                                required>
+                            <input type="text" name="warranty" class="form-control" placeholder="Enter Warranty" required>
                         </div>
 
                         <div class="form-group">
@@ -207,57 +204,6 @@
             {{/if}}
             <div class="col-md-3">
 
-            {{!-- <div class="well"> --}}
-            {{!-- <h3 class="text-center"></h3> --}}
-
-            {{!-- <h3 class="text-center">Add New Category</h3>
-                    <form method="POST" action="/category/addCategory">
-
-                        <div class="form-group">
-                            <label for="cat">Category</label>
-                            <input type="text" name="cat" placeholder="Enter New Category" class="form-control"
-                                required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form> --}}
-
-            {{!-- {{# if cat}} --}}
-
-            {{!-- <h3 class="text-center">New Sub Category (if Applicable)</h3>
-                    <form method="POST" action="/category/addSubCategory">
-
-                        <div class="form-group">
-                            <label for="cate">Category<span style="color: red">*</span></label>
-
-                            <select class="form-control" name="cate" required>
-                                {{# each cat}}
-                                <option value="{{this._id}}">{{this.name}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="subCat">Sub Category</label>
-                            <input type="text" name="subCat" placeholder="Enter New Sub Category" class="form-control"
-                                required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form> --}}
-
-            {{!-- <h3 class="text-center">New Brand</h3>
-                    <form method="POST" action="/category/addBrand">
-
-                        <div class="form-group">
-                            <label for="brand">Brand<span style="color: red">*</span></label>
-                            <input type="text" name="brand" class="form-control" placeholder="Enter New Brand" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form> --}}
-            {{!-- {{/if}} --}}
-            {{!-- </div> --}}
             </div>
         </div>
     </div>

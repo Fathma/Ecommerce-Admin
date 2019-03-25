@@ -18,10 +18,12 @@ var ProductSchema = new Schema({
     image: String,
     weight:  {type:String},
     // v1
+    serial_availablity:{ type: Boolean },
+
     frontQuantity: {type:Number, default:0},
     live: { 
-        quantity: {type:Number,default:0},
-        serial: {type: Array,default:[]},
+        quantity: { type:Number,default:0 },
+        serial: { type: Array,default:[] },
         admin: { type: Schema.Types.ObjectId, ref: 'users' },
         created: { type: Date, default: Date.now }, 
     },

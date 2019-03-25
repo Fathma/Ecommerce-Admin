@@ -259,13 +259,13 @@ $(document).ready(function() {
     );
   });
 
-  // onload
-  notificationCheck();
+  // // onload
+  // notificationCheck();
 
-  window.setInterval(function() {
+  // window.setInterval(function() {
    
-    notificationCheck();
-  }, 10000);
+  //   notificationCheck();
+  // }, 10000);
 
   // gets the notifications
   function notificationCheck() {
@@ -387,7 +387,7 @@ function ArrNoDupe(a) {
 
 function checkValidityy() {
   var arr = document.getElementById("serial").value.split(",");
-  alert(arr.length);
+
   var arr2 = ArrNoDupe(arr);
   document.getElementById("serial").value = arr2;
   document.getElementById("quantity").value = arr2.length;

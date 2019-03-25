@@ -235,7 +235,6 @@ exports.StockLowToHigh= (req, res, next) => {
 };
 
 exports.getSearchResult = (req, res)=>{
- 
    var search =  new RegExp(req.body.searchData, "i")
    var data =[];
    Inventory.find( )
@@ -266,6 +265,7 @@ exports.getSearchResult = (req, res)=>{
       })
     }
   })
+  
 }
 
 // returns allproduct page

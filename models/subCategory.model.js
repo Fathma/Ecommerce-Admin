@@ -4,7 +4,7 @@ const Text = require('../node_modules/text/lib/text');
 
 
 var SubCategorySchema = new Schema({
-    name: { type: Text, es_type: 'text', unique: true },
+    name: { type: Text, es_type: 'text', unique:true},
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
     created: { type: Date, default: Date.now },
     brands:[{

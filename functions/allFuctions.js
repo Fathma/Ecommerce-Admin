@@ -60,3 +60,7 @@ exports.get_live = async (condition)=>{
   return await Product.find(condition)
 }
 
+exports.checkAvailability= (model1,name)=>{ model1.find({ name: name })
+}
+
+
