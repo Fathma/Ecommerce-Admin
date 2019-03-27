@@ -23,7 +23,7 @@
                         <select class="form-control inp" name="supplier" id="supplier">
                             <option value="0">Select One</option>
                             {{# each Supplier }}
-                            <option value="{{this._id}}">{{this.cname}}</option>
+                            <option value="{{this._id}}" {{# equality this._id ../lp.supplier._id}} selected{{/equality}}> {{this.cname}}</option>
                             {{/each}}
                         </select>
                     </div>
@@ -35,6 +35,7 @@
                     </div>
                     <div class="col-md-6">
                         <select class="form-control inp" name="contt" id="contt">
+                            <option value="0" selected>{{lp.contactPerson}}</option>
                         </select>
                     </div>
                 </div>
