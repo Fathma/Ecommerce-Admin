@@ -104,7 +104,7 @@
                         <input type="text" list="model1s" class="form-control inp" name="model1" id="model1">
                         <datalist id="model1s">
                             {{# each Product }}
-                            <option value="{{this.name}}"></option>
+                            <option value="{{this.model}}"></option>
                             {{/each}}
                         </datalist>
                     </div>
@@ -217,7 +217,7 @@
                                     <td class="text-left">Product</td>
                                     <td class="text-right">Quantity</td>
                                     <td class="text-right">Unit Price</td>
-                                    {{!-- <td class="text-right">Total</td> --}}
+                                    <td class="text-right">Total</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -229,18 +229,18 @@
                                         <a href="#"> {{this.product.model}}</a>
                                     </td>
                                     <td class="text-right"> {{this.quantity}}</td>
-                                    <td class="text-right">{{this.purchasePrice}}TK</td>
-                                    {{!-- <td class="text-right">TK</td> --}}
+                                    <td class="text-right">{{formatNumber this.purchasePrice}}TK</td>
+                                    <td class="text-right">{{formatNumber this.total}}</td>
                                 </tr>
                                 {{/each}}
                                 {{!-- <tr>
                                     <td colspan="4" class="text-right">Shipping Cost:</td>
                                     <td class="text-right">TK</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4" class="text-right">Total:</td>
-                                    <td class="text-right">TK</td>
                                 </tr> --}}
+                                <tr>
+                                    <td colspan="3" class="text-right">SubTotal:</td>
+                                    <td class="text-right">{{formatNumber lp.subTotal}}TK</td>
+                                </tr>
 
                             </tbody>
                         </table>

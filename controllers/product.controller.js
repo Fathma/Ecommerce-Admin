@@ -242,7 +242,6 @@ exports.getSearchResult = (req, res)=>{
     path:"product_id",
     match: { 
       $or:[
-     
       {"title": { $regex: search }} ,
       {"model": { $regex: search }} ,
       {"description": { $regex: search }},
@@ -260,12 +259,10 @@ exports.getSearchResult = (req, res)=>{
       })
 
       allFuctions.live_wise_inventory(data, (rs)=>{
-        
-        allFuctions.get_allProduct_page(res, rs, "Inventories")
+      allFuctions.get_allProduct_page(res, rs, "Inventories")
       })
     }
   })
-  
 }
 
 // returns allproduct page

@@ -135,6 +135,7 @@ exports.SaveLocalPurchase = async (req, res) => {
   var form_product = req.body.model1;
   var form_supplier = req.body.supplier;
   var contact= (req.body.contt).split(",")
+  var total= Number(req.body.quantity) * Number(req.body.PP)
 
   var sup = await Supplier.findOne({ _id: form_supplier });
   var brand = await Brand.findOne({ name: form_brand });
@@ -168,9 +169,11 @@ exports.SaveLocalPurchase = async (req, res) => {
         {
           product: pro._id,
           quantity: req.body.quantity,
-          purchasePrice: req.body.PP
+          purchasePrice: req.body.PP,
+          total: total
         }
-      ]
+      ], 
+      subTotal: total
     };
 
     await new LP(obj).save();
@@ -179,13 +182,13 @@ exports.SaveLocalPurchase = async (req, res) => {
     var product = {
       product: pro._id,
       quantity: req.body.quantity,
-      purchasePrice: req.body.PP
+      purchasePrice: req.body.PP,
+      total: total
     };
     await LP.update(
       { number: req.body.LP },
-      { $addToSet: { products: product } },
-      { upsert: true }
-    );
+      { $addToSet: { products: product }, $inc: { subTotal: +total }},
+      { upsert: true });
     res.redirect("/purchase/localPurchase/" + req.body.LP);
   }
 };

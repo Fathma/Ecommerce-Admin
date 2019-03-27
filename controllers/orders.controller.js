@@ -5,15 +5,14 @@ const Order = require("../models/customerOrder");
 const Email = require("../Email/email");
 
 // view list of customers
-exports.showOrdersPage = (req, res, next) => {
+exports.showOrdersPage = (req, res) => {
   allFuctions.get_orders({}, rs => {
-    console.log(rs);
     res.render("orders/orders", { orders: rs });
   });
 };
 
 // saving serial for order
-exports.saveSerialInOrders = (req, res, next) => {
+exports.saveSerialInOrders = (req, res) => {
   var serials = req.body.Serial.split(",");
   Order.update(
     { _id: req.params.oid, "cart._id": req.params.item_id },
@@ -26,10 +25,9 @@ exports.saveSerialInOrders = (req, res, next) => {
   );
 };
 
-exports.saveEdit = (req, res, next) => {
+exports.saveEdit = (req, res) => {
   Order.find({ _id: req.params.oid }, (err, docs) => {
     var total = 0;
-
     docs[0].cart.map(items => {
       if (items._id != req.params.item_id) {
         total += items.price;
@@ -46,20 +44,16 @@ exports.saveEdit = (req, res, next) => {
             total + parseInt(req.body.quantity) * parseInt(req.body.unitprice)
         }
       },
-      { upsert: true },
-      (err, rs) => {
-        if (err) {
-          res.send(err);
-        } else {
-          res.redirect("/orders/orderDetails/" + req.params.oid);
-        }
+      { upsert: true }, (err, rs) => {
+        if (err) res.send(err);
+        else res.redirect("/orders/orderDetails/" + req.params.oid);
       }
     );
   });
 };
 
 // returns the page to add serial to an ordered product
-exports.addSerialToProduct = (req, res, next) => {
+exports.addSerialToProduct = (req, res) => {
   allFuctions.get_orders({ _id: req.params.oid }, rs => {
     Product.find({ _id: req.params.pid }, function(err, docs) {
       if (docs[0].warranted) {
@@ -80,7 +74,7 @@ exports.addSerialToProduct = (req, res, next) => {
   });
 };
 
-exports.getEditOrderPage = (req, res, next) => {
+exports.getEditOrderPage = (req, res) => {
   res.render("orders/editOrder", {
     oid: req.params.oid,
     model: req.params.pid,
@@ -93,7 +87,7 @@ exports.getEditOrderPage = (req, res, next) => {
 };
 
 // view list of customers
-exports.ViewInvoice = (req, res, next) => {
+exports.ViewInvoice = (req, res) => {
   Invoice.find({ _id: req.params.id })
     .populate("user")
     .populate({

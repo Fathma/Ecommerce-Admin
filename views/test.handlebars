@@ -1,0 +1,16 @@
+<input type="file" name="file" id="file">
+<button id="btn">submit</button>
+
+<script>
+    $(document).ready(function () {
+        // save new category
+        $(function () {
+            $("#btn").on("click", function (e) {
+                var file = document.getElementById('file').files[0];
+                $.post("/category/addCategory", {file22:file}, function (data) {
+                    alert(data)
+                });
+            });
+        });
+    });
+</script>

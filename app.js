@@ -19,6 +19,7 @@ var HandlebarsIntl = require("handlebars-intl");
 var Handlebars = require("handlebars");
 var moment = require("moment");
 moment().format();
+
 // role
 const { ensureAuthenticated } = require("./helpers/auth");
 const { Super } = require("./helpers/rolecheck");
@@ -51,15 +52,11 @@ HandlebarsIntl.registerWith(Handlebars);
 
 app.use(morgan("dev"));
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const hbs = handlebars.create({
   defaultLayout: "main",
-
+  // custom helpers
   helpers: {
     equality: function(value1, value2, block) {
       if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
@@ -71,13 +68,11 @@ const hbs = handlebars.create({
     }
   }
 });
+
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
 app.use(methodOverride("_method"));
-// Handlebars middleware
-// app.engine("handlebars", handlebars({ defaultLayout: "main" }));
-// app.set("view engine", "handlebars");
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -108,14 +103,7 @@ Handlebars.registerHelper("formatTime", function(date, format) {
   return mmnt.format(format);
 });
 
-app.use(function(req, res, next) {
-  Supplier.find().exec(function(err, docs) {
-    if (err) return next(err);
-    res.locals.Supplier = docs;
-    next();
-  });
-});
-
+// middleware
 app.use(function(req, res, next) {
   Category.find()
     .populate("subCategories")
@@ -132,52 +120,20 @@ app.use(function(req, res, next) {
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
   res.locals.user = req.user || null;
-  next();
-});
-
-app.use(function(req, res, next) {
-  Category.find({}, function(err, categories) {
-    if (err) return next(err);
-    res.locals.cat = categories;
-    next();
-  });
-});
-
-app.use(function(req, res, next) {
-  SubCategory.find({}, function(err, categories) {
-    if (err) return next(err);
-    res.locals.categories = categories;
-    next();
-  });
-});
-
-app.use(function(req, res, next) {
-  Brand.find({}, function(err, docs) {
-    if (err) return next(err);
-    res.locals.brand = docs;
-    next();
-  });
-});
-
-app.use(function(req, res, next) {
-  Product.find({}, function(err, docs) {
-    if (err) return next(err);
-    res.locals.Product = docs;
-    next();
-  });
-});
-
-app.use(function(req, res, next) {
   res.locals.session = req.session;
   next();
 });
 
-//Port For the Application
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log("The server is live on http://127.0.0.1:3000/");
+// middleware
+app.use(async (req, res, next)=>{
+  res.locals.cat = await Category.find()
+  res.locals.categories = await SubCategory.find()
+  res.locals.brand = await Brand.find()
+  res.locals.Product = await Product.find()
+  res.locals.Supplier = await Supplier.find()
+  next();
 });
+
 
 app.get("/", (req, res) => {
   if (req.user) {
@@ -192,7 +148,7 @@ app.get("/about", (req, res) => {
   res.render("about");
 });
 
-// Use routes
+// routes
 app.use("/category", categoryRoutes);
 app.use("/users", usersRoutes);
 app.use("/orders", ordersRoutes);
@@ -200,3 +156,10 @@ app.use("/invoice", invoiceRoutes);
 app.use("/customers", customerRoutes);
 app.use("/products", productsRoutes);
 app.use("/purchase", purchaseRoutes);
+
+//Port For the Application
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log("The server is live on http://127.0.0.1:3000/");
+});
