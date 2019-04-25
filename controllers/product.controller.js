@@ -1,63 +1,65 @@
 //Imports
 var mongo = require("mongodb");
 const Product = require("../models/Product");
-const SubCategory = require("../models/subCategory.model");
-const Feature = require("../models/features.model");
 const Inventory = require("../models/inventory.model");
-const Category = require("../models/category.model");
+const Serial = require("../models/serials.model");
 const allFuctions = require("../functions/allFuctions");
-const multer = require("multer");
 const mongoose = require('mongoose');
 const path = require('path');
 const crypto = require('crypto');
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
+var fs = require('fs');
 
-const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
+// saving product for dealer products
+exports.SaveProductDealer = async(req, res)=>{
+  var data =req.body.data
+  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  res.send({})
+}
 
-const conn = mongoose.createConnection(mongoo);
-let gfs;
-conn.once('open', function () {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('fs');
-})
-var filename;
-// create storage engine
-const storage = new GridFsStorage(
-  {
-    url: mongoo,
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) { return reject(err); }
-          filename = buf.toString('hex') + path.extname(file.originalname);
-          const fileInfo = {
-            filename: filename,
-            bucketName: 'fs'
-          };
-          resolve(fileInfo);
-        });
+// saving product for local purchase products
+exports.SaveProductLP = async(req, res)=>{
+  var data =req.body.data
+  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  await Serial.insertMany(req.body.serials)
+  res.send({})
+}
+
+// saves image in folder
+exports.SaveImage = async (req, res) => {
+  await req.files.map((image)=>{
+    const tempPath = image.path;
+  
+    crypto.randomBytes(16,async (err, buf) => {
+      if (err) {
+        return reject(err);
+      }
+      filename = buf.toString('hex') + path.extname(image.originalname);
+      const targetPath = path.join(__dirname, "../public/photos/"+filename);
+      
+      await Product.update({_id:req.body.pid},{$addToSet:{image: filename}},{upsert:true})
+    
+      fs.rename(tempPath, targetPath, err => {
+        if (err) console.log(err);
       });
-    }
-  });
-const upload = multer({ storage });
+    });
+  })
+res.redirect("/products/Entry")
+}
 
-// get low quantity for notification
-exports.lowLiveQuantity=async (req, res, next) => {
-  var condition = {"live.quantity":{$lt:3}, isActive: true};
-  let docs = await allFuctions.get_live(condition);
-  var count=0;
-  if(docs.length != 0){ count++; }
-  res.json({quantity: docs.length, count:count})
+// In-house stock product entry page
+exports.getInhouseInventoryPage = (req, res, next) => {
+  res.render("products/InhouseStockProduct");
+};
+
+// dealer stock product entry page
+exports.getDealerInventoryPage = (req, res, next) => {
+  res.render("products/dealerProduct");
 };
 
 // view total stock information
 exports.viewStock = (req, res) =>{
-  console.log("jfsdhfjhdsjfh");
   var arr=[];
   Inventory.findOne({_id: req.params.id}).populate("product_id").exec((err, docs)=>{
-    
-    
     docs.original_serial.map((sl)=>{
       var count = 0;
       var id="";
@@ -89,7 +91,6 @@ exports.viewStock = (req, res) =>{
       }
       arr.push(obj);
       count++;
-
     })
     docs.arr=arr;
     res.render("viewStock", {lot:docs}) 
@@ -106,29 +107,6 @@ exports.lowLiveQuantityDetails= (req, res, next) => {
     allFuctions.live_wise_inventory(data,(docs)=>{
       allFuctions.get_allProduct_page(res, docs, "Inventories")
     })
-  })
-};
-
-// get dashboard 
-exports.showDashboard =async (req, res, next) => {
-  let docs = await allFuctions.get_live({"live.quantity":{$lt:3}, isActive: true});
-  res.render("dashboard",{lowlive:docs.length, data: docs});
-};
-
-// get Registration page
-exports.showProductRegistrationFieldspage= (req, res, next) => {
-  res.render("products/reg");
-};
-
-// get lot without serial page
-exports.saveInventoryNoSerialPage= (req, res, next) => {
-  res.render("addNewLotNoSerial");
-};
-
-// get new lot page
-exports.newLot= (req, res, next) => {
-  allFuctions.find({_id: req.params.id}, function(rs){
-    res.render("addNewLot", {product:rs[0]});
   })
 };
 
@@ -257,7 +235,6 @@ exports.getSearchResult = (req, res)=>{
           data.push(items);
         }
       })
-
       allFuctions.live_wise_inventory(data, (rs)=>{
       allFuctions.get_allProduct_page(res, rs, "Inventories")
       })
@@ -288,7 +265,7 @@ exports.stockInfo = (req, res, next) => {
         docs.total_stock +=inven.remaining;
         docs.total += inven.remaining;
       })
-console.log(docs.invtry)
+      console.log(docs.invtry)
       res.render("viewSerial", {product:docs})
     })
   })
@@ -320,22 +297,6 @@ exports.makeActive = (req, res, next) => {
     res.redirect("/products/viewProducts");
   });
 };
-
-// // returns product Enable
-// exports.makeEnable = (req, res, next) => {
-//   var obj = { status: false };
-//   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-//     res.redirect("/products/view");
-//   });
-// };
-
-// // makes product Disable
-// exports.makeDisable = (req, res, next) => {
-//   var obj = { status: true };
-//   allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
-//     res.redirect("/products/view");
-//   });
-// };
 
 // updateing stock quantity and price of prducts with no serial
 exports.stockEditNoSerial =(req, res, next) => {
@@ -591,44 +552,53 @@ exports.getOfflineProductsPage =async (req, res, next) => {
 };
 
 // shows the number of fields user wants
-exports.showProductRegistrationFields = (req, res, next) => {
-  var category=(req.body.categg).split(",");
-  var subcategory=(req.body.subCategg).split(",");
-  var brand=(req.body.brandg).split(",");
-  var obj=[
-    {category: category[0]},
-    {brand: brand[0]}
-  ]
-
-  if (req.body.subCategg != "0") {
-    obj.push({subcategory: subcategory[0]});
-    var sub= subcategory[0];
+exports.showProductRegistrationFields =async (req, res, next) => {
+  var category= req.body.categg.split(",");
+  var brand= req.body.brandg.split(",");
+  var model= req.body.model;
+  var product = {
+    category: category[0],
+    brand: brand[0],
+    model: model,
+  }
+  var obj={
+      category: category[0],
+      brand: brand[0]
+  }
+  // if there is no sub category of that category
+  if(req.body.subCategg != "0"){
+    var subcategory= req.body.subCategg.split(",");
+    product.subcategory= subcategory[0],
+    product.productName = category[1]+"-"+subcategory[1]+"-"+brand[1]+"-"+model
+    product.pid= category[1].substr(0,3)+subcategory[1].substr(0,3)+brand[1].substr(0,3)+model
+    obj.subcategory=subcategory[0]
   }else{
-    var sub="null";
+    product.productName = category[1]+"-"+brand[1]+"-"+model
+    product.pid = category[1].substr(0,3)+brand[1].substr(0,3)+model
   }
   
-  Feature.find({$and:obj},function(err, docs1) {
-    var render_obj ={
-      title: "Registration",
-      brands:brand[0],
-      catt:category[0],
-      sub:sub,
-      brandN:brand[1],
-      cattN:category[1],
-      subN:subcategory[1],
-      submitted:true
-    }
+  // get all the features of cat sub and brand
+  Product.find(obj, function(err, pros){
+      var features = []
+      if(pros != null){
+        pros.map( (product)=>{
+          product.features.map((feature)=>{
+            features.push(feature.label);
+          })
+        })
+      }
+    // checks whether the model already exists or not
+    Product.findOne({model:model}, function(err, result){
+      if(result ===null){
+        new Product(product).save().then((product)=>{
+          res.render("products/dealerProduct",{product,features, feature_total: features.length})
+        })
+      }else{
+        res.render("products/dealerProduct",{product:result,features, feature_total: features.length})
+      }
+    })
     
-    if(docs1 === undefined || docs1.length === 0){
-      render_obj.num = 0;
-      render_obj.status ="notexist";
-    }else{
-      render_obj.num =  docs1[0].feature.length;
-      render_obj.status ="exist";
-      render_obj.features = docs1[0].feature;
-    }
-    res.render("products/reg", render_obj);
-  });
+    })
 };
 
 // save live
@@ -660,524 +630,114 @@ exports.saveLive =async (req, res, next) => {
   })
 };
 
-// get lot without serial page
-exports.saveInventoryNoSerial= (req, res, next) => {
-  var quantity = parseInt(req.body.quantity);
-  var serials= [];
-  for(var i=0; i<quantity; i++){
-    serials.push((mongoose.Types.ObjectId()).toString())
-  }
-  var inventory = {
-    product_id: req.body.model,
-    stockQuantity: req.body.quantity,
-    purchasePrice: req.body.purchase_price,
-    remaining: req.body.quantity,
-    admin: req.user._id,
-    original_serial: serials,
-    serial: serials
-  }
-  Product.update({_id:req.body.model}, { $set:{ warranted: false } },{ upsert:true }, (err, rs)=>{
-    if(err){
-      console.log(err)
-    }else{
-      new Inventory(inventory).save().then(inventory => {
-        res.redirect("/products/saveInventoryNoSerialPage");
-      });
-    }
-  })
-};
-
 // check availability
 exports.check_availablity= (req, res, next) => {
   var pre_arr="";
   allFuctions.get_all_inventory_list({product_id:req.params.model},{},(rs)=>{
-    rs.map((inventory)=>{
-      var ser=inventory.serial;
-      for(var i=0;i<ser.length;i++){
-        pre_arr += ser[i]
-        if(i <ser.length-1){
-          pre_arr +=","
+    if(rs !=null){
+      rs.map((inventory)=>{
+        var ser=inventory.serial;
+        for(var i=0;i<ser.length;i++){
+          pre_arr += ser[i]
+          if(i <ser.length-1){
+            pre_arr +=","
+          }
         }
-      }
-    })
-    res.json({data:pre_arr});
+      })
+      res.json({data:pre_arr});
+    }
   })
 }
-
-// Save Inventory
-exports.saveInventory = (req, res, next) => {
-  var serials= (req.body.serial).split(",");
-  var inventory = {
-    product_id:req.body.model,
-    stockQuantity:req.body.quantity,
-    purchasePrice: req.body.purchase_price,
-    remaining: req.body.quantity,
-    serial: serials,
-    original_serial:serials,
-    admin: req.user._id
-  }
-  Product.update({_id:req.body.model}, { $set:{ warranted: true } },{ upsert:true }, (err, rs)=>{
-    if(err){
-      console.log((err))
-    }else{
-      new Inventory(inventory).save().then(inventory => {
-        res.json({})
-      });
-    }
-  }) 
-};
 
 // viewProducts
 exports.viewProducts = (req, res)=>{
   Product.find().sort({"created": -1}).exec((err, docs)=>{
-    
     res.render("products/viewProducts", {products:docs})
   })
 }
-//saves product details
-exports.SaveProduct= (req, res, next) => {
-  var selected_brand= req.body.brand;
-  var selected_category= req.body.catt;
 
-  // checking whether first form has submitted or not
-  if(req.body.catt != "" && selected_brand != ""){
-    var selected_subCategory = req.body.sub;
-    var num = parseInt(req.body.num, 10);
-    var data = [];
-    var features_new = [];
-    var obj=[
-      {category:selected_category},
-      {brand:selected_brand}
-    ] ;
-  
-    // getting previously added feature and corresponding values
-    if (num > 0) {
-      if(req.body.feature0_value === ""){}else{
-        
-        data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
-      }
-      if (num > 1) {
-        if(req.body.feature1_value === ""){}else{
-          data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
-        }
-        if (num > 2) {
-          if(req.body.feature2_value === ""){}else{
-            data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
-          }
-          if (num > 3) {
-            if(req.body.feature3_value === ""){}else{
-              data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
-            }
-            if (num > 4) {
-              if(req.body.feature4_value === ""){}else{
-                data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
-              }
-              if (num > 5) {
-                if(req.body.feature5_value === ""){}else{
-                  data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
-                }
-                if (num > 6) {
-                  if(req.body.feature6_value === ""){}else{
-                    data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
-                  }
-                  if (num > 7) {
-                    if(req.body.feature7_value === ""){}else{
-                      data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
-                    }
-                    if (num > 8) {
-                      if(req.body.feature8_value === ""){}else{
-                        data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
-                      }
-                      if (num > 9) {
-                        if(req.body.feature9_value === ""){}else{
-                          data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
-                        }
-                        if (num > 10) {
-                          if(req.body.feature10_value === ""){}else{
-                            data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
-                          }
-                          if (num > 11) {
-                            if(req.body.feature11_value === ""){}else{
-                              data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
-                            }
-                            if (num > 12) {
-                              if(req.body.feature12_value === ""){}else{
-                                data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
-                              }
-                              if (num > 13) {
-                                if(req.body.feature13_value === ""){}else{
-                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
-                                }
-                                if (num > 14) {
-                                  if(req.body.feature14_value === ""){}else{
-                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
-                                  }
-                                  if (num > 15) {
-                                    if(req.body.feature15_value === ""){}else{
-                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
-                                    }
-                                    if (num > 16) {
-                                      if(req.body.feature16_value === ""){}else{
-                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
-                                      }
-                                      if (num > 17) {
-                                        if(req.body.feature17_value === ""){}else{
-                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
-                                        }
-                                        if (num > 18) {
-                                          if(req.body.feature18_value === ""){}else{
-                                            data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
-                                          }
-                                          if (num > 19) {
-                                            if(req.body.feature19_value === ""){}else{
-                                              data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  var pro = new Promise(function (resolve, reject) {
-    // getting saved image and converting into base64 String 
-    const readstream = gfs.createReadStream(req.file.filename);
-    readstream.on('data', (chunk) => {
-      arr = chunk.toString('base64');
-      resolve();
-    })
-  })
-  pro.then(()=>{
-    if( selected_subCategory != "0"){
-      obj.push({subcategory: selected_subCategory})
-    } 
-  })
-  pro.then(()=>{
-    // getting newly added features and updating to feature collection and the feature 
-    // and value is being stored in data[] whic will be added in product collection
-    if(req.body.new_feat > 0){
-      if(req.body.new_feat_1 === "" || req.body.v1 === ''){}else{
-       
-        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_1 + "\",\"value\":\"" + req.body.v1 + "\"}"));
-        features_new.push(req.body.new_feat_1);
-      }
-     
-        if(req.body.new_feat > 1){
-          if(req.body.new_feat_2 === "" || req.body.v2 === ""){}else{
-            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_2 + "\",\"value\":\"" + req.body.v2 + "\"}"));
-            features_new.push(req.body.new_feat_2);
-          }
-         
-          if(req.body.new_feat > 2){
-            if(req.body.new_feat_3 === "" || req.body.v3 === ""){}else{
-              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_3 + "\",\"value\":\"" + req.body.v3 + "\"}"));
-              features_new.push(req.body.new_feat_3);
-            }
-           
-            if(req.body.new_feat > 3){
-              if(req.body.new_feat_4 === "" || req.body.v4 === ""){}else{
-                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_4 + "\",\"value\":\"" + req.body.v4 + "\"}"));
-                features_new.push(req.body.new_feat_4);
-              }
-              
-              if(req.body.new_feat > 4){
-                if(req.body.new_feat_5 === "" || req.body.v5 === ""){}else{
-                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_5 + "\",\"value\":\"" + req.body.v5 + "\"}"));
-                  features_new.push(req.body.new_feat_5);
-                }
-                if(req.body.new_feat > 5){
-                  if(req.body.new_feat_6 === "" || req.body.v6 === ""){}else{
-                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_6 + "\",\"value\":\"" + req.body.v6 + "\"}"));
-                    features_new.push(req.body.new_feat_6);
-                  }
-                  
-                  if(req.body.new_feat > 6){
-                    if(req.body.new_feat_7 === "" || req.body.v7 === ""){}else{
-                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_7 + "\",\"value\":\"" + req.body.v7 + "\"}"));
-                      features_new.push(req.body.new_feat_7);
-                    }
-                   
-                    if(req.body.new_feat > 7){
-                      if(req.body.new_feat_8 === "" || req.body.v8 === ""){}else{
-                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_8 + "\",\"value\":\"" + req.body.v8 + "\"}"));
-                        features_new.push(req.body.new_feat_8);
-                      }
-                      if(req.body.new_feat > 8){
-                        if(req.body.new_feat_9 === "" || req.body.v9 === ""){}else{
-                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_9 + "\",\"value\":\"" + req.body.v9 + "\"}"));
-                          features_new.push(req.body.new_feat_9);
-                        }
-                        if(req.body.new_feat > 9){
-                          if(req.body.new_feat_10 === "" || req.body.v10 === "" ){}else{
-                            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_10 + "\",\"value\":\"" + req.body.v10 + "\"}"));
-                            features_new.push(req.body.new_feat_10);  
-                          }  
-                          if(req.body.new_feat > 10){
-                            if(req.body.new_feat_11 === "" || req.body.v11 === "" ){}else{
-                              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_11 + "\",\"value\":\"" + req.body.v11 + "\"}"));
-                              features_new.push(req.body.new_feat_11);  
-                            } 
-                            if(req.body.new_feat > 11){
-                              if(req.body.new_feat_12 === "" || req.body.v12 === "" ){}else{
-                                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_12 + "\",\"value\":\"" + req.body.v12 + "\"}"));
-                                features_new.push(req.body.new_feat_12);  
-                              }  
-                              if(req.body.new_feat > 12){
-                                if(req.body.new_feat_13 === "" || req.body.v13 === "" ){}else{
-                                  data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_13 + "\",\"value\":\"" + req.body.v13 + "\"}"));
-                                  features_new.push(req.body.new_feat_13);  
-                                } 
-                                if(req.body.new_feat > 13){
-                                  if(req.body.new_feat_14 === "" || req.body.v14 === "" ){}else{
-                                    data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_14 + "\",\"value\":\"" + req.body.v14 + "\"}"));
-                                    features_new.push(req.body.new_feat_14);  
-                                  }   
-                                  if(req.body.new_feat > 14){
-                                    if(req.body.new_feat_15 === "" || req.body.v15 === "" ){}else{
-                                      data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_15 + "\",\"value\":\"" + req.body.v15 + "\"}"));
-                                      features_new.push(req.body.new_feat_15);  
-                                    } 
-                                    if(req.body.new_feat > 15){
-                                      if(req.body.new_feat_16 === "" || req.body.v16 === "" ){}else{
-                                        data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_16 + "\",\"value\":\"" + req.body.v16 + "\"}"));
-                                        features_new.push(req.body.new_feat_16);  
-                                      }
-                                      if(req.body.new_feat > 16){
-                                        if(req.body.new_feat_17 === "" || req.body.v17 === "" ){}else{
-                                          data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_17 + "\",\"value\":\"" + req.body.v17 + "\"}"));
-                                          features_new.push(req.body.new_feat_17);  
-                                        } 
-                                        if(req.body.new_feat > 17){
-                                          if(req.body.new_feat_18 === "" || req.body.v18 === "" ){}else{
-                                            data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_18 + "\",\"value\":\"" + req.body.v18 + "\"}"));
-                                            features_new.push(req.body.new_feat_18);  
-                                          }     
-                                          if(req.body.new_feat > 18){
-                                            if(req.body.new_feat_19 === "" || req.body.v19 === "" ){}else{
-                                              data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_19 + "\",\"value\":\"" + req.body.v19 + "\"}"));
-                                              features_new.push(req.body.new_feat_19);  
-                                            } 
-                                            if(req.body.new_feat > 19){
-                                              if(req.body.new_feat_20 === "" || req.body.v20 === "" ){}else{
-                                                data.push(JSON.parse("{\"label\":\"" + req.body.new_feat_20 + "\",\"value\":\"" + req.body.v20 + "\"}"));
-                                                features_new.push(req.body.new_feat_20);  
-                                              }                                  
-                                          }                                 
-                                        }                             
-                                      }                                 
-                                    }                                  
-                                  }                                 
-                                }                               
-                              }                                 
-                            }                                
-                            }                                 
-                        }                                
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-   
-  }) 
-  pro.then(() => {
-    Feature.update({$and:obj},{ $addToSet:{ "feature": { $each: features_new }}},{ upsert: true },function(err, docs){
-      if(err){ console.log(err)}
-    })
-  })           
-  pro.then(() => {
-    
-    var newProduct = {
-      name: req.body.title,
-      category: selected_category,
-      image: arr,
-      admin: req.user.id,
-      brand: selected_brand,
-      model: req.body.model,
-      warranty: req.body.warranty,
-      description: req.body.description,
-      shippingInfo: req.body.shippingInfo,
-      features: data,
-      categoryName: req.body.cattN,
-      subcategoryName: req.body.subN,
-      brandName: req.body.brandN,
-      weight: req.body.weight,
-    };
-    
-    if( req.body.sub === "null" ){}
-    else{
-      newProduct.subcategory= req.body.sub
-    }
-    
-    new Product(newProduct).save().then(product => {
-    Category.update({ _id: selected_category }, { $addToSet: { brands: selected_brand} },{ upsert: true },
-      function(err, docs) {
-        if (err) { res.send(err); }
-        if (req.body.sub === "null") {}
-        else{
-          SubCategory.update(
-            { _id: req.body.sub },
-            { $addToSet: { brands: selected_brand}, category: selected_category  },
-            { upsert: true },
-            function(err, docs) {
-              if (err) { res.send(err); }
-          });
-        } 
-      }
-    );
-  });
-  })
-  pro.then(() => {
-    gfs.remove({ filename: req.file.filename }, (err) => {
-      if (err){
-        req.flash("error_msg", "Something went wrong! Try again.");
-      }else{
-        req.flash("success_msg", "Product Added");
-      } 
-      res.redirect("/category/Entry");
-    })
-  })
-  }else{
-    req.flash("error_msg", "please submit the form with category,sub category and brand before filling product info!");
-    res.redirect("/category/Entry");
-  }
-};
 
-exports.update_product = (req, res, next) => {
-  var num = parseInt(req.params.feat_num, 10);
-  var data = [];
-  
-  if (num > 0) {
-    data.push(JSON.parse("{\"label\":\"" + req.body.feature0_label + "\",\"value\":\"" + req.body.feature0_value + "\"}"));
-    if (num > 1) {
-      data.push(JSON.parse("{\"label\":\"" + req.body.feature1_label + "\",\"value\":\"" + req.body.feature1_value + "\"}"));
-      if (num > 2) {
-        data.push(JSON.parse("{\"label\":\"" + req.body.feature2_label + "\",\"value\":\"" + req.body.feature2_value + "\"}"));
-        if (num > 3) {
-          data.push(JSON.parse("{\"label\":\"" + req.body.feature3_label + "\",\"value\":\"" + req.body.feature3_value + "\"}"));
-          if (num > 4) {
-            data.push(JSON.parse("{\"label\":\"" + req.body.feature4_label + "\",\"value\":\"" + req.body.feature4_value + "\"}"));
-            if (num > 5) {
-              data.push(JSON.parse("{\"label\":\"" + req.body.feature5_label + "\",\"value\":\"" + req.body.feature5_value + "\"}"));
-              if (num > 6) {
-                data.push(JSON.parse("{\"label\":\"" + req.body.feature6_label + "\",\"value\":\"" + req.body.feature6_value + "\"}"));
-                if (num > 7) {
-                  data.push(JSON.parse("{\"label\":\"" + req.body.feature7_label + "\",\"value\":\"" + req.body.feature7_value + "\"}"));
-                  if (num > 8) {
-                    data.push(JSON.parse("{\"label\":\"" + req.body.feature8_label + "\",\"value\":\"" + req.body.feature8_value + "\"}"));
-                    if (num > 9) {
-                      data.push(JSON.parse("{\"label\":\"" + req.body.feature9_label + "\",\"value\":\"" + req.body.feature9_value + "\"}"));
-                      if (num > 10) {
-                        data.push(JSON.parse("{\"label\":\"" + req.body.feature10_label + "\",\"value\":\"" + req.body.feature10_value + "\"}"));
-                        if (num > 11) {
-                          data.push(JSON.parse("{\"label\":\"" + req.body.feature11_label + "\",\"value\":\"" + req.body.feature11_value + "\"}"));
-                          if (num > 12) {
-                            data.push(JSON.parse("{\"label\":\"" + req.body.feature12_label + "\",\"value\":\"" + req.body.feature12_value + "\"}"));
-                            if (num > 13) {
-                              data.push(JSON.parse("{\"label\":\"" + req.body.feature13_label + "\",\"value\":\"" + req.body.feature13_value + "\"}"));
-                              if (num > 14) {
-                                data.push(JSON.parse("{\"label\":\"" + req.body.feature14_label + "\",\"value\":\"" + req.body.feature14_value + "\"}"));
-                                if (num > 15) {
-                                  data.push(JSON.parse("{\"label\":\"" + req.body.feature15_label + "\",\"value\":\"" + req.body.feature15_value + "\"}"));
-                                  if (num > 16) {
-                                    data.push(JSON.parse("{\"label\":\"" + req.body.feature16_label + "\",\"value\":\"" + req.body.feature16_value + "\"}"));
-                                    if (num > 17) {
-                                      data.push(JSON.parse("{\"label\":\"" + req.body.feature17_label + "\",\"value\":\"" + req.body.feature17_value + "\"}"));
-                                      if (num > 18) {
-                                        data.push(JSON.parse("{\"label\":\"" + req.body.feature18_label + "\",\"value\":\"" + req.body.feature18_value + "\"}"));
-                                        if (num > 19) {
-                                          data.push(JSON.parse("{\"label\":\"" + req.body.feature19_label + "\",\"value\":\"" + req.body.feature19_value + "\"}"));
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  var pro = new Promise(function (resolve, reject) {
-    
-    if (req.file) {
-      const readstream = gfs.createReadStream(req.file.filename);
-      readstream.on('data', (chunk) => {
-      array = chunk.toString('base64');
-      resolve();
-      })
-    } else {
-      array = "";
-      resolve();
-    }
-  })
-  pro.then(() => {
-    
-    if (array != "") {
-      obj = {
-        'name': req.body.title1,
-        'image': array,
-        'weight': req.body.weight,
-        'model': req.body.model,
-        'warranty': req.body.warranty,
-        'description': req.body.description,
-        'shippingInfo': req.body.shippingInfo,
-        'features': data
-      }
-    }else{
-      obj={
-        'name': req.body.title1,
-        'weight': req.body.weight,
-        'model': req.body.model,
-        'warranty': req.body.warranty,
-        'description': req.body.description,
-        'shippingInfo': req.body.shippingInfo,
-        'features': data
-      }
-    }
-    Product.findOneAndUpdate({ _id: mongo.ObjectID(req.params.pid) },{ $set: obj }, { upsert: true },(err, docs)=>{
-      if (err) { res.send(err); }
-    })
-  })
+// // get lot without serial page
+// exports.saveInventoryNoSerial= (req, res, next) => {
+//   var quantity = parseInt(req.body.quantity);
+//   var serials= [];
+//   for(var i=0; i<quantity; i++){
+//     serials.push((mongoose.Types.ObjectId()).toString())
+//   }
+//   var inventory = {
+//     product_id: req.body.model,
+//     stockQuantity: req.body.quantity,
+//     purchasePrice: req.body.purchase_price,
+//     remaining: req.body.quantity,
+//     admin: req.user._id,
+//     original_serial: serials,
+//     serial: serials
+//   }
+//   Product.update({_id:req.body.model}, { $set:{ warranted: false } },{ upsert:true }, (err, rs)=>{
+//     if(err){
+//       console.log(err)
+//     }else{
+//       new Inventory(inventory).save().then(inventory => {
+//         res.redirect("/products/saveInventoryNoSerialPage");
+//       });
+//     }
+//   })
+// };
 
-  pro.then(() => {
-    if (req.file) {
-      gfs.remove({ filename: req.file.filename }, (err) => {
-        if (err) console.log(err)
-        res.redirect("/products/Edit/"+req.params.pid)
-      })
-    }else{
-      res.redirect("/products/Edit/"+req.params.pid)
-    }
-  })
-}
+// // Save Inventory
+// exports.saveInventory = (req, res, next) => {
+//   var serials= (req.body.serial).split(",");
+//   var inventory = {
+//     product_id:req.body.model,
+//     stockQuantity:req.body.quantity,
+//     purchasePrice: req.body.purchase_price,
+//     remaining: req.body.quantity,
+//     serial: serials,
+//     original_serial:serials,
+//     admin: req.user._id
+//   }
+//   Product.update({_id:req.body.model}, { $set:{ warranted: true } },{ upsert:true }, (err, rs)=>{
+//     if(err){
+//       console.log((err))
+//     }else{
+//       new Inventory(inventory).save().then(inventory => {
+//         res.json({})
+//       });
+//     }
+//   }) 
+// };
 
+// const multer = require("multer");
+// const GridFsStorage = require('multer-gridfs-storage');
+// const Grid = require('gridfs-stream');
+// const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
+
+// const conn = mongoose.createConnection(mongoo);
+// let gfs;
+// conn.once('open', function () {
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection('fs');
+// })
+// var filename;
+// // create storage engine
+// const storage = new GridFsStorage(
+//   {
+//     url: mongoo,
+//     file: (req, file) => {
+//       return new Promise((resolve, reject) => {
+//         crypto.randomBytes(16, (err, buf) => {
+//           if (err) { return reject(err); }
+//           filename = buf.toString('hex') + path.extname(file.originalname);
+//           const fileInfo = {
+//             filename: filename,
+//             bucketName: 'fs'
+//           };
+//           resolve(fileInfo);
+//         });
+//       });
+//     }
+//   });
+// const upload = multer({ storage });
 // 892
 // // single product view
 // exports.singleProduct = (req, res) => {

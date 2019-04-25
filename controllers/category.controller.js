@@ -2,23 +2,13 @@ const Brand = require("../models/brand.model");
 const subCategory = require("../models/subCategory.model");
 const Cat = require("../models/category.model");
 
-// All registration page
-exports.addAllPage = (req, res, next) => {
-  res.render("test");
-  // res.render("products/reg");
-};
+
 
 // saving category
 exports.addCategory = (req, res, next) => {
-  // console.log(req.body.file22)
-  // res.send({})
-  var category = {
-    name: req.body.cat,
-    subCategories: [],
-    brands: [],
-    givenCategory: req.body.cat
-  };
-  new Cat(category).save().then(category => { res.send({}) });
+  req.body.subCategories= [];
+  req.body.brands= [];
+  new Cat(req.body).save().then(category => { res.send({}) });
 };
 
 // Saving Sub Category

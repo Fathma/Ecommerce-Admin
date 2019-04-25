@@ -3,8 +3,6 @@ const router = express.Router();
 
 const category = require('../controllers/category.controller');
 
-router.get("/Entry", category.addAllPage);
-router.post("/Entry", category.addAllPage);
 router.post("/addCategory", category.addCategory);
 router.post("/addSubCategory", category.addSubCategory);
 router.post("/addBrand", category.addBrand);

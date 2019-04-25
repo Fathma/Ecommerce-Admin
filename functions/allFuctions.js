@@ -1,16 +1,16 @@
 const Product = require("../models/Product");
-const Inventory = require("../models/inventory.model");
+// const Inventory = require("../models/inventory.model");
 const Order = require("../models/customerOrder");
 
-// get inventory list by filter
-exports.get_inventory_list_new = async (condition, sort_obj, populate_obj) => {
-  return await Inventory.find(condition).sort(sort_obj).populate(populate_obj)
-};
+// // get inventory list by filter
+// exports.get_inventory_list_new = async (condition, sort_obj, populate_obj) => {
+//   return await Inventory.find(condition).sort(sort_obj).populate(populate_obj)
+// };
 
-// get inventory list by filter
-exports.get_all_inventory_list = (condition, sort_obj, cb) => {
-  Inventory.find(condition).sort(sort_obj).populate("product_id").populate("admin").exec((err, rs)=>{ cb(rs); });
-};
+// // get inventory list by filter
+// exports.get_all_inventory_list = (condition, sort_obj, cb) => {
+//   Inventory.find(condition).sort(sort_obj).populate("product_id").populate("admin").exec((err, rs)=>{ cb(rs); });
+// };
 
 //find fuction from product collection
 exports.find = (obj, cb) => {

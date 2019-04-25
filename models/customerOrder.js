@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const mongoosastic = require('mongoosastic');
 const Schema = mongoose.Schema;
 
 var CustomerOrderSchema = new Schema({
@@ -25,6 +24,7 @@ var CustomerOrderSchema = new Schema({
     paymentMethod:{ type: String },
     history: { type: Array },
     invoice:{ type: Schema.Types.ObjectId, ref: 'Invoice' }
+
 
 });
 

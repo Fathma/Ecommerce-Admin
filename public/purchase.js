@@ -122,7 +122,7 @@ $(document).ready(function() {
       }
      
       var id = document.getElementById('id').value
-      $.post( "/purchase/Edit/"+id, { obj: obj }, function(data) {
+      $.post( "/supplier/Edit/"+id, { obj: obj }, function(data) {
           location.reload(true);
         }
       );
@@ -142,6 +142,7 @@ function addAddressEdit(){
   var input1 = create_textArea("address",nums, "text")
   var label2 = create_label("Phone Number:")
   var input2 = create_input("contact",nums , "text")
+  
   
   var out = make_Section( input1, label1, input2, label2, nums);
   document.getElementById("addresses").appendChild(hr)
@@ -260,10 +261,10 @@ function addContacts1Edit(){
   var input2 = create_input("companyPosition",nums , "text")
 
   var out = make_Section(input1, label1, input2, label2, nums);
-  
-  document.getElementById("contacts").appendChild(hr)
-  document.getElementById("contacts").appendChild(out)
-  document.getElementById("contacts").appendChild(br)
+  var contacts = document.getElementById("contacts");
+  contacts.appendChild(hr)
+  contacts.appendChild(out)
+  contacts.appendChild(br)
 
   // second row
   label1 = create_label("Email:")
@@ -280,11 +281,13 @@ function addContacts1Edit(){
   input2 = create_input("extention",nums , "text")
  
   out = make_tel_ext(input1, label1, input2, nums)
-  document.getElementById("contacts").appendChild(br)
-  document.getElementById("contacts").appendChild(out)
+  var contacts= document.getElementById("contacts");
+  var total_contacts1=document.getElementById("total_contacts1")
+  contacts.appendChild(br)
+  contacts.appendChild(out)
   
-  document.getElementById("total_contacts1").value = parseInt(document.getElementById("total_contacts1").value) + 1
-  document.getElementById("contacts").appendChild(br)
+  total_contacts1.value = parseInt(total_contacts1.value) + 1
+  contacts.appendChild(br)
 }
 
 function make_tel_ext(input1, label1, input2, nums){

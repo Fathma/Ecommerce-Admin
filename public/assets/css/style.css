@@ -1,12 +1,13 @@
 .lbl{
     padding-left: 50px;
-    width: 30.667%;
+    width: auto;
     font-family: "Poppins", sans-serif;
     font-size: 0.775em;
 }
 
 
 .inp {
+   
     font-family: "Poppins", sans-serif;
     height: 25px;
     padding: .375rem .75rem;

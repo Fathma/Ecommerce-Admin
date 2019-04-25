@@ -15,6 +15,7 @@ exports.loginPage = (req, res, next) => {
 exports.registrationPage = (req, res, next) => {
   res.render("users/register");
 };
+
 // User register route
 exports.getDashbash = (req, res, next) => {
   res.render("dashboard");
@@ -22,9 +23,8 @@ exports.getDashbash = (req, res, next) => {
 
 // Login form POST
 exports.login = (req, res, next) => {
-  
   passport.authenticate("local", {
-    successRedirect: "/products/showDashboard",
+    successRedirect: "/general/showDashboard",
     failureRedirect: "/users/login",
     failureFlash: true
   })(req, res, next);
@@ -70,13 +70,8 @@ exports.userregistration = (req, res, next) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
             newUser.password = hash;
-            newUser
-              .save()
-              .then(user => {
-                req.flash(
-                  "success_msg",
-                  "You are now registered and can log in"
-                );
+            newUser.save().then(user => {
+                req.flash( "success_msg", "You are now registered and can log in");
                 res.redirect("/users/login");
               })
               .catch(err => {

@@ -8,6 +8,7 @@ const passport = require("passport");
 const dbConfig = require("./config/database");
 var Category = require("./models/category.model");
 var Product = require("./models/Product");
+var LocalPurchase = require("./models/localPurchase.model");
 var Supplier = require("./models/supplier.model");
 var SubCategory = require("./models/subCategory.model");
 var Brand = require("./models/brand.model");
@@ -34,7 +35,8 @@ const productsRoutes = require("./routes/products.routes");
 const customerRoutes = require("./routes/customer.routes");
 const invoiceRoutes = require("./routes/invoice.routes");
 const purchaseRoutes = require("./routes/purchase.routes");
-
+const supplierRoutes = require("./routes/supplier.routes");
+const generalRoutes = require("./routes/general.routes");
 // Passport config
 require("./config/passport")(passport);
 
@@ -84,7 +86,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Express session middleware
 app.use(
   session({
-    secret: "mysecret",
+    secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
     resave: false,
     saveUninitialized: false,
     store: new mongoStore({ mongooseConnection: mongoose.connection }),
@@ -131,13 +133,15 @@ app.use(async (req, res, next)=>{
   res.locals.brand = await Brand.find()
   res.locals.Product = await Product.find()
   res.locals.Supplier = await Supplier.find()
+  res.locals.LocalPurchase = await LocalPurchase.find()
   next();
 });
 
 
 app.get("/", (req, res) => {
+  // res.sendFile('fff.png', { root: path.join(__dirname, './public/photos') })
   if (req.user) {
-    res.redirect("/products/showDashboard");
+    res.redirect("/general/showDashboard");
   } else {
     res.redirect("/users/login");
   }
@@ -156,7 +160,8 @@ app.use("/invoice", invoiceRoutes);
 app.use("/customers", customerRoutes);
 app.use("/products", productsRoutes);
 app.use("/purchase", purchaseRoutes);
-
+app.use("/supplier", supplierRoutes);
+app.use("/general", generalRoutes);
 //Port For the Application
 const port = process.env.PORT || 3000;
 
