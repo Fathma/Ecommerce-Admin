@@ -268,7 +268,7 @@ $(document).ready(function() {
             alert(data.exists + " are already exists");
           } 
           else {
-            var product_attribute = { _id: pid, name, weight, warranty,
+            var product_attribute = { _id: pid, name, weight, warranty,sellingPrice,
               description: byId("description").value,
               shippingInfo: byId("shippingInfo").value
             };
@@ -308,6 +308,7 @@ $(document).ready(function() {
     else{
       var product_attribute = {
         _id: byId("_id").value,
+        sellingPrice: byId("sellingPrice").value,
         name: byId("name").value,
         weight: byId("weight").value,
         warranty: byId("warranty").value,

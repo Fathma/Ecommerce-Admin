@@ -24,7 +24,7 @@ var ProductSchema = new Schema({
         created: { type: Date, default: Date.now }, 
     },
     warranted: { type: Boolean},
-    selling: { type: Number , default:0},
+    sellingPrice: { type: Number , default:0},
     isActive:{ type: Boolean, default: false },
     
     status: { type: Boolean, required: false },
