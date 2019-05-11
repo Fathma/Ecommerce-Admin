@@ -6,21 +6,16 @@ var ProductSchema = new Schema({
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
     brand: { type: Schema.Types.ObjectId, ref: 'Brand' },
     pid: { type: String },
-    categoryName: { type: String },
-    subcategoryName: { type: String },
-    brandName: { type: String },
     name: { type: String, default:""},
     productName:{ type: String },
     model: { type: String, required: false },
     features: { type: Array, required: false },
-    warranty: { type: String, required: false },
+    warranty: { type: String, default:"" },
     description: { type: String, default: 'None'},
     shippingInfo: {type:String, default:'None'},
     image:  { type: Array, default:[] },
     weight:  {type:String, default:""},
-
     serial_availablity:{ type: Boolean },
-
     frontQuantity: {type:Number, default:0},
     live: { 
         quantity: { type:Number,default:0 },
@@ -29,17 +24,21 @@ var ProductSchema = new Schema({
         created: { type: Date, default: Date.now }, 
     },
     warranted: { type: Boolean},
-    unitPrice: { type: Number , default:0},
+    selling: { type: Number , default:0},
     isActive:{ type: Boolean, default: false },
     
     status: { type: Boolean, required: false },
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
-    
     created: { type: Date, default: Date.now },
-
 });
 
 
 module.exports = mongoose.model('Product', ProductSchema, 'products');
+
+
+// categoryName: { type: String },
+//     subcategoryName: { type: String },
+//     brandName: { type: String }
+   
 
 

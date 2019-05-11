@@ -1,6 +1,7 @@
 $(document).ready(function() {
   $(function() {
     $("#supplierReg").on("click", function(e) {
+      alert("djgdlfkjg")
       // getting all addresses in an array
       var address_array = [];
       var total_address = parseInt(document.getElementById("num_address").value);
@@ -54,7 +55,7 @@ $(document).ready(function() {
         additionalInfo: document.getElementById('additionalInfo').value,
       }
 
-      $.post( "/purchase/SupplierSave", { obj: obj }, function(data) {
+      $.post( "/supplier/SupplierSave", { obj: obj }, function(data) {
           location.reload(true);
         }
       );

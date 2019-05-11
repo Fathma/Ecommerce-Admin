@@ -8,8 +8,6 @@ exports.showInvoiceList = (req, res)=>{
     .sort({ "created": -1 })
     .populate("user")
     .populate("order")
-    .exec((err, rs)=>{
-        res.render("invoiceList",{ invoices: rs });
-    })
+    .exec((err, rs)=> res.render("invoiceList",{ invoices: rs }))
 };
 

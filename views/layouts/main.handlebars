@@ -29,11 +29,11 @@
     <!-- jQuery UI 1.11.4 -->
     <script src="/assets/js/jquery-ui.min.js"></script>
 
-    {{!-- <script src="/countries.js"></script> --}}
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
+    
     <script src="/js.js"></script>
     <script src="/inventory.js"></script>
     {{!-- <script src="https://cloud.tinymce.com/5/tinymce.min.js"></script> --}}
@@ -46,11 +46,9 @@
 
 
     <script>
-
         $(document).ready(
             function () {
-                $("#tab").DataTable(
-                    {
+                $("#ttt").DataTable({
                         "lengthMenu": [[5, 10, 15, 20, -1],
                         [5, 10, 15, 20, "All"]],
                         "ordering": false,
@@ -73,7 +71,6 @@
             </a>
             {{else}}
             <a href="#" class="logo">
-
                 <span class="logo-lg">ECL</span>
             </a>
             {{/if}}
@@ -94,8 +91,9 @@
                                 {{!-- <div class="input-group add-on"> --}}
                                 <input class="form-control" placeholder="Search" name="searchData" type="text">
                                 {{!-- <div class="input-group-btn"> --}}
-                                <button class="btn btn-default" type="submit"><img
-                                        src="https://img.icons8.com/cotton/17/000000/search.png"></button>
+                                <button class="btn btn-default" type="submit">
+                                    <img src="https://img.icons8.com/cotton/17/000000/search.png">
+                                    </button>
                                 {{!-- </div> --}}
                                 {{!-- </div> --}}
                             </form>
@@ -103,31 +101,31 @@
 
                         <li class="nav-item">
                             <a id="dLabel" data-toggle="dropdown" data-target="hash" href="hash" aria-expanded="true">
-                                <img src="https://img.icons8.com/ios/20/ffffff/appointment-reminders-filled.png"><span
-                                    id="notification"></span></a>
+                                <img src="https://img.icons8.com/ios/20/ffffff/appointment-reminders-filled.png">
+                                <span id="notification"></span>
+                            </a>
                             <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
                                 <li>
-                                    <a id="set_href">Low Live<span name="lowLive" id="lowLive"
-                                            style="padding: 5%; color:red"></span></a>
+                                    <a id="set_href">
+                                        Low Live
+                                        <span name="lowLive" id="lowLive" style="padding: 5%; color:red"></span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <div id="google_translate_element"></div>
-                        </li>
+
+                        <li><div id="google_translate_element"></div></li>
 
                         <li class="nav-item">
-                            <a href="/users/register" class="nav-link"><img
-                                    src="https://img.icons8.com/ios/20/ffffff/add-user-group-man-man-filled.png"></a>
+                            <a href="/users/register" class="nav-link">
+                                <img src="https://img.icons8.com/ios/20/ffffff/add-user-group-man-man-filled.png">
+                            </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="/users/logout" class="nav-link">Logout</a>
-                        </li>
+                        <li class="nav-item"><a href="/users/logout" class="nav-link">Logout</a></li>
+
                         {{else}}
-                        <li>
-                            <a href="/users/login" class="nav-link">Login</a>
-                        </li>
+                        <li><a href="/users/login" class="nav-link">Login</a></li>
 
                         {{/if}}
                     </ul>
@@ -171,21 +169,34 @@
                                     Board</a></li>
                         </ul>
                     </li>
+                     <li class="treeview">
+                        <a href="#">
+                             <i class="fa fa-truck" aria-hidden="true"></i>
+                            {{!-- <i class="fa fa-cubes"></i> --}}
+                            <span>Supplier</span>
+                            <span class="pull-right-container">
+                               
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/supplier/SupplierRegistrationPage"><i class="fa fa-circle-o"></i>New Supplier</a></li>
+                            <li><a href="/supplier/SupplierList"><i class="fa fa-circle-o"></i>All Suppliers</a></li>
+                        </ul>
+                    </li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-cubes"></i>
+                            <i class="fa fa-plus-square" aria-hidden="true"></i>
+                            {{!-- <i class="fa fa-cubes"></i> --}}
                             <span>Local Purchase</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/supplier/SupplierRegistrationPage"><i class="fa fa-circle-o"></i>New
-                                    Supplier</a></li>
-                            <li><a href="/supplier/SupplierList"><i class="fa fa-circle-o"></i>All Suppliers</a></li>
-                            <li><a href="/purchase/localPurchase"><i class="fa fa-circle-o"></i>Local Purchase</a></li>
-                            <li><a href="/purchase/view"><i class="fa fa-circle-o"></i>All Inventories</a></li>
-                            <li class="treeview">
+                            <li><a href="/purchase/localPurchase"><i class="fa fa-circle-o"></i>New Local Purchase</a></li>
+                            <li><a href="/purchase/getLPList"><i class="fa fa-circle-o"></i>Local Purchase List</a></li>
+                            {{!-- <li class="treeview">
                                 <a href="#">
                                     <i class="fa fa-circle-o"></i>
                                     <span>Inventory</span>
@@ -194,27 +205,45 @@
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="/products/InhouseInventory"><i class="fa fa-location-arrow"
-                                                aria-hidden="true"></i>In-house Stock Product</a></li>
-                                    <li><a href="/products/DealerInventory"><i class="fa fa-location-arrow" aria-hidden="true"></i> Dealer
-                                            Product</a> </li>
+                                    <li>
+                                        <a href="/products/InhouseInventory">
+                                            <i class="fa fa-location-arrow"aria-hidden="true"></i>In-house Stock Product
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/products/DealerInventory">
+                                            <i class="fa fa-location-arrow" aria-hidden="true"></i> Dealer Product
+                                        </a> 
+                                    </li>
                                 </ul>
-                            </li>
+                            </li> --}}
                         </ul>
                     </li>
-                    <li class="treeview">
+                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-cubes"></i>
+                            <span>Inventory</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/products/InhouseInventory"><i class="fa fa-circle-o"></i>In-house Stock Product</a></li>
+                            <li><a href="/products/DealerInventory"><i class="fa fa-circle-o"></i> Dealer Product</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cube" aria-hidden="true"></i>
                             <span>Product</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/category/Entry"><i class="fa fa-circle-o"></i>New Product</a></li>
                             <li><a href="/products/viewProducts"><i class="fa fa-circle-o"></i>All Products</a></li>
-                            <li><a href="/products/view"><i class="fa fa-circle-o"></i>All Inventories</a></li>
-
+                            {{!-- <li><a href="/products/view"><i class="fa fa-circle-o"></i>All Inventories</a></li> --}}
                         </ul>
                     </li>
 
@@ -227,17 +256,12 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li>
-                                <a href="/orders/orders"><i class="fa fa-circle-o"></i>Orders</a>
-                            </li>
-                            <li>
-                                <a href="/invoice/invoiceList"><i class="fa fa-circle-o"></i>Invoice</a>
-                            </li>
-                            <li>
-                                <a href="/returns/returnList"><i class="fa fa-circle-o"></i>Returns</a>
-                            </li>
+                            <li><a href="/orders/orders"><i class="fa fa-circle-o"></i>Orders</a></li>
+                            <li><a href="/invoice/invoiceList"><i class="fa fa-circle-o"></i>Invoice</a></li>
+                            <li><a href="/returns/returnList"><i class="fa fa-circle-o"></i>Returns</a></li>
                         </ul>
                     </li>
+
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-pie-chart"></i>
@@ -247,17 +271,12 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li>
-                                <a href="#"><i class="fa fa-circle-o"></i>Orders</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-circle-o"></i>Invoice</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-circle-o"></i>Returns</a>
-                            </li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>Orders</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>Invoice</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i>Returns</a></li>
                         </ul>
                     </li>
+
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-users"></i>
@@ -268,11 +287,13 @@
                         </a>
                         <ul class="treeview-menu">
                             <li>
-                                <a href="/customers/RegisteredCustomer"><i class="fa fa-circle-o"></i>Registered
-                                    Customers</a>
+                                <a href="/customers/RegisteredCustomer">
+                                    <i class="fa fa-circle-o"></i>Registered Customers
+                                </a>
                             </li>
                         </ul>
                     </li>
+
                 </ul>
                 {{else}}
                 <h4 style="color:lightskyblue">Please Log in first to Get Access</h4>
@@ -293,6 +314,7 @@
                 {{{body}}}
             </div>
         </div>
+        
         {{# if user}}
         <footer id="footer" class="main-footer">
             <div class="pull-right hidden-xs">
@@ -307,7 +329,10 @@
 
         <script type="text/javascript">
             function googleTranslateElementInit() {
-                new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+                new google.translate.TranslateElement({ 
+                    pageLanguage: 'en', 
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
+                    }, 'google_translate_element');
             }
         </script>
 
@@ -317,11 +342,6 @@
         <!-- ./wrapper -->
 
         <!-- jQuery 3 -->
-        {{!--
-        <script src="/assets/js/jquery.min.js"></script>
-        <!-- jQuery UI 1.11.4 -->
-        <script src="/assets/js/jquery-ui.min.js"></script>
-        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip --> --}}
         <script>
             $.widget.bridge('uibutton', $.ui.button);
         </script>
@@ -341,15 +361,6 @@
         {{!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" /> --}}
         {{!-- js library for generating pdf --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-        <script>
-            Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
-                return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-            });
-            // testing helper
-            Handlebars.registerHelper('noop', function (options) {
-                return options.fn(this);
-            });
-        </script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) 
         <script src="assets/js/dashboard.js"></script>
         //AdminLTE for demo purposes 

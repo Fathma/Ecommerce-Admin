@@ -2,13 +2,10 @@ const Supplier = require("../models/supplier.model");
 var randomstring = require("randomstring");
 
 // get supplier registration page
-exports.supplierRegistrationPage = (req, res, next) => {
-  var date = new Date();
-  res.render("supplier/supplierReg", { date: date });
-};
+exports.supplierRegistrationPage = (req, res) => res.render("supplier/supplierReg", { date: new Date() });
 
 // save supplier info
-exports.supplierSave = (req, res, next) => {
+exports.supplierSave = (req, res) => {
   var obj = req.body.obj;
   var id = randomstring.generate(5);
   var name = obj.cname.split("");
@@ -20,7 +17,7 @@ exports.supplierSave = (req, res, next) => {
   obj.supplier_id = id;
   new Supplier(obj).save().then(supplier => {
     req.flash("success_msg", "Registration successful");
-    res.render("supplier/supplierReg");
+    res.redirect("supplier/SupplierRegistrationPage");
   });
 };
 
@@ -54,10 +51,8 @@ exports.supplierEdit = (req, res) => {
 
 // Edit Supplier info
 exports.supplierDelete = (req, res) => {
-  Supplier.deleteOne({ _id: req.params.id }, ( err, docs )=>{ res.redirect("/supplier/SupplierList"); });
+  Supplier.deleteOne({ _id: req.params.id }, ( err, docs ) => { res.redirect("/supplier/SupplierList"); });
 };
 
 // getting contanct persons of a specific supplier
-exports.getContactPerson =async (req, res)=>{
-    res.send( await Supplier.findOne({ _id: req.params.sup }))
-}
+exports.getContactPerson = async (req, res)=> res.send( await Supplier.findOne({ _id: req.params.sup }))

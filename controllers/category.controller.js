@@ -2,17 +2,15 @@ const Brand = require("../models/brand.model");
 const subCategory = require("../models/subCategory.model");
 const Cat = require("../models/category.model");
 
-
-
 // saving category
-exports.addCategory = (req, res, next) => {
+exports.addCategory = (req, res) => {
   req.body.subCategories= [];
   req.body.brands= [];
   new Cat(req.body).save().then(category => { res.send({}) });
 };
 
 // Saving Sub Category
-exports.addSubCategory = (req, res, next) => {
+exports.addSubCategory = (req, res) => {
   var subcategory = {
     name: req.body.subCat,
     category: req.body.cate,
@@ -36,7 +34,7 @@ exports.addSubCategory = (req, res, next) => {
 };
 
 // Saving Brand
-exports.addBrand = (req, res, next) => {
+exports.addBrand = (req, res) => {
   var brand = { name: req.body.brand };
   new Brand(brand).save().then(brand => {
     res.redirect("/category/Entry");
@@ -44,26 +42,26 @@ exports.addBrand = (req, res, next) => {
 };
 
 // getting sub categories on the basis of category
-exports.getSub2 = (req, res, next) => {
+exports.getSub2 = (req, res) => {
   Cat.find({ name: req.params.cat })
     .populate("subCategories")
     .populate("brands")
-    .exec(function(err, docs) { res.json(docs); });
+    .exec((err, docs)=>{ res.json(docs); });
 };
 
 // getting sub categories on the basis of category
-exports.getSub = (req, res, next) => {
+exports.getSub = (req, res) => {
   Cat.find({ _id: req.params.cat })
     .populate("subCategories")
     .populate("brands")
-    .exec(function(err, docs) { res.json(docs); });
+    .exec((err, docs)=>{ res.json(docs); });
 };
 
 // returns subcategories of and given subcategories 
 exports.getBrand = (req, res)=>{
   subCategory.find({ name: req.params.subcat })
   .populate("brands")
-  .exec(function(err, docs) { res.json(docs); });
+  .exec((err, docs)=>{ res.json(docs); });
 }
 
 // returns subcategories of and given subcategories 

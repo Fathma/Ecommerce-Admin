@@ -3,13 +3,12 @@
         <a href="#"><b>Products</a>
     </div>
 
-   
-
     {{!-- {{# if products}} --}}
     <div style="background-color: white">
         <table id="ptable" style="width:100%" class="table table-striped">
             <tr>
                 <th>Product_id</th>
+                <th>Product Name</th>
                 <th>Model</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -17,11 +16,10 @@
             {{# each products}}
             <tr>
                 <td>
-                   <a href="/products/Edit/{{this._id}}" data-toggle="tooltip" data-placement="top"
-                        title="Edit Product" style="padding: 0%" class="btn btn-primary">
-                        <img src="https://img.icons8.com/windows/20/ffffff/edit.png">
-                    </a>
-                    <strong>{{this._id}}</strong>
+                    <strong>{{this.pid}}</strong>
+                </td>
+                <td>
+                    <strong>{{this.productName}}</strong>
                 </td>
 
                 <td>
@@ -30,20 +28,20 @@
 
                 <td>
                     {{# if this.isActive}}
-                   <strong>Online</strong>
+                   <strong>Enabled</strong>
                     {{else}}
-                    <strong>Offline</strong>
+                    <strong>Disabled</strong>
                     {{/if}}
                 </td>
 
                 <td>
                      {{# if this.isActive}}
-                    <a href="/products/unactive/{{this._id}}" class="btn btn-default ">Offline</a>
+                    <a href="/products/unactive/{{this._id}}" class="btn btn-default ">Disable</a>
                     {{else}}
-                    <a href="/products/active/{{this._id}}" class="btn btn-default">Online</a>
+                    <a href="/products/active/{{this._id}}" class="btn btn-default">Enable</a>
                     {{/if}}
+                     <a href="/products/Update/{{this._id}}" class="btn btn-default ">Update</a>
                 </td>
-               
             </tr>
             {{/each}}
         </table>

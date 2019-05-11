@@ -10,14 +10,18 @@ const upload = multer({
   dest: "../public/photos"
 })
 
-// 23/4/2019
+// 23/4/2019 new
 router.get("/InhouseInventory", product_controller.getInhouseInventoryPage);
 router.get("/DealerInventory", product_controller.getDealerInventoryPage);
 router.post("/regiSave", product_controller.SaveProductLP);
 router.post("/regiSaveDealer", product_controller.SaveProductDealer);
 router.post("/showfields",  product_controller.showProductRegistrationFields);
 router.post("/upload",upload.array("imagePath") , product_controller.SaveImage)
+router.post("/checkSerials", product_controller.checkSerials);
+router.get("/Update/:_id", product_controller.getProductUpdatePage);
+router.post("/updateProduct", product_controller.updateProduct);
 
+// previous 
 // Edit (Inventory With Serial number)
 router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
 router.get( "/Edit/:id", product_controller.getEditpage );
@@ -51,19 +55,12 @@ router.get("/getProductByCat_filter/:cat", product_controller.getProductByCat_fi
 router.get("/viewStock/:id", product_controller.viewStock);
 router.get("/stockInfo/:id", product_controller.stockInfo);
 router.get("/viewProducts", product_controller.viewProducts);
-
-
 // validation
 router.get("/check_availablity/:model", product_controller.check_availablity);
-
-
 // Save
 // router.post("/regiSave", upload.single("imagePath"), product_controller.SaveProduct);
 // router.post("/SaveImage",upload.single("x"), product_controller.SaveImage);
-
-
 router.post("/saveLive/:id", product_controller.saveLive);
-
 // live
 router.get("/liveStockEdit/:id/:pid", product_controller.getLiveStockEditpage);
 router.get("/liveStockEditNoSerial/:id/:pid", product_controller.getLiveStockEditNoSerialpage);
@@ -76,36 +73,5 @@ router.post("/Restore/:id", product_controller.getRestoreLive);
 router.post("/search", product_controller.getSearchResult);
 router.get("/active/:id", product_controller.makeActive);
 router.get("/unactive/:id", product_controller.makeNotActive);
-
-
-// // save single image in folder
-// const upload = multer({
-//   dest: "../public/photos"
- 
-// });
-// router.post(
-//   "/upload",
-//   upload.single("imagePath" /* name attribute of <file> element in your form */),
-//   async (req, res) => {
-//     const tempPath = req.file.path;
-   
-//     await crypto.randomBytes(16, (err, buf) => {
-//       if (err) {
-//         return reject(err);
-//       }
-//       filename = buf.toString('hex') + path.extname(req.file.originalname);
-//       const targetPath = path.join(__dirname, "../public/photos/"+filename);
-   
-//       fs.rename(tempPath, targetPath, err => {
-//         if (err) console.log(err);
-
-//         res
-//           .status(200)
-//           .contentType("text/plain")
-//           .end("File uploaded!");
-//       });
-//     });
-//   }
-// );
 
 module.exports = router;

@@ -6,6 +6,14 @@ exports.LocalPurchasePage = (req, res, next) => {
   res.render("purchase/localPurchase");
 };
 
+// get supplier registration page
+exports.getLPList = async (req, res, next) => {
+  
+  var lp = await LP.find().populate("supplier");
+  console.log(lp)
+  res.render("purchase/allPurchase", { lp })
+};
+
 // fetching products of a specific local purchase 
 exports.getProducts = (req, res, next) => {
   LP.findOne({ _id: req.params.invc })
@@ -57,46 +65,45 @@ exports.LocalPurchaseLPPage = (req, res, next) => {
 
 // saves local purchase
 exports.SaveLocalPurchase = async (req, res) => {
-  var form_product = req.body.model1
-  var contact= (req.body.contt).split(",")
-  var invoice_number= req.body.number;
-  var total= Number(req.body.quantity) * Number(req.body.PP)
+  const {model1,contt, number, quantity, PP, cattN, subNn, brandN, serial_availablity } = req.body;
+  var contact= contt.split(",")
+  var total= Number(quantity) * Number(PP)
 
   // fetching sub, cat, brand and product
-  var cat = (req.body.cattN).split(",")
-  var sub = (req.body.subNn).split(",")
-  var brand = (req.body.brandN).split(",")
-  var pro = await Product.findOne({ model: form_product });
-  var lp = await LP.findOne({ number: invoice_number });
+  var cat = (cattN).split(",")
+  var sub = (subNn).split(",")
+  var brand = (brandN).split(",")
+  var pro = await Product.findOne({ model: model1 });
+  var lp = await LP.findOne({ number });
 
   // if the fetched product is null insert the product
   if (pro === null) {
     var pro_obj = {
-      model: form_product,
+      model: model1,
       category: cat[0],
       brand: brand[0]
     };
-    if (req.body.serial_availablity === "on") {
+    if (serial_availablity === "on") {
       pro_obj.serial_availablity= true
     }else{
       pro_obj.serial_availablity= false
     }
-    if (sub != null) {
+    if (sub != "0") {
       pro_obj.subcategory = sub[0]; 
-      pro_obj.productName= cat[1]+"-"+sub[1]+"-"+brand[1]+"-"+form_product;
-      pro_obj.pid = cat[1].slice(0,3)+ sub[1].slice(0,3)+ brand[1].slice(0,3)+ form_product
+      pro_obj.productName= cat[1]+"-"+sub[1]+"-"+brand[1]+"-"+ model1;
+      pro_obj.pid = cat[1].slice(0,3)+ sub[1].slice(0,3)+ brand[1].slice(0,3)+ model1
     }
     else{
-      pro_obj.productName= cat[1]+"-"+brand[1]+"-"+form_product
-      pro_obj.pid = cat[1].slice(0,3)+ brand[1].slice(0,3)+ form_product
+      pro_obj.productName= cat[1]+"-"+brand[1]+"-"+ model1
+      pro_obj.pid = cat[1].slice(0,3)+ brand[1].slice(0,3)+ model1
     }
     pro = await new Product(pro_obj).save();
   }
 
   var product = {
     product: pro._id,
-    quantity: req.body.quantity,
-    purchasePrice: req.body.PP,
+    quantity: quantity,
+    purchasePrice: PP,
     total: total
   }
 
@@ -109,15 +116,16 @@ exports.SaveLocalPurchase = async (req, res) => {
     obj.products= [ product ], 
     obj.subTotal= total
     
+    
     await new LP(obj).save();
-    res.redirect("/purchase/localPurchase/" + invoice_number);
+    res.redirect("/purchase/localPurchase/" + number);
   } else {
-    await LP.update({ number: invoice_number },
+    await LP.update({ number: number },
       { 
         $addToSet: { products: product },
         $inc: { subTotal: +total }
       },
       { upsert: true });
-    res.redirect("/purchase/localPurchase/" + invoice_number);
+    res.redirect("/purchase/localPurchase/" + number);
   }
 };

@@ -9,6 +9,12 @@ const path = require('path');
 const crypto = require('crypto');
 var fs = require('fs');
 
+// get Product update page
+exports.getProductUpdatePage = async(req, res)=>{
+  let product = await Product.findOne({_id:req.params._id})
+  res.render("products/update",{ product, feature_total: product.features.length })
+}
+
 // saving product for dealer products
 exports.SaveProductDealer = async(req, res)=>{
   var data =req.body.data
@@ -23,38 +29,53 @@ exports.SaveProductLP = async(req, res)=>{
   await Serial.insertMany(req.body.serials)
   res.send({})
 }
+// updating product for local purchase products
+exports.updateProduct = async(req, res)=>{
+  var data = req.body.data
+  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  // await Serial.insertMany(req.body.serials)
+  res.send({})
+}
+
+// checks whether any of the given serials already exists or not
+exports.checkSerials = async(req, res)=>{
+  var arr = req.body.serial_array
+  var serials = await Serial.find({ pid: req.body.pid })
+  var exists = [];
+  serials.map((serial)=>{
+    if(arr.includes(serial.number)){
+      exists.push(serial.number)
+    }
+  })
+  res.send({exists})
+}
 
 // saves image in folder
 exports.SaveImage = async (req, res) => {
   await req.files.map((image)=>{
     const tempPath = image.path;
-  
     crypto.randomBytes(16,async (err, buf) => {
       if (err) {
         return reject(err);
       }
       filename = buf.toString('hex') + path.extname(image.originalname);
       const targetPath = path.join(__dirname, "../public/photos/"+filename);
-      
+     
       await Product.update({_id:req.body.pid},{$addToSet:{image: filename}},{upsert:true})
-    
+      
       fs.rename(tempPath, targetPath, err => {
         if (err) console.log(err);
       });
     });
   })
-res.redirect("/products/Entry")
+res.redirect("/products/InhouseInventory")
 }
 
 // In-house stock product entry page
-exports.getInhouseInventoryPage = (req, res, next) => {
-  res.render("products/InhouseStockProduct");
-};
+exports.getInhouseInventoryPage = (req, res) => res.render("products/InhouseStockProduct");
 
 // dealer stock product entry page
-exports.getDealerInventoryPage = (req, res, next) => {
-  res.render("products/dealerProduct");
-};
+exports.getDealerInventoryPage = (req, res) => res.render("products/dealerProduct");
 
 // view total stock information
 exports.viewStock = (req, res) =>{
@@ -74,13 +95,12 @@ exports.viewStock = (req, res) =>{
       id+= sl;
       var obj = {
         s_id : id,
-        sl:sl,
-        p_name:docs.product_id.model,
+        sl: sl,
+        p_name: docs.product_id.model,
         pp: docs.purchasePrice
       }
-      if(docs.serial.includes(sl.toString())){
-        obj.status = "In Stock"
-      }else{
+      if(docs.serial.includes(sl.toString())) obj.status = "In Stock";
+      else{
         docs.product_id.live.serial.map((srl)=>{
           if(srl.serial.toString() === sl.toString()){
             obj.status = "In Live";
@@ -130,7 +150,7 @@ exports.getLiveStockEditNoSerialpage = async (req, res, next) => {
 };
 
 // get live stock edit page
-exports.getLiveStockEditpage=async (req, res, next) => {
+exports.getLiveStockEditpage=async (req, res) => {
   var arr=[]
   var rs = await allFuctions.get_inventory_list_new({product_id:req.params.pid},{},"product_id")
  
@@ -148,7 +168,7 @@ exports.getLiveStockEditpage=async (req, res, next) => {
 };
 
 // get live stock edit page
-exports.RestoreLiveNoserialPage = async (req, res, next) => {
+exports.RestoreLiveNoserialPage = async (req, res) => {
   let docs = await allFuctions.get_live({_id:req.params.id});
   res.render("liveToInventoryNoSerial", {
     title: "Restore live serial",
@@ -157,7 +177,7 @@ exports.RestoreLiveNoserialPage = async (req, res, next) => {
 };
 
 // get live stock edit page
-exports.getRestoreLivepage = async (req, res, next) => {
+exports.getRestoreLivepage = async (req, res) => {
   let docs = await allFuctions.get_live({_id:req.params.id});
   res.render("liveToInventory", {
     title: "Restore live serial",
@@ -166,7 +186,7 @@ exports.getRestoreLivepage = async (req, res, next) => {
 };
 
 // this is to get selected serials and restore them in inventory and update the remaining live quantity 
-exports.getRestoreLive =async (req, res, next) => {
+exports.getRestoreLive =async (req, res) => {
   var live_serials=(req.body.serial).split(",");
   var product_update_serial = []
   await Product.findOne({_id:req.params.id}, async (err, docs)=>{
@@ -185,18 +205,16 @@ exports.getRestoreLive =async (req, res, next) => {
 };
 
 // get inventory list high to low
-exports.StockHighToLow= (req, res, next) => {
+exports.StockHighToLow = (req, res) => {
   allFuctions.get_all_inventory_list({},{ "remaining": -1 }, (docs)=>{
     docs.total_stock = 0;
     docs.map((inventory)=>{
       if(inventory.product_id){
-        var count=0;
+        var count = 0;
         inventory.product_id.live.serial.map((serial)=>{
-          if((inventory._id).toString() === (serial.inventory).toString()){
-            count++;
-          }
+          if((inventory._id).toString() === (serial.inventory).toString()) count++;
         })
-        inventory.count=count;
+        inventory.count = count;
       }
     })
     allFuctions.get_allProduct_page(res, docs)
@@ -204,7 +222,7 @@ exports.StockHighToLow= (req, res, next) => {
 };
 
 // get inventory list low to high
-exports.StockLowToHigh= (req, res, next) => {
+exports.StockLowToHigh= (req, res) => {
   allFuctions.get_all_inventory_list({},{ "remaining": 1 }, (docs)=>{
    allFuctions.live_wise_inventory(docs, (rs)=>{
      allFuctions.get_allProduct_page(res, rs, "Inventories")
@@ -243,7 +261,7 @@ exports.getSearchResult = (req, res)=>{
 }
 
 // returns allproduct page
-exports.getAllProducts = (req, res, next) => {
+exports.getAllProducts = (req, res) => {
   allFuctions.get_all_inventory_list({},{"product_id": 1 }, (docs)=>{
     allFuctions.live_wise_inventory(docs, (rs)=>{
       allFuctions.get_allProduct_page(res, rs, "Inventories")
@@ -252,7 +270,7 @@ exports.getAllProducts = (req, res, next) => {
 };
 
 // Total stock and live info of a product
-exports.stockInfo = (req, res, next) => {
+exports.stockInfo = (req, res) => {
   Product.findOne({ _id: req.params.id },(err, docs)=>{
 
     docs.invtry = [];
@@ -265,7 +283,6 @@ exports.stockInfo = (req, res, next) => {
         docs.total_stock +=inven.remaining;
         docs.total += inven.remaining;
       })
-      console.log(docs.invtry)
       res.render("viewSerial", {product:docs})
     })
   })

@@ -23,7 +23,6 @@ module.exports = {
             res.redirect("/users/dashboard");
         }
       }
-
   };
 
   

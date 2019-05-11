@@ -15,6 +15,7 @@
                                 <div class="col-md-6">
                                     <select class="form-control inp" name="categg" id="categg">
                                         <option value="null" selected>Select One</option>
+                                        
                                         {{# each cat}}
                                         <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
                                         {{/each}}
@@ -72,7 +73,10 @@
                                 </div>
                             </div>
                             <br>
-                            <button type="submit" class="btn btn-default ">Next</button> <br>
+                            <center>
+                                <button type="submit" class="btn btn-default ">Next</button> <br>
+                            </center>
+                           
                         </form>
                     </div>
                     <div id="ex1" class="modal">
@@ -159,7 +163,6 @@
                             <input type="text" name="v{{@index}}" id="v{{@index}}" class="form-control inp"
                                 placeholder="" required>
                         </div>
-
                     </div>
                     <br>
                     {{/each}}
@@ -173,7 +176,7 @@
                             <label class="lbl" for="new_feat_label">New Feature:</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="new_feat" name="new_feat"
+                            <input type="hidden" id="new_feat" name="new_feat"
                                 value="{{feature_total}}">{{!-- counts the total newly added features --}}
                             <input type="text" id="new_feat_label" name="new_feat_label" class="form-control inp"
                                 placeholder="write a new feature name">
@@ -227,18 +230,34 @@
                         </div>
                     </div>
                     <br>
-                    <button id="save_inventory_dealer" class="btn btn-primary">Submit</button>
+                    <button id="save_inventory_dealer" class="btn btn-primary">Next Step</button>
                     {{!-- </form> --}}
                     {{/if}}
                 </div>
             </div>
-
-            <div class="col-md-6">
+           
+            <div class="col-md-6" >
+                 <a name="image_sec"></a>
                 <div class="well">
                     <h3 class="text-center">Set Image</h3><br>
                     <form action="/products/upload" method="POST" enctype="multipart/form-data">
-
                         <div class="row">
+                            <div class="col-md-5 col5">
+                                <label class="lbl" for="pid">Product Name:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control inp" name="pname" id="pname" value="{{product.productName}}">
+                                <input type="hidden" name="pid" id="pid" value="{{product._id}}">
+                                {{!-- <select class="form-control inp" name="pid" id="pid">
+                                    <option value="0">Select One</option>
+                                    {{# each Product}}
+                                    <option value="{{this._id}}">{{this.productName}}</option>
+                                    {{/each}}
+                                </select> --}}
+                            </div>
+                        </div>
+                        <br>
+                        {{!-- <div class="row">
                             <div class="col-md-5 col5">
                                 <label class="lbl" for="pid">Product Name:
                                 </label>
@@ -252,7 +271,7 @@
                                 </select>
                             </div>
                         </div>
-                        <br>
+                        <br> --}}
                         <div class="row">
                             <div class="col-md-5 col5">
                                 <label class="lbl" for="imagePath">Select Image:</label>
@@ -273,6 +292,7 @@
 
                 </div>
             </div>
+           
         </div>
     </div>
 </div>

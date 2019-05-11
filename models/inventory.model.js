@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-
 var InventorySchema = new Schema({
     product_id: { type: Schema.Types.ObjectId, ref: 'Product' },
     stockQuantity: {type:Number},

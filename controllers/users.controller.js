@@ -7,19 +7,13 @@ require("../models/User");
 const User = mongoose.model("users");
 
 // User login route
-exports.loginPage = (req, res, next) => {
-  res.render("users/login");
-};
+exports.loginPage = (req, res) => res.render("users/login");
 
 // User register route
-exports.registrationPage = (req, res, next) => {
-  res.render("users/register");
-};
+exports.registrationPage = (req, res) => res.render("users/register");
 
 // User register route
-exports.getDashbash = (req, res, next) => {
-  res.render("dashboard");
-};
+exports.getDashbash = (req, res) => res.render("dashboard");
 
 // Login form POST
 exports.login = (req, res, next) => {
@@ -33,13 +27,9 @@ exports.login = (req, res, next) => {
 // Register form POST
 exports.userregistration = (req, res, next) => {
   let errors = [];
-  if (req.body.password != req.body.password2) {
-    errors.push({ text: "Passwords do not match" });
-  }
-
-  if (req.body.password.length < 4) {
-    errors.push({ text: "Password must be at least 4 characters" });
-  }
+  const {password, password2,email} = req.body;
+  if (password != password2) errors.push({ text: "Passwords do not match" });
+  if (password.length < 4) errors.push({ text: "Password must be at least 4 characters" });
 
   if (errors.length > 0) {
     res.render("users/register", {
@@ -50,10 +40,9 @@ exports.userregistration = (req, res, next) => {
       password: req.body.password,
       password2: req.body.password2,
       role: req.body.role
-
     });
   } else {
-    User.findOne({ email: req.body.email }).then(user => {
+    User.findOne({ email }).then(user => {
       if (user) {
         req.flash("error_msg", "Email already registered.");
         res.redirect("/users/register");
@@ -86,7 +75,7 @@ exports.userregistration = (req, res, next) => {
 };
 
 // Logout user
-exports.logout = (req, res, next) => {
+exports.logout = (req, res) => {
   req.logout();
   res.redirect("/users/login");
 };

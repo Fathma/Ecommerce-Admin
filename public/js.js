@@ -67,28 +67,8 @@ function addnew() {
   } else {
     document.getElementById("feat").value = "";
     document.getElementById("feats").value =
-      document.getElementById("feats").value + "," + feat;
+    document.getElementById("feats").value + "," + feat;
   }
-}
-
-// creating new textField inside a div
-function create_text_fields(i) {
-  var label = document.createElement("label");
-  label.textContent = "Serial " + i;
-  var div = document.createElement("div");
-  var breakk = document.createElement("br");
-  div.id = "d" + i;
-
-  var input = document.createElement("input");
-  input.id = "v" + i;
-  input.name = "v" + i;
-  input.type = "Number";
-  input.className = "form-control";
-  input.required = true;
-  div.appendChild(label);
-  div.appendChild(input);
-  div.appendChild(breakk);
-  document.getElementById("space").appendChild(div);
 }
 
 function set_var() {
@@ -178,111 +158,13 @@ $(document).ready(function() {
       }
     });
   }
-
-  // saving Inventory with serial numbers
-  $("form").submit(function(e) {
-    // this is to prevent double submit
-    if (document.getElementById("val").value === "0") {
-      var check = parseInt(document.getElementById("check").value);
-      var data_string = "";
-
-      for (var i = 1; i <= check; i++) {
-        if (document.getElementById("v" + i).value != "") {
-          data_string += document.getElementById("v" + i).value;
-          if (check != i) {
-            data_string += ",";
-          }
-        }
-      }
-
-      if (
-        document.getElementById("check").value === "0" ||
-        document.getElementById("check").value !=
-          document.getElementById("quantity").value
-      ) {
-        createtextfields();
-        e.preventDefault();
-      } else {
-        if (data_string === "") {
-        } else {
-          if (
-            data_string.split(",").length !=
-            ArrNoDupe(data_string.split(",")).length
-          ) {
-            alert("Serial numbers have to be unique!");
-            e.preventDefault();
-          } else {
-            var string_data = document.getElementById("pre_serial").value;
-            var per = string_data.split(",");
-
-            // the first value as "123... here removing the "
-            var fi = "";
-            for (var j = 1; j < per[0].length; j++) {
-              fi += per[0][j];
-            }
-
-            // the first value as 123"... here removing the "
-            var la = "";
-            for (var j = 0; j < per[per.length - 1].length - 1; j++) {
-              la += per[per.length - 1][j];
-            }
-            per.push(la);
-            per.push(fi);
-
-            var new_arr = data_string.split(",");
-            var exists = "";
-
-            for (var i = 0; i < new_arr.length + 1; i++) {
-              if (per.includes(new_arr[i])) {
-                exists += new_arr[i] + " ";
-              }
-            }
-
-            if (exists.length === 0) {
-              $.post(
-                "/products/SaveInventory",
-                {
-                  serial: data_string,
-                  model: document.getElementById("model").value,
-                  purchase_price: parseInt(
-                    document.getElementById("purchase_price").value
-                  ),
-                  quantity: document.getElementById("quantity").value
-                },
-                function(data_string) {
-                  alert(JSON.stringify(data_string));
-                }
-              );
-              alert("successful");
-              document.getElementById("val").value = "1";
-            } else {
-              alert(exists + "already exists!");
-              e.preventDefault();
-            }
-          }
-        }
-      }
-    }
-  });
-});
-
-// makes an array unique
-function ArrNoDupe(a) {
-  var temp = {};
-  for (var i = 0; i < a.length; i++) temp[a[i]] = true;
-  var r = [];
-  for (var k in temp) {
-    r.push(k);
+  
+  function checkValidityy() {
+    var arr = document.getElementById("serial").value.split(",");
+    var arr2 = ArrNoDupe(arr);
+    document.getElementById("serial").value = arr2;
+    document.getElementById("quantity").value = arr2.length;
   }
-  return r;
-}
-
-function checkValidityy() {
-  var arr = document.getElementById("serial").value.split(",");
-  var arr2 = ArrNoDupe(arr);
-  document.getElementById("serial").value = arr2;
-  document.getElementById("quantity").value = arr2.length;
-}
 
 // on selection of a serial number it makes the color black and returns an unique array to the serial Text Box
 // Seems like the selected serail number is disabled after first click
@@ -325,6 +207,114 @@ function set_disableNoSerial(id) {
     document.getElementById(id).style.color = "#041126";
   }
 }
+
+// saving Inventory with serial numbers
+$("form").submit(function(e) {
+  // this is to prevent double submit
+  if (document.getElementById("val").value === "0") {
+    var check = parseInt(document.getElementById("check").value);
+    var data_string = "";
+    for (var i = 1; i <= check; i++) {
+      if (document.getElementById("v" + i).value != "") {
+        data_string += document.getElementById("v" + i).value;
+        if (check != i) {
+          data_string += ",";
+        }
+      }
+    }
+
+    if (
+      document.getElementById("check").value === "0" ||
+      document.getElementById("check").value !=
+      document.getElementById("quantity").value
+    ) {
+      createtextfields();
+      e.preventDefault();
+    } else {
+      if (data_string === "") {
+      } else {
+        if (
+          data_string.split(",").length !=
+          ArrNoDupe(data_string.split(",")).length
+        ) {
+          alert("Serial numbers have to be unique!");
+          e.preventDefault();
+        } else {
+          var string_data = document.getElementById("pre_serial").value;
+          var per = string_data.split(",");
+
+          // the first value as "123... here removing the "
+          var fi = "";
+          for (var j = 1; j < per[0].length; j++) {
+            fi += per[0][j];
+          }
+
+          // the first value as 123"... here removing the "
+          var la = "";
+          for (var j = 0; j < per[per.length - 1].length - 1; j++) {
+            la += per[per.length - 1][j];
+          }
+          per.push(la);
+          per.push(fi);
+
+          var new_arr = data_string.split(",");
+          var exists = "";
+
+          for (var i = 0; i < new_arr.length + 1; i++) {
+            if (per.includes(new_arr[i])) {
+              exists += new_arr[i] + " ";
+            }
+          }
+
+          if (exists.length === 0) {
+            $.post(
+              "/products/SaveInventory",
+              {
+                serial: data_string,
+                model: document.getElementById("model").value,
+                purchase_price: parseInt(
+                  document.getElementById("purchase_price").value
+                ),
+                quantity: document.getElementById("quantity").value
+              },
+              function(data_string) {
+                alert(JSON.stringify(data_string));
+              }
+            );
+            alert("successful");
+            document.getElementById("val").value = "1";
+          } else {
+            alert(exists + "already exists!");
+            e.preventDefault();
+          }
+        }
+      }
+    }
+  }
+});
+});
+
+
+// // creating new textField inside a div
+// function create_text_fields(i) {
+//   var label = document.createElement("label");
+//   label.textContent = "Serial " + i;
+//   var div = document.createElement("div");
+//   var breakk = document.createElement("br");
+//   div.id = "d" + i;
+
+//   var input = document.createElement("input");
+//   input.id = "v" + i;
+//   input.name = "v" + i;
+//   input.type = "Number";
+//   input.className = "form-control";
+//   input.required = true;
+//   div.appendChild(label);
+//   div.appendChild(input);
+//   div.appendChild(breakk);
+//   document.getElementById("space").appendChild(div);
+// }
+
 
 // function tableCreate() {
 //   var tbl = document.createElement('table');

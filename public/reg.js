@@ -105,7 +105,6 @@ $(document).ready(function() {
   $("#cattN").change(function() {
     if (document.getElementById("cattN").value != null) {
       var cat_id = document.getElementById("cattN").value.split(",");
-      console.log(cat_id)
       $.get("/category/getSub/" + cat_id[0], {}, function(data) {
         configureDropDownL(document.getElementById("subNn"), data);
         // $.get("/category/getBrands2/" + cat_id, {}, function(data2) {

@@ -37,6 +37,7 @@ const invoiceRoutes = require("./routes/invoice.routes");
 const purchaseRoutes = require("./routes/purchase.routes");
 const supplierRoutes = require("./routes/supplier.routes");
 const generalRoutes = require("./routes/general.routes");
+
 // Passport config
 require("./config/passport")(passport);
 
@@ -58,7 +59,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const hbs = handlebars.create({
   defaultLayout: "main",
-  // custom helpers
+  // custom helpers for 'if(something1 === something2){ do something }'
   helpers: {
     equality: function(value1, value2, block) {
       if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
@@ -137,7 +138,6 @@ app.use(async (req, res, next)=>{
   next();
 });
 
-
 app.get("/", (req, res) => {
   // res.sendFile('fff.png', { root: path.join(__dirname, './public/photos') })
   if (req.user) {
@@ -146,13 +146,16 @@ app.get("/", (req, res) => {
     res.redirect("/users/login");
   }
 });
+app.get("/img/:img", (req, res) => {
+  res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
+});
 
 // About route
 app.get("/about", (req, res) => {
   res.render("about");
 });
 
-// routes
+// base routes
 app.use("/category", categoryRoutes);
 app.use("/users", usersRoutes);
 app.use("/orders", ordersRoutes);
@@ -162,6 +165,7 @@ app.use("/products", productsRoutes);
 app.use("/purchase", purchaseRoutes);
 app.use("/supplier", supplierRoutes);
 app.use("/general", generalRoutes);
+
 //Port For the Application
 const port = process.env.PORT || 3000;
 

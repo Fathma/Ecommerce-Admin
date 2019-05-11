@@ -8,6 +8,7 @@ var LocalPurchaseSchema = new Schema({
     address: { type: String },
     contactPerson: { type: String },
     mobile: { type: String },
+    dealer: { type: String },
     products:[{
         product: { type: Schema.Types.ObjectId, ref: 'Product' },
         serial:[{ type: String }],
