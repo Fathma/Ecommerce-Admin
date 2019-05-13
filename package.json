@@ -4,7 +4,6 @@
   "description": "E-Commerce Application",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
   "author": "Jihad",
@@ -47,6 +46,7 @@
     "url": "https://github.com/Fathma/Ecommerce-Admin"
   },
   "engines": {
-    "node": "8.x"
+    "node": "10.15.1",
+   "npm": "6.4.1"
   }
 }
