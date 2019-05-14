@@ -46,7 +46,6 @@
     "url": "https://github.com/Fathma/Ecommerce-Admin"
   },
   "engines": {
-    "node": "10.x",
-   "npm": "6.4.1"
+    "node": "10.x"
   }
 }
