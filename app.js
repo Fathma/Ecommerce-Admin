@@ -19,6 +19,7 @@ const methodOverride = require("method-override");
 var HandlebarsIntl = require("handlebars-intl");
 var Handlebars = require("handlebars");
 var moment = require("moment");
+var expressValidator = require('express-validator');
 moment().format();
 
 // role
@@ -56,6 +57,7 @@ HandlebarsIntl.registerWith(Handlebars);
 app.use(morgan("dev"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressValidator());
 
 const hbs = handlebars.create({
   defaultLayout: "main",
@@ -74,7 +76,6 @@ const hbs = handlebars.create({
 
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-
 app.use(methodOverride("_method"));
 
 // Body parser middleware

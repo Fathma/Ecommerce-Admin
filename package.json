@@ -19,6 +19,7 @@
     "express-fileupload": "^1.1.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+    "express-validator": "^5.3.1",
     "form-data": "^2.3.3",
     "gridfs-stream": "^1.1.1",
     "handlebars-intl": "^1.1.2",

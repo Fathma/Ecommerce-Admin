@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
+const Validation = require("../validations/validations")
 
 // Load user model
 
@@ -25,35 +26,22 @@ exports.login = (req, res, next) => {
 };
 
 // Register form POST
-exports.userregistration = (req, res, next) => {
-  let errors = [];
-  const {password, password2,email} = req.body;
-  if (password != password2) errors.push({ text: "Passwords do not match" });
-  if (password.length < 4) errors.push({ text: "Password must be at least 4 characters" });
+exports.userregistration = async(req, res, next) => {
+  const { name, branch, role, password, password2, email } = req.body;
+  var errors =await Validation.userValidation(req)
+  if(!errors) errors = []
+  if (password != password2) errors.push({ msg: "Passwords do not match" });
+  if (password.length < 4) errors.push({ msg: "Password must be at least 4 characters" });
 
   if (errors.length > 0) {
-    res.render("users/register", {
-      errors: errors,
-      name: req.body.name,
-      email: req.body.email,
-      branch: req.body.branch,
-      password: req.body.password,
-      password2: req.body.password2,
-      role: req.body.role
-    });
+    res.render("users/register", { errors, name, email, branch, password, password2, role });
   } else {
     User.findOne({ email }).then(user => {
       if (user) {
         req.flash("error_msg", "Email already registered.");
         res.redirect("/users/register");
       } else {
-        const newUser = new User({
-          name: req.body.name,
-          email: req.body.email,
-          branch: req.body.branch,
-          password: req.body.password,
-          role: req.body.role
-        });
+        const newUser = new User({ name, email, branch, password, role });
 
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -72,6 +60,9 @@ exports.userregistration = (req, res, next) => {
       }
     });
   }
+  
+  // let errors = [];
+  
 };
 
 // Logout user
