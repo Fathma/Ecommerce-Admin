@@ -11,4 +11,4 @@ const UserSchema = new Schema({
   branch: { type: String }
 });
 
-mongoose.model("users", UserSchema,'admin');
+module.exports = mongoose.model("users", UserSchema,'admin');
