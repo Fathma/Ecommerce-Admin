@@ -2,12 +2,15 @@ const express = require('express');
 const router = express.Router();
 const multer = require("multer");
 const mongoose = require('mongoose');
+var path = require("path");
+
 const product_controller = require('../controllers/product.controller');
 
 mongoose.Promise = global.Promise;
 
 const upload = multer({
-  dest: "../public/photos"
+  dest: path.join(__dirname, './public/photos')
+  // "../public/photos"
 })
 
 // 23/4/2019 new
