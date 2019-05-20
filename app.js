@@ -52,6 +52,7 @@ mongoose.connect(dbConfig.mongoURI, err => {
     console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
 });
 
+app.use('/public/photos', express.static('photos'));
 HandlebarsIntl.registerWith(Handlebars);
 
 app.use(morgan("dev"));

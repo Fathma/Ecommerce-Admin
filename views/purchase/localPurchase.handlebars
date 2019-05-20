@@ -6,7 +6,7 @@
         <div class="row">
 
             <div class="col-md-3">
-                <label class="lbl" for="LP">Date:<span style="color:red">*</span> </label>
+                <label class="lbl" for="date">Date:<span style="color:red">*</span> </label>
             </div>
 
             <div class="col-md-3">
@@ -19,7 +19,7 @@
                 {{/if}}
             </div>
             <div class="col-md-3">
-                <label class="" for="LP">Invoice :<span style="color:red">*</span> </label>
+                <label class="" for="number">Invoice :<span style="color:red">*</span> </label>
             </div>
             <div class="col-md-3">
                 <input type="text" class="form-control inp" style="margin-left:-60px;" name="number" id="number"
@@ -46,7 +46,7 @@
 
         <div class="row">
             <div class="col-md-5 col5">
-                <label class="lbl" for="contt">Address<span style="color:red">*</span> </label>
+                <label class="lbl" for="address">Address<span style="color:red">*</span> </label>
             </div>
             <div class="col-md-6">
                 <select class="form-control inp" name="address" id="address" required>
@@ -154,10 +154,10 @@
 
         <div class="row">
             <div class="col-md-5 col5">
-                <label class="lbl" for="PP">Purchase Price<span style="color:red">*</span> </label>
+                <label class="lbl" for="purchasePrice">Purchase Price<span style="color:red">*</span> </label>
             </div>
             <div class="col-md-6">
-                <input type="text" class="form-control inp" name="PP" id="PP" required>
+                <input type="text" class="form-control inp" name="purchasePrice" id="purchasePrice" required>
             </div>
         </div>
         <br>
@@ -178,14 +178,14 @@
     </form>
     <div id="ex1" class="modal">
         <div class="form-group">
-            <label for="cat" style="color:white">Category</label>
+            <label for="cat" style="color:azure">Category</label>
             <input type="text" name="cat" id="cat" placeholder="Enter New Category" class="form-control">
         </div>
         <a id="myForm1" href="/category/entry" class="btn btn-primary">Submit</a>
     </div>
     <div id="ex2" class="modal">
         <div class="form-group">
-            <label for="cate" style="color:white">Category<span style="color: red">*</span></label>
+            <label for="cate" style="color:azure">Category<span style="color: red">*</span></label>
             <select class="form-control" name="cate" id="cate">
                 {{# each cat}}
                 <option value="{{this._id}}">{{this.name}}</option>
@@ -193,14 +193,14 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="subCat" style="color:white">Sub Category</label>
+            <label for="subCat" style="color:azure">Sub Category</label>
             <input type="text" name="subCat" id="subCat" class="form-control">
         </div>
         <button id="save_sub" class="btn btn-primary">Submit</button>
     </div>
     <div id="ex3" class="modal">
         <div class="form-group">
-            <label for="brand" style="color:white">Brand<span style="color: red">*</span></label>
+            <label for="brand" style="color:azure">Brand<span style="color: red">*</span></label>
             <input type="text" name="brand" id="brand" class="form-control" placeholder="Enter New Brand">
         </div>
         <a id="save_brand" class="btn btn-primary">Submit</a>

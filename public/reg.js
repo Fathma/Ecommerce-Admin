@@ -1,10 +1,10 @@
 $(document).ready(function() {
-
+  var byId = function( id ) { return document.getElementById( id ); };
   // save new category
   $(function() {
     $("#myForm1").on("click", function(e) {
       e.preventDefault();
-      var cat = document.getElementById("cat").value;
+      var cat = byId("cat").value;
       $.post("/category/addCategory", { name: cat }, function(data) {
         location.reload(true);
       });
@@ -12,8 +12,8 @@ $(document).ready(function() {
 
     $("#save_sub").on("click", function(e) {
       e.preventDefault();
-      var cate = document.getElementById("cate").value;
-      var subCat = document.getElementById("subCat").value;
+      var cate = byId("cate").value;
+      var subCat = byId("subCat").value;
       $.post( "/category/addSubCategory", { cate: cate, subCat: subCat }, function(data) {
           location.reload(true);
         }
@@ -22,7 +22,7 @@ $(document).ready(function() {
 
     $("#save_brand").on("click", function(e) {
       e.preventDefault();
-      var brand = document.getElementById("brand").value;
+      var brand = byId("brand").value;
       $.post("/category/addBrand", { brand: brand }, function(data) {
         location.reload(true);
       });
@@ -31,43 +31,43 @@ $(document).ready(function() {
 
   // setting brand dropdown values on the besis of selected subcategory
   // $("#subCategg").change(function() {
-  //   if (document.getElementById("subCategg").value != null) {
-  //     var subcat_id = document.getElementById("subCategg").value.split(",");
+  //   if (byId("subCategg").value != null) {
+  //     var subcat_id = byId("subCategg").value.split(",");
   //     $.get("/category/getBrands/" + subcat_id[0], {}, function(data) {
-  //       configureDropDownL2(document.getElementById("brandg"), data);
+  //       configureDropDownL2(byId("brandg"), data);
   //     });
   //   }
   // });
   
   // setting brand dropdown values on the besis of selected subcategory
   // $("#subNn").change(function() {
-  //   if (document.getElementById("subNn").value != null) {
-  //     var subcat_id = document.getElementById("subNn").value;
+  //   if (byId("subNn").value != null) {
+  //     var subcat_id = byId("subNn").value;
   //     $.get("/category/getBrands/" + subcat_id, {}, function(data) {
-  //       configureDropDownL2(document.getElementById("brandNs"), data);
+  //       configureDropDownL2(byId("brandNs"), data);
   //     });
   //   }
   // });
 
   // creating subcategory and brand on the basis of selected category
   $("#categg").change(function() {
-    if (document.getElementById("categg").value != null) {
-      var cat_id = document.getElementById("categg").value.split(",");
+    if (byId("categg").value != null) {
+      var cat_id = byId("categg").value.split(",");
       $.get("/category/getSub/" + cat_id[0], {}, function(data) {
-        configureDropDownL(document.getElementById("subCategg"), data);
-        // configureDropDownL2(document.getElementById("brandg"), data);
+        configureDropDownL(byId("subCategg"), data);
+        // configureDropDownL2(byId("brandg"), data);
       });
     }
   });
 
   // creating subcategory and brand on the basis of selected category
   $("#supplier").change(function() {
-    if (document.getElementById("supplier").value != "0") {
-      var cat_id = document.getElementById("supplier").value;
+    if (byId("supplier").value != "0") {
+      var cat_id = byId("supplier").value;
       $.get("/supplier/getContactPerson/" + cat_id, {}, function(data) {
         
-        configureDropDownL3(document.getElementById("contt"), data);
-        configureDropDownL4(document.getElementById("address"), data);
+        configureDropDownL3(byId("contt"), data);
+        configureDropDownL4(byId("address"), data);
       });
     }
   });
@@ -103,12 +103,12 @@ $(document).ready(function() {
 
   // creating subcategory and brand on the basis of selected category
   $("#cattN").change(function() {
-    if (document.getElementById("cattN").value != null) {
-      var cat_id = document.getElementById("cattN").value.split(",");
+    if (byId("cattN").value != null) {
+      var cat_id = byId("cattN").value.split(",");
       $.get("/category/getSub/" + cat_id[0], {}, function(data) {
-        configureDropDownL(document.getElementById("subNn"), data);
+        configureDropDownL(byId("subNn"), data);
         // $.get("/category/getBrands2/" + cat_id, {}, function(data2) {
-        //   configureDropDownL2(document.getElementById("brandNs"), data2);
+        //   configureDropDownL2(byId("brandNs"), data2);
         // });
       });
     }

@@ -1,16 +1,16 @@
 
-
-$(document).ready(function() {
+$(document).ready(()=>{
   var products = [];
   var byId = function( id ) { return document.getElementById( id ); };
  
   // getting invoice(local purchase) details on basis of selected invoice number
-  $("#invoice").change(function(e) {
+  $("#invoice").change((e)=>{
+
     byId("img_number").value = "0"
     var invoice = byId("invoice");
 
     if (invoice.value != "0") {
-      $.get("/purchase/getProducts/" + invoice.value, {}, function(data) {
+      $.get("/purchase/getProducts/" + invoice.value, {}, (data)=>{
         var date = data.date.split("T");
         byId("supplier").value = data.supplier.cname;
         byId("date").value = date[0];
@@ -32,7 +32,9 @@ $(document).ready(function() {
   }
 
   $("#imagePath").on("change", function() {
+
     var pre = parseInt(byId("img_number").value);
+
     if($("#imagePath")[0].files.length + pre > 5) {
       alert("Warning !!! You can't select more than 5 images");
       byId("save_img").disabled = true;
@@ -47,7 +49,7 @@ $(document).ready(function() {
   }
 
   // gets product info on the basis of selected product
-  $("#products_invoice").change(function(e) {
+  $("#products_invoice").change((e)=>{
     var id = byId("products_invoice").value;
     byId("subcategory").value = "";
 
@@ -250,7 +252,7 @@ $(document).ready(function() {
       var obj = {
         sid: byId("pid"+i).value,
         lp: invoice,
-        pid:pid,
+        pid,
         status: "In Stock"
       };
       
@@ -263,12 +265,12 @@ $(document).ready(function() {
 
     if (ArrNoDupe(serial_array).length != serial_array.length) alert("serial numbers has to be unique!"); 
     else {
-      $.post("/products/checkSerials", { serial_array, pid:pid }, (data)=> {
+      $.post("/products/checkSerials", { serial_array, pid }, (data)=> {
           if (data.exists.length > 0){
             alert(data.exists + " are already exists");
           } 
           else {
-            var product_attribute = { _id: pid, name, weight, warranty,sellingPrice,
+            var product_attribute = { _id: pid, name, weight, warranty, sellingPrice,
               description: byId("description").value,
               shippingInfo: byId("shippingInfo").value
             };
@@ -329,7 +331,6 @@ $(document).ready(function() {
   function get_features(new_feat) {
     var features = [];
     for (var i = 0; i < new_feat; i++) {
-      console.log(i);
       var obj = {
         label: byId("new_feat_" + i).value,
         value: byId("v" + i).value
@@ -360,9 +361,8 @@ $(document).ready(function() {
       };
 
       var new_feat = parseInt(byId("new_feat").value);
-      console.log(new_feat)
       product_attribute.features = get_features(new_feat);
-      console.log(product_attribute)
+
       $.post("/products/regiSaveDealer", { data: product_attribute }, (data)=> {
         alert("Now Submit the image")
         window.location.href="#image_sec";

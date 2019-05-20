@@ -9,7 +9,7 @@ const product_controller = require('../controllers/product.controller');
 mongoose.Promise = global.Promise;
 
 const upload = multer({
-  dest: path.join(__dirname, './public/photos')
+  dest: path.join(__dirname, '../public/photos')
   // "../public/photos"
 })
 
@@ -19,7 +19,7 @@ router.get("/DealerInventory", product_controller.getDealerInventoryPage);
 router.post("/regiSave", product_controller.SaveProductLP);
 router.post("/regiSaveDealer", product_controller.SaveProductDealer);
 router.post("/showfields",  product_controller.showProductRegistrationFields);
-router.post("/upload",upload.array("imagePath") , product_controller.SaveImage)
+router.post("/upload", upload.array("imagePath"), product_controller.SaveImage)
 router.post("/checkSerials", product_controller.checkSerials);
 router.get("/Update/:_id", product_controller.getProductUpdatePage);
 router.post("/updateProduct", product_controller.updateProduct);

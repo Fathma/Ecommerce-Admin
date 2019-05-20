@@ -1,20 +1,23 @@
 $(document).ready(function() {
-  $(function() {
-    $("#supplierReg").on("click", function(e) {
-      alert("djgdlfkjg")
+  var byId = function( id ) { return document.getElementById( id ); };
+  $(()=>{
+    $("#supplierReg").on("click", (e)=>{
+      var cname = byId('cname').value
+      var cemail= byId('cemail').value
+      var country= byId('country').value
+      var productType= byId('productType').value
+      if(cname === '' || cemail === '' || country === '' || productType === '' ) alert("every field with * must be filled up!")
+      else{
       // getting all addresses in an array
       var address_array = [];
-      var total_address = parseInt(document.getElementById("num_address").value);
-      for(var i=0; i < total_address; i++){
-        var add=document.getElementById("address"+i).value;
-        var contact=document.getElementById("contact"+i).value;
-        var zip=document.getElementById("zip"+i).value;
-        var addresss = {
-          address:add,
-          contact: contact,
-          zip: zip
-        }
-        if(add === '' && contact === "" && zip === ""){}
+      var total_address = parseInt(byId("num_address").value);
+      for(var i = 0; i < total_address; i++){
+        var add = byId("address"+i).value;
+        var contact = byId("contact"+i).value;
+        var zip = byId("zip"+i).value;
+        var addresss = { address:add, contact, zip }
+
+        if(add === '' && contact === '' && zip === ''){}
         else{
           address_array.push(addresss)
         }
@@ -22,62 +25,48 @@ $(document).ready(function() {
 
       // getting all addresses in an array
       var contacts_array = [];
-      var total_contacts = parseInt(document.getElementById("total_contacts").value);
+      var total_contacts = parseInt(byId("total_contacts").value);
 
-      for(var i=0; i < total_contacts; i++){
-        var contactName = document.getElementById("contactName"+i).value;
-        var companyPosition = document.getElementById("companyPosition"+i).value;
-        var email = document.getElementById("email"+i).value;
-        var mobile = document.getElementById("mobile"+i).value;
-        var telephone = document.getElementById("telephone"+i).value;
-        var extention = document.getElementById("extention"+i).value;
+      for(var i = 0; i < total_contacts; i++){
+        var contactName = byId("contactName"+i).value;
+        var companyPosition = byId("companyPosition"+i).value;
+        var email = byId("email"+i).value;
+        var mobile = byId("mobile"+i).value;
+        var telephone = byId("telephone"+i).value;
+        var extention = byId("extention"+i).value;
 
-        var obj = {
-          contactName: contactName,
-          companyPosition: companyPosition,
-          email: email,
-          mobile: mobile,
-          telephone: telephone,
-          extention: extention
-        }
+        var obj = { contactName, companyPosition, email, mobile, telephone, extention }
         contacts_array.push(obj)
       }
 
-      var obj = {
-        cname: document.getElementById('cname').value,
-        cemail: document.getElementById('cemail').value,
-        country: document.getElementById('country').value,
+      var obj = { cname, cemail, country,
         address: address_array,
-        industry: document.getElementById('industry').value,
-        registration_no: document.getElementById('registration_no').value,
-        productType: document.getElementById('productType').value,
+        industry: byId('industry').value,
+        registration_no: byId('registration_no').value,
+        productType,
         contactPerson: contacts_array,
-        additionalInfo: document.getElementById('additionalInfo').value,
+        additionalInfo: byId('additionalInfo').value,
       }
 
-      $.post( "/supplier/SupplierSave", { obj: obj }, function(data) {
+      $.post( "/supplier/SupplierSave", { obj }, (data)=>{
           location.reload(true);
         }
       );
+    }
     });
-  });
 
-  $(function() {
-    $("#edit_supplier").on("click", function(e) {
+    $("#edit_supplier").on("click", (e)=>{
       // getting all addresses in an array
       var address_array = [];
-      var total_address = parseInt(document.getElementById("num_address1").value);
+      var total_address = parseInt(byId("num_address1").value);
 
-      for(var i=0; i < total_address; i++){
-        var add=document.getElementById("address"+i).value;
-        var contact=document.getElementById("contact"+i).value;
-        var zip=document.getElementById("zip"+i).value;
-        var addresss = {
-          address:add,
-          contact: contact,
-          zip: zip
-        }
-        if(add === '' && contact === "" && zip === ""){}
+      for(var i = 0; i < total_address; i++){
+        var add = byId("address"+i).value;
+        var contact = byId("contact"+i).value;
+        var zip = byId("zip"+i).value;
+        var addresss = { address: add, contact, zip }
+
+        if(add === '' && contact === '' && zip === ''){}
         else{
           address_array.push(addresss)
         }
@@ -85,44 +74,36 @@ $(document).ready(function() {
 
       // getting all addresses in an array
       var contacts_array = [];
-      var total_contacts = parseInt(document.getElementById("total_contacts1").value);
+      var total_contacts = parseInt(byId("total_contacts1").value);
 
-      for(var i=0; i < total_contacts; i++){
-        var contactName = document.getElementById("contactName"+i).value;
-        var companyPosition = document.getElementById("companyPosition"+i).value;
-        var email = document.getElementById("email"+i).value;
-        var mobile = document.getElementById("mobile"+i).value;
-        var telephone = document.getElementById("telephone"+i).value;
-        var extention = document.getElementById("extention"+i).value;
+      for(var i = 0; i < total_contacts; i++){
+        var contactName = byId("contactName"+i).value;
+        var companyPosition = byId("companyPosition"+i).value;
+        var email = byId("email"+i).value;
+        var mobile = byId("mobile"+i).value;
+        var telephone = byId("telephone"+i).value;
+        var extention = byId("extention"+i).value;
         
-        if(contactName === "" && companyPosition === "" && email === "" && mobile === "" && telephone === "" && extention === ""){
-
-        }else{
-          var obj = {
-            contactName: contactName,
-            companyPosition: companyPosition,
-            email: email,
-            mobile: mobile,
-            telephone: telephone,
-            extention: extention
-          }
+        if(contactName === "" && companyPosition === "" && email === "" && mobile === "" && telephone === "" && extention === ""){}
+        else{
+          var obj = { contactName, companyPosition, email, mobile, telephone, extention }
           contacts_array.push(obj)
         }
       }
 
       var obj = {
-        cname: document.getElementById('cname').value,
-        cemail: document.getElementById('cemail').value,
-        country: document.getElementById('country').value,
+        cname: byId('cname').value,
+        cemail: byId('cemail').value,
+        country: byId('country').value,
         address: address_array,
-        industry: document.getElementById('industry').value,
-        registration_no: document.getElementById('registration_no').value,
-        productType: document.getElementById('productType').value,
+        industry: byId('industry').value,
+        registration_no: byId('registration_no').value,
+        productType: byId('productType').value,
         contactPerson: contacts_array,
-        additionalInfo: document.getElementById('additionalInfo').value
+        additionalInfo: byId('additionalInfo').value
       }
      
-      var id = document.getElementById('id').value
+      var id = byId('id').value
       $.post( "/supplier/Edit/"+id, { obj: obj }, function(data) {
           location.reload(true);
         }
@@ -131,11 +112,13 @@ $(document).ready(function() {
   });
 });
 
-document.getElementById("num_address").value = 1;
-document.getElementById("num_contacts").value = 1;
+var byId = function( id ) { return document.getElementById( id ); };
+
+byId("num_address").value = 1;
+byId("num_contacts").value = 1;
 
 function addAddressEdit(){ 
-  var nums = parseInt(document.getElementById("num_address1").value) + 1;
+  var nums = parseInt(byId("num_address1").value) + 1;
   var hr = document.createElement("hr")
   var br = document.createElement("br")
   
@@ -146,8 +129,8 @@ function addAddressEdit(){
   
   
   var out = make_Section( input1, label1, input2, label2, nums);
-  document.getElementById("addresses").appendChild(hr)
-  document.getElementById("addresses").appendChild(out)
+  byId("addresses").appendChild(hr)
+  byId("addresses").appendChild(out)
 
   out = create_div("row", "out", nums)
   outc1 = create_div("col-md-6","outc1", nums)
@@ -162,20 +145,20 @@ function addAddressEdit(){
   
   out.appendChild(outc1)
   outc1.appendChild(outc1r1)
-  label = create_label("Zip:")
+  label = create_label("Zip/Postal code:")
   input = create_input("zip",nums, "text")
   outc1r1c1.appendChild(label)
   outc1r1c2.appendChild(input)
   outc1r1.appendChild(outc1r1c1)
   outc1r1.appendChild(outc1r1c2)
-  document.getElementById("addresses").appendChild(br)
-  document.getElementById("addresses").appendChild(out)
+  byId("addresses").appendChild(br)
+  byId("addresses").appendChild(out)
   
-  document.getElementById("num_address1").value = parseInt(document.getElementById("num_address1").value) + 1
+  byId("num_address1").value = parseInt(byId("num_address1").value) + 1
 }
 
 function addAddress(){
-  var nums = parseInt(document.getElementById("num_address").value) + 1;
+  var nums = parseInt(byId("num_address").value) + 1;
   var br = document.createElement("br")
   var hr = document.createElement("hr")
 
@@ -185,8 +168,8 @@ function addAddress(){
   var label2 = create_label("Phone Number:")
   var input2 = create_input("contact",nums , "text")
   var out = make_Section( input1, label1, input2, label2, nums)
-  document.getElementById("addresses").appendChild(hr)
-  document.getElementById("addresses").appendChild(out)
+  byId("addresses").appendChild(hr)
+  byId("addresses").appendChild(out)
 
   out = create_div("row", "out", nums)
   outc1 = create_div("col-md-6","outc1", nums)
@@ -207,14 +190,14 @@ function addAddress(){
   outc1r1c2.appendChild(input)
   outc1r1.appendChild(outc1r1c1)
   outc1r1.appendChild(outc1r1c2)
-  document.getElementById("addresses").appendChild(br)
-  document.getElementById("addresses").appendChild(out)
-  document.getElementById("num_address").value = parseInt(document.getElementById("num_address").value) + 1
+  byId("addresses").appendChild(br)
+  byId("addresses").appendChild(out)
+  byId("num_address").value = parseInt(byId("num_address").value) + 1
   
 }
 
 function addContacts1(){
-  var nums = parseInt(document.getElementById("total_contacts").value) + 1;
+  var nums = parseInt(byId("total_contacts").value) + 1;
   var br = document.createElement("br")
   var hr = document.createElement("hr")
   // first row 
@@ -224,8 +207,8 @@ function addContacts1(){
   var input2 = create_input("companyPosition",nums , "text")
  
   var out = make_Section( input1, label1, input2, label2, nums)
-  document.getElementById("contacts").appendChild(hr)
-  document.getElementById("contacts").appendChild(out)
+  byId("contacts").appendChild(hr)
+  byId("contacts").appendChild(out)
  
   // second row
   label1 = create_label("Email:")
@@ -234,8 +217,8 @@ function addContacts1(){
   input2 = create_input("mobile",nums , "tel")
 
   out = make_Section( input1, label1, input2, label2, nums);
-  document.getElementById("contacts").appendChild(br)
-  document.getElementById("contacts").appendChild(out)
+  byId("contacts").appendChild(br)
+  byId("contacts").appendChild(out)
 
   // 3rd row
   label1 = create_label("Telephone:")
@@ -243,15 +226,15 @@ function addContacts1(){
   input2 = create_input("extention",nums , "text")
   
   out = make_tel_ext(input1, label1, input2, nums)
-  document.getElementById("contacts").appendChild(br)
-  document.getElementById("contacts").appendChild(out)
+  byId("contacts").appendChild(br)
+  byId("contacts").appendChild(out)
   
-  document.getElementById("total_contacts").value = parseInt(document.getElementById("total_contacts").value) + 1
-  document.getElementById("contacts").appendChild(br)
+  byId("total_contacts").value = parseInt(byId("total_contacts").value) + 1
+  byId("contacts").appendChild(br)
 }
 
 function addContacts1Edit(){
-  var nums = parseInt(document.getElementById("total_contacts1").value) + 1;
+  var nums = parseInt(byId("total_contacts1").value) + 1;
   var br = document.createElement("br")
   var hr = document.createElement("hr")
   
@@ -262,7 +245,7 @@ function addContacts1Edit(){
   var input2 = create_input("companyPosition",nums , "text")
 
   var out = make_Section(input1, label1, input2, label2, nums);
-  var contacts = document.getElementById("contacts");
+  var contacts = byId("contacts");
   contacts.appendChild(hr)
   contacts.appendChild(out)
   contacts.appendChild(br)
@@ -274,7 +257,7 @@ function addContacts1Edit(){
   input2 = create_input("mobile",nums , "tel")
 
   out = make_Section(input1, label1, input2, label2, nums);
-  document.getElementById("contacts").appendChild(out)
+  byId("contacts").appendChild(out)
  
   // 3rd row
   label1 = create_label("Telephone:")
@@ -282,8 +265,8 @@ function addContacts1Edit(){
   input2 = create_input("extention",nums , "text")
  
   out = make_tel_ext(input1, label1, input2, nums)
-  var contacts= document.getElementById("contacts");
-  var total_contacts1=document.getElementById("total_contacts1")
+  var contacts= byId("contacts");
+  var total_contacts1=byId("total_contacts1")
   contacts.appendChild(br)
   contacts.appendChild(out)
   
