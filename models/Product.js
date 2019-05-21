@@ -26,7 +26,7 @@ var ProductSchema = new Schema({
     warranted: { type: Boolean},
     sellingPrice: { type: Number , default:0},
     isActive:{ type: Boolean, default: false },
-    
+    dealer: { type: Boolean, default: false },
     status: { type: Boolean, required: false },
     admin: { type: Schema.Types.ObjectId, ref: 'users' },
     created: { type: Date, default: Date.now },

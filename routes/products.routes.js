@@ -20,9 +20,12 @@ router.post("/regiSave", product_controller.SaveProductLP);
 router.post("/regiSaveDealer", product_controller.SaveProductDealer);
 router.post("/showfields",  product_controller.showProductRegistrationFields);
 router.post("/upload", upload.array("imagePath"), product_controller.SaveImage)
+router.post("/upload/dealer", upload.array("imagePath2"), product_controller.SaveImage)
 router.post("/checkSerials", product_controller.checkSerials);
 router.get("/Update/:_id", product_controller.getProductUpdatePage);
 router.post("/updateProduct", product_controller.updateProduct);
+router.get("/active/:id", product_controller.makeActive);
+router.get("/unactive/:id", product_controller.makeNotActive);
 
 // previous 
 // Edit (Inventory With Serial number)
@@ -74,7 +77,6 @@ router.post("/Restore/:id", product_controller.getRestoreLive);
 // router.post("/update/:pid/:feat_num", upload.single("image"), product_controller.update_product);
 
 router.post("/search", product_controller.getSearchResult);
-router.get("/active/:id", product_controller.makeActive);
-router.get("/unactive/:id", product_controller.makeNotActive);
+
 
 module.exports = router;

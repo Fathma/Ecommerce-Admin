@@ -12,12 +12,14 @@ var fs = require('fs');
 // get Product update page
 exports.getProductUpdatePage = async(req, res)=>{
   let product = await Product.findOne({ _id: req.params._id })
+  console.log(product)
   res.render("products/update",{ product, feature_total: product.features.length })
 }
 
 // saving product for dealer products
 exports.SaveProductDealer = async(req, res)=>{
   var data = req.body.data
+  console.log(data)
   await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   res.send({})
 }
@@ -303,16 +305,18 @@ exports.getEditpage = (req, res, next) => {
 
 // returns product offline stock
 exports.makeNotActive = (req, res, next) => {
+  console.log(req.params.id)
   var obj = { isActive: false };
-  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+  allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
     res.redirect("/products/viewProducts");
   });
 };
 
 // makes product online
 exports.makeActive = (req, res, next) => {
+  console.log(req.params.id)
   var obj = { isActive: true };
-  allFuctions.changeStatus({_id:req.params.id}, obj, res, (docs)=>{
+  allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
     res.redirect("/products/viewProducts");
   });
 };

@@ -315,7 +315,9 @@ $(document).ready(()=>{
         weight: byId("weight").value,
         warranty: byId("warranty").value,
         description: byId("description").value,
-        shippingInfo: byId("shippingInfo").value
+        shippingInfo: byId("shippingInfo").value,
+        dealer: true,
+        sellingPrice: parseInt(byId("sellingPrice").value)
       };
 
       var new_feat = parseInt(byId("new_feat").value);

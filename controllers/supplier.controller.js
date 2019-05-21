@@ -15,11 +15,7 @@ exports.supplierSave = (req, res) => {
   id += name[2];
 
   obj.supplier_id = id;
-  new Supplier(obj).save().then(supplier => {
-    res.send({})
-    // req.flash("success_msg", "Registration successful");
-    // res.redirect("supplier/SupplierRegistrationPage");
-  });
+  new Supplier(obj).save().then( supplier => res.send({}) );
 };
 
 // get all registered suppliers

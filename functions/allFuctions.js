@@ -20,7 +20,7 @@ exports.find = (obj, cb) => {
 // update function
 exports.changeStatus = (condition,  object, res, cb) => {
   Product.findOneAndUpdate(condition,{ $set: object },{ upsert: true }, function(err, docs) {
-      if (err) { res.send(err); }
+      if (err) { console.log(err); }
       cb(docs)
     }
   );

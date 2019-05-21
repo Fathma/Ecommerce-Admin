@@ -6,7 +6,7 @@ $(document).ready(function() {
       var cemail= byId('cemail').value
       var country= byId('country').value
       var productType= byId('productType').value
-      if(cname === '' || cemail === '' || country === '' || productType === '' ) alert("every field with * must be filled up!")
+      if(cname === '' || cemail === '' || country === '' || productType === '' ) alert("Every field with * must be filled up!")
       else{
       // getting all addresses in an array
       var address_array = [];
@@ -106,7 +106,8 @@ $(document).ready(function() {
       }
      
       var id = byId('id').value
-      $.post( "/supplier/Edit/"+id, { obj: obj }, function(data) {
+      $.post( "/supplier/Edit/"+id, { obj: obj }, (data)=> {
+          alert("Successful!")
           location.reload(true);
         }
       );
