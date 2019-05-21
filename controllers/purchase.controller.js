@@ -1,5 +1,7 @@
 const LP = require('../models/localPurchase.model');
 const Product = require('../models/Product');
+const Category = require('../models/category.model');
+const SubCategory = require('../models/subCategory.model');
 
 // get supplier registration page
 exports.LocalPurchasePage = (req, res) => res.render('purchase/localPurchase');
@@ -66,17 +68,24 @@ exports.LocalPurchaseLPPage = (req, res, next) => {
 
 // saves local purchase
 exports.SaveLocalPurchase = async (req, res) => {
-
+  console.log(req.body)
   const { model1, contt, number, quantity, purchasePrice, cattN, subNn, brandN, serial_availablity } = req.body;
   var contact = contt.split(',')
   var total = Number(quantity) * Number(purchasePrice)
-
+  
   // fetching sub, cat, brand and product
   var cat = (cattN).split(',')
-  var sub = (subNn).split(',')
+  if(subNn != '0'){
+    var sub = (subNn).split(',')
+    await SubCategory.updateOne({_id: sub[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
+  }
+  
   var brand = (brandN).split(',')
+  await Category.updateOne({_id: cat[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
+  
   var pro = await Product.findOne({ model: model1 });
   var lp = await LP.findOne({ number });
+
 
   // if the fetched product is null insert the product
   if (pro === null) {
@@ -90,7 +99,7 @@ exports.SaveLocalPurchase = async (req, res) => {
     }else{
       pro_obj.serial_availablity = false
     }
-    if (sub != '0') {
+    if (subNn != '0') {
       pro_obj.subcategory = sub[0]; 
       pro_obj.productName = `${cat[1]}-${sub[1]}-${brand[1]}-${model1}`;
       pro_obj.pid = cat[1].slice(0,3)+ sub[1].slice(0,3)+ brand[1].slice(0,3)+ model1

@@ -1,6 +1,7 @@
 //Imports
 var mongo = require("mongodb");
 const Product = require("../models/Product");
+
 const Inventory = require("../models/inventory.model");
 const Serial = require("../models/serials.model");
 const allFuctions = require("../functions/allFuctions");
@@ -26,6 +27,7 @@ exports.SaveProductDealer = async(req, res)=>{
 // saving product for local purchase products
 exports.SaveProductLP = async(req, res)=>{
   var data = req.body.data
+
   await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   await Serial.insertMany(req.body.serials)
   res.send({})
