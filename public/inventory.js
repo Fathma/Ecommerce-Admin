@@ -302,7 +302,7 @@ $(document).ready(()=>{
   $("#save_inventory_dealer").click(function(e) {
     // alert("Now Submit the image")
     //     window.location.href="#image_sec";
-    if( $("#imagePath")[0].files.length === 0) {
+    if( $("#imagePath2")[0].files.length === 0) {
       alert("please select image!")
       window.location.href="#image_sec";
       document.getElementsByName("image_sec").style.border = "red solid"
