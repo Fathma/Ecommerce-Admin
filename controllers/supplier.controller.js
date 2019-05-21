@@ -16,20 +16,21 @@ exports.supplierSave = (req, res) => {
 
   obj.supplier_id = id;
   new Supplier(obj).save().then(supplier => {
-    req.flash("success_msg", "Registration successful");
-    res.redirect("supplier/SupplierRegistrationPage");
+    res.send({})
+    // req.flash("success_msg", "Registration successful");
+    // res.redirect("supplier/SupplierRegistrationPage");
   });
 };
 
 // get all registered suppliers
 exports.supplierList = (req, res) => {
-  Supplier.find((err, docs) => { res.render("supplier/supplierList", { supplier: docs }); });
+  Supplier.find((err, docs) => { res.render("supplier/supplierList", { supplier: docs }) });
 };
 
 // get all registered suppliers
 exports.supplierEditPage = (req, res) => {
   Supplier.findOne({ _id: req.params.id }, (err, docs) => {
-    if (docs.address != null && docs.contactPerson != null) {
+    if ( docs.address != null && docs.contactPerson != null ) {
       res.render("supplier/supplierEdit", {
         supplier: docs,
         total_address: docs.address.length,

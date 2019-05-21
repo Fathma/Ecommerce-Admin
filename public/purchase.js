@@ -49,10 +49,12 @@ $(document).ready(function() {
       }
 
       $.post( "/supplier/SupplierSave", { obj }, (data)=>{
+          alert("Successful!")
           location.reload(true);
         }
       );
     }
+    
     });
 
     $("#edit_supplier").on("click", (e)=>{

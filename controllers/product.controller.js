@@ -11,28 +11,28 @@ var fs = require('fs');
 
 // get Product update page
 exports.getProductUpdatePage = async(req, res)=>{
-  let product = await Product.findOne({_id:req.params._id})
+  let product = await Product.findOne({ _id: req.params._id })
   res.render("products/update",{ product, feature_total: product.features.length })
 }
 
 // saving product for dealer products
 exports.SaveProductDealer = async(req, res)=>{
-  var data =req.body.data
-  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  var data = req.body.data
+  await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   res.send({})
 }
 
 // saving product for local purchase products
 exports.SaveProductLP = async(req, res)=>{
-  var data =req.body.data
-  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  var data = req.body.data
+  await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   await Serial.insertMany(req.body.serials)
   res.send({})
 }
 // updating product for local purchase products
 exports.updateProduct = async(req, res)=>{
   var data = req.body.data
-  await Product.update({_id:data._id},{ $set: data},{ upsert: true })
+  await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   // await Serial.insertMany(req.body.serials)
   res.send({})
 }
@@ -40,9 +40,11 @@ exports.updateProduct = async(req, res)=>{
 // checks whether any of the given serials already exists or not
 exports.checkSerials = async(req, res)=>{
   var arr = req.body.serial_array
-  var serials = await Serial.find({ pid: req.body.pid })
   var exists = [];
-  serials.map((serial)=>{
+
+  var serials = await Serial.find({ pid: req.body.pid })
+  
+  serials.map( serial =>{
     if(arr.includes(serial.number)){
       exists.push(serial.number)
     }
@@ -52,7 +54,7 @@ exports.checkSerials = async(req, res)=>{
 
 // saves image in folder
 exports.SaveImage = async (req, res) => {
-  await req.files.map((image)=>{
+  await req.files.map( image =>{
     const tempPath = image.path;
     crypto.randomBytes(16,async (err, buf) => {
       if (err) {
@@ -61,9 +63,9 @@ exports.SaveImage = async (req, res) => {
       filename = buf.toString('hex') + path.extname(image.originalname);
       const targetPath = path.join(__dirname, "../public/photos/"+filename);
      
-      await Product.update({_id:req.body.pid},{$addToSet:{image: filename}},{upsert:true})
+      await Product.update({ _id: req.body.pid },{ $addToSet: {image: filename} },{ upsert: true })
       
-      fs.rename(tempPath, targetPath, err => {
+      fs.rename( tempPath, targetPath, err => {
         if (err) console.log(err);
       });
     });
@@ -80,7 +82,7 @@ exports.getDealerInventoryPage = (req, res) => res.render("products/dealerProduc
 // view total stock information
 exports.viewStock = (req, res) =>{
   var arr=[];
-  Inventory.findOne({_id: req.params.id}).populate("product_id").exec((err, docs)=>{
+  Inventory.findOne({ _id: req.params.id }).populate("product_id").exec((err, docs)=>{
     docs.original_serial.map((sl)=>{
       var count = 0;
       var id="";

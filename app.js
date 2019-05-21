@@ -141,16 +141,15 @@ app.use(async (req, res, next)=>{
 });
 
 app.get("/", (req, res) => {
-  // res.sendFile('fff.png', { root: path.join(__dirname, './public/photos') })
   if (req.user) {
     res.redirect("/general/showDashboard");
   } else {
     res.redirect("/users/login");
   }
 });
-app.get("/img/:img", (req, res) => {
-  res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
-});
+// app.get("/img/:img", (req, res) => {
+//   res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
+// });
 
 // About route
 app.get("/about", (req, res) => {
