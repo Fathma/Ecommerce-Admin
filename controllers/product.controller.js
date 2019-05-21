@@ -19,7 +19,6 @@ exports.getProductUpdatePage = async(req, res)=>{
 // saving product for dealer products
 exports.SaveProductDealer = async(req, res)=>{
   var data = req.body.data
-  console.log(data)
   await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   res.send({})
 }
@@ -56,6 +55,15 @@ exports.checkSerials = async(req, res)=>{
 
 // saves image in folder
 exports.SaveImage = async (req, res) => {
+  await savingImage(req)
+  res.redirect("/products/InhouseInventory")
+}
+// saves image in folder
+exports.SaveImage2 = async (req, res) => {
+  await savingImage(req)
+  res.redirect("/products/DealerInventory")
+}
+var savingImage = async (req)=>{
   await req.files.map( image =>{
     const tempPath = image.path;
     crypto.randomBytes(16,async (err, buf) => {
@@ -73,8 +81,8 @@ exports.SaveImage = async (req, res) => {
       });
     });
   })
-res.redirect("/products/InhouseInventory")
 }
+
 
 // In-house stock product entry page
 exports.getInhouseInventoryPage = (req, res) => res.render("products/InhouseStockProduct");
@@ -900,3 +908,4 @@ exports.viewProducts = (req, res)=>{
 //   });
 
 // };
+
