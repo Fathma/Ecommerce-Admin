@@ -72,6 +72,7 @@ exports.SaveLocalPurchase = async (req, res) => {
   const { model1, contt, number, quantity, purchasePrice, cattN, subNn, brandN, serial_availablity } = req.body;
   var contact = contt.split(',')
   var total = Number(quantity) * Number(purchasePrice)
+  var brand = (brandN).split(',')
   
   // fetching sub, cat, brand and product
   var cat = (cattN).split(',')
@@ -80,7 +81,7 @@ exports.SaveLocalPurchase = async (req, res) => {
     await SubCategory.updateOne({_id: sub[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
   }
   
-  var brand = (brandN).split(',')
+
   await Category.updateOne({_id: cat[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
   
   var pro = await Product.findOne({ model: model1 });
