@@ -63,9 +63,10 @@ exports.SaveImage = async (req, res) => {
         return reject(err);
       }
       filename = buf.toString('hex') + path.extname(image.originalname);
+      var link = `https://ecom-admin.herokuapp.com/photos/${filename}`
       const targetPath = path.join(__dirname, "../public/photos/"+filename);
      
-      await Product.update({ _id: req.body.pid },{ $addToSet: {image: filename} },{ upsert: true })
+      await Product.update({ _id: req.body.pid },{ $addToSet: { image: filename } },{ upsert: true })
       
       fs.rename( tempPath, targetPath, err => {
         if (err) console.log(err);
