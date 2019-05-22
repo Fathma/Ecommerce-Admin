@@ -73,6 +73,14 @@ exports.SaveImage3 = async (req, res) => {
   res.redirect("/products/Update/"+req.body.pid)
 }
 
+exports.deteteImg = (req, res)=>{
+  console.log(req.body)
+  Product.updateOne({ _id: req.body.id }, { $pull: { image: req.body.img}},{upsert: true}, (err, docs)=>{
+    if(err) console.log(err);
+    else res.redirect("/products/Update/"+req.body.id)
+  })
+}
+
 var savingImage = async (req)=>{
   await req.files.map( image =>{
     const tempPath = image.path;

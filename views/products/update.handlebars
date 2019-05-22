@@ -73,7 +73,7 @@
                             <label class="lbl" for="new_feat_label">New Feature:</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="new_feat" name="new_feat"
+                            <input type="hidden" id="new_feat" name="new_feat"
                                 value="{{feature_total}}">{{!-- counts the total newly added features --}}
                             <input type="text" id="new_feat_label" name="new_feat_label" class="form-control inp"
                                 placeholder="write a new feature name">
@@ -342,8 +342,16 @@
                         {{# each product.image}}
                         <div class="col-sm-2">
                             <img src="{{this}}" alt="" style="width:100px; height:100px;">
+                            <form action="/products/img/detete" method="POST">
+                            <input type="hidden" name="id" id="id" value="{{../product.id}}">
+                            <input type="hidden" name="img" id="img" value="{{this}}">
+                            <button type="submit">delete</button>
+                            </form>
                         </div>
                         {{/each}}
+                    </div>
+                    <div class="row">
+                        
                     </div>
                     <br>
 
