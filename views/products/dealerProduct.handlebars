@@ -17,7 +17,7 @@
                                         <option value="null" selected>Select One</option>
                                         
                                         {{# each cat}}
-                                        <option value="{{this._id}},{{this.name}}">{{this.name}}</option>
+                                        <option value="{{this._id}},{{this.name}}"{{# equality this._id ../product.category}} selected{{/equality}}>{{this.name}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -35,7 +35,7 @@
                                     <select class="form-control inp" name="subCategg" id="subCategg">
                                         <option value="null">select one</option>
                                         {{# each categories}}
-                                        <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
+                                        <option value="{{this._id}},{{this.name}}" {{# equality this._id ../product.subcategory}} selected{{/equality}}>{{this.name}} </option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -54,7 +54,7 @@
                                     <select class="form-control inp" name="brandg" id="brandg">
                                         <option value="null" selected>select one</option>
                                         {{# each brand}}
-                                        <option value="{{this._id}},{{this.name}}">{{this.name}} </option>
+                                        <option value="{{this._id}},{{this.name}}" {{# equality this._id ../product.brand}} selected{{/equality}}>{{this.name}} </option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -66,10 +66,10 @@
                             <br>
                             <div class="row">
                                 <div class="col-md-5 col5">
-                                    <label class="lbl" for="model">Model:</label>
+                                    <label class="lbl" for="model">Model<span style="color: red">*</label>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control inp" name="model" id="model">
+                                    <input type="text" class="form-control inp" value="{{product.model}}" name="model" id="model">
                                 </div>
                             </div>
                             <br>

@@ -1,7 +1,8 @@
 //Imports
 var mongo = require("mongodb");
 const Product = require("../models/Product");
-
+const Category = require("../models/category.model")
+const SubCategory = require("../models/subCategory.model")
 const Inventory = require("../models/inventory.model");
 const Serial = require("../models/serials.model");
 const allFuctions = require("../functions/allFuctions");
@@ -91,6 +92,58 @@ exports.getInhouseInventoryPage = (req, res) => res.render("products/InhouseStoc
 
 // dealer stock product entry page
 exports.getDealerInventoryPage = (req, res) => res.render("products/dealerProduct");
+
+// shows the number of fields user wants
+exports.showProductRegistrationFields =async (req, res, next) => {
+  var category= req.body.categg.split(",");
+  var brand= req.body.brandg.split(",");
+  var model= req.body.model;
+  await Category.updateOne({_id: category[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
+  var product = {
+    category: category[0],
+    brand: brand[0],
+    model: model,
+  }
+  var obj={
+      category: category[0],
+      brand: brand[0]
+  }
+  // if there is no sub category of that category
+  if(req.body.subCategg != "0"){
+    var subcategory= req.body.subCategg.split(",");
+    await SubCategory.updateOne({_id: subcategory[0]}, { $addToSet:{ brands: brand[0]} },{ upsert: true })
+    product.subcategory= subcategory[0],
+    product.productName = category[1]+"-"+subcategory[1]+"-"+brand[1]+"-"+model
+    product.pid= category[1].substr(0,3)+subcategory[1].substr(0,3)+brand[1].substr(0,3)+model
+    obj.subcategory=subcategory[0]
+  }else{
+    product.productName = category[1]+"-"+brand[1]+"-"+model
+    product.pid = category[1].substr(0,3)+brand[1].substr(0,3)+model
+  }
+  
+  // get all the features of cat sub and brand
+  Product.find(obj, function(err, pros){
+      var features = []
+      if(pros != null){
+        pros.map( (product)=>{
+          product.features.map((feature)=>{
+            features.push(feature.label);
+          })
+        })
+      }
+    // checks whether the model already exists or not
+    Product.findOne({ model: model }, function(err, result){
+      if( result === null ){
+        new Product(product).save().then((product)=>{
+          res.render("products/dealerProduct",{product,features, feature_total: features.length })
+        })
+      }else{
+        res.render("products/dealerProduct",{product:result,features, feature_total: features.length})
+      }
+    })
+    
+    })
+};
 
 // view total stock information
 exports.viewStock = (req, res) =>{
@@ -585,55 +638,7 @@ exports.getOfflineProductsPage =async (req, res, next) => {
   }) 
 };
 
-// shows the number of fields user wants
-exports.showProductRegistrationFields =async (req, res, next) => {
-  var category= req.body.categg.split(",");
-  var brand= req.body.brandg.split(",");
-  var model= req.body.model;
-  var product = {
-    category: category[0],
-    brand: brand[0],
-    model: model,
-  }
-  var obj={
-      category: category[0],
-      brand: brand[0]
-  }
-  // if there is no sub category of that category
-  if(req.body.subCategg != "0"){
-    var subcategory= req.body.subCategg.split(",");
-    product.subcategory= subcategory[0],
-    product.productName = category[1]+"-"+subcategory[1]+"-"+brand[1]+"-"+model
-    product.pid= category[1].substr(0,3)+subcategory[1].substr(0,3)+brand[1].substr(0,3)+model
-    obj.subcategory=subcategory[0]
-  }else{
-    product.productName = category[1]+"-"+brand[1]+"-"+model
-    product.pid = category[1].substr(0,3)+brand[1].substr(0,3)+model
-  }
-  
-  // get all the features of cat sub and brand
-  Product.find(obj, function(err, pros){
-      var features = []
-      if(pros != null){
-        pros.map( (product)=>{
-          product.features.map((feature)=>{
-            features.push(feature.label);
-          })
-        })
-      }
-    // checks whether the model already exists or not
-    Product.findOne({model:model}, function(err, result){
-      if(result ===null){
-        new Product(product).save().then((product)=>{
-          res.render("products/dealerProduct",{product,features, feature_total: features.length})
-        })
-      }else{
-        res.render("products/dealerProduct",{product:result,features, feature_total: features.length})
-      }
-    })
-    
-    })
-};
+
 
 // save live
 exports.saveLive =async (req, res, next) => {
