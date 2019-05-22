@@ -14,6 +14,7 @@
                 <th>Action</th>
             </tr>
             {{# each products}}
+            {{# if this._id}}
             <tr>
                 <td>
                     <strong>{{this.pid}}</strong>
@@ -43,6 +44,7 @@
                      <a href="/products/Update/{{this._id}}" class="btn btn-default ">Update</a>
                 </td>
             </tr>
+            {{/if}}
             {{/each}}
         </table>
     </div>
