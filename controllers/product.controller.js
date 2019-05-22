@@ -66,6 +66,13 @@ exports.SaveImage2 = async (req, res) => {
   await savingImage(req)
   res.redirect("/products/DealerInventory")
 }
+
+// saves image in folder
+exports.SaveImage3 = async (req, res) => {
+  await savingImage(req)
+  res.redirect("/products/Update/"+req.body.pid)
+}
+
 var savingImage = async (req)=>{
   await req.files.map( image =>{
     const tempPath = image.path;

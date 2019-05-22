@@ -21,6 +21,7 @@ router.post("/regiSaveDealer", product_controller.SaveProductDealer);
 router.post("/showfields",  product_controller.showProductRegistrationFields);
 router.post("/upload", upload.array("imagePath"), product_controller.SaveImage)
 router.post("/upload/dealer", upload.array("imagePath2"), product_controller.SaveImage2)
+router.post("/upload/update", upload.array("imagePath3"), product_controller.SaveImage3)
 router.post("/checkSerials", product_controller.checkSerials);
 router.get("/Update/:_id", product_controller.getProductUpdatePage);
 router.post("/updateProduct", product_controller.updateProduct);
