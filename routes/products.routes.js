@@ -28,6 +28,7 @@ router.post("/updateProduct", product_controller.updateProduct);
 router.get("/active/:id", product_controller.makeActive);
 router.get("/unactive/:id", product_controller.makeNotActive);
 
+
 // previous 
 // Edit (Inventory With Serial number)
 router.get("/stockEditPage/:lot_id/:pid", product_controller.getEditStockPage);
