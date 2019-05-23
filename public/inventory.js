@@ -1,7 +1,7 @@
 
 $(document).ready(()=>{
   var products = [];
-  var byId = function( id ) { return document.getElementById( id ); };
+  var byId = ( id )=>{ return document.getElementById( id ); };
  
   // getting invoice(local purchase) details on basis of selected invoice number
   $("#invoice").change((e)=>{
@@ -43,9 +43,7 @@ $(document).ready(()=>{
   });
 
   var remove_child = (div)=>{
-    while (div.firstChild) {
-      div.removeChild(div.firstChild);
-    }
+    while (div.firstChild) div.removeChild(div.firstChild);
   }
 
   // gets product info on the basis of selected product
@@ -63,9 +61,7 @@ $(document).ready(()=>{
     byId("pid").value = _id
     byId("img_number").value = image.length
 
-    if(image.length >= 5){
-      byId("save_img").disabled = true;
-    }
+    if(image.length >= 5)  byId("save_img").disabled = true;
    
     // create space for image
     remove_child(byId("all_img"))
@@ -224,9 +220,7 @@ $(document).ready(()=>{
     var obj = '{'
     for(var i=0; i<a.length; i++){
       obj += '"'+ a[i].id +'":"'+a[i].value+'"';
-      if(i !=a.length-1){
-        obj += ','
-      }
+      if(i !=a.length-1) obj += ','
     }
     obj += '}'
     return(JSON.parse(obj))
@@ -239,10 +233,11 @@ $(document).ready(()=>{
       window.location.href="#image_sec1";
     }
     else{
+    // not form
     var a = $('input:not(form input)');
     form_data = get_json(a);
     var {serial, quantity, invoice, name, weight, warranty, sellingPrice} = form_data;
-
+    
     // for getting serial numbers
     var pid = byId("products_invoice").value
     var serials = [];
@@ -265,11 +260,12 @@ $(document).ready(()=>{
 
     if (ArrNoDupe(serial_array).length != serial_array.length) alert("serial numbers has to be unique!"); 
     else {
+     
       $.post("/products/checkSerials", { serial_array, pid }, (data)=> {
-          if (data.exists.length > 0){
-            alert(data.exists + " are already exists");
-          } 
+
+          if (data.exists.length > 0) alert(data.exists + " are already exists");
           else {
+           
             var product_attribute = { _id: pid, name, weight, warranty, sellingPrice,
               description: byId("description").value,
               shippingInfo: byId("shippingInfo").value
@@ -277,7 +273,7 @@ $(document).ready(()=>{
             var new_feat = parseInt(byId("new_feat").value);
             product_attribute.features = get_features(new_feat);
   
-            $.post("/products/regiSave",{ data: product_attribute, serials: serials }, function(data) {
+            $.post("/products/regiSave",{ data: product_attribute, serials: serials }, (data)=>{
               alert("Now Submit the image")
               window.location.href="#image_sec1";
             });
@@ -291,15 +287,15 @@ $(document).ready(()=>{
   // makes an array unique
   function ArrNoDupe(a) {
     var temp = {};
-    for (var i = 0; i < a.length; i++) temp[a[i]] = true;
     var r = [];
-    for (var k in temp) {
-      r.push(k);
-    }
+    for (var i = 0; i < a.length; i++) temp[a[i]] = true;
+
+    for (var k in temp) r.push(k);
+    
     return r;
   }
 
-  $("#save_inventory_dealer").click(function(e) {
+  $("#save_inventory_dealer").click((e)=>{
     // alert("Now Submit the image")
     //     window.location.href="#image_sec";
     if( $("#imagePath2")[0].files.length === 0) {
@@ -358,6 +354,7 @@ $(document).ready(()=>{
         model: byId("model").value,
         weight: byId("weight").value,
         warranty: byId("warranty").value,
+        sellingPrice: byId("sellingPrice").value,
         description: byId("description").value,
         shippingInfo: byId("shippingInfo").value
       };
