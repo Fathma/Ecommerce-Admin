@@ -147,9 +147,8 @@ app.get("/", (req, res) => {
     res.redirect("/users/login");
   }
 });
-// app.get("/img/:img", (req, res) => {
-//   res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
-// });
+
+cd
 
 // About route
 app.get("/about", (req, res) => {
