@@ -234,25 +234,25 @@ $(document).ready(()=>{
     }
     else{
     // not form
-    var a = $('input:not(form input)');
-    form_data = get_json(a);
-    var {serial, quantity, invoice, name, weight, warranty, sellingPrice} = form_data;
+    // var a = $('input:not(form input)');
+    // form_data = get_json(a);
+   
     
     // for getting serial numbers
     var pid = byId("products_invoice").value
     var serials = [];
     var serial_array = [];
 
-    for (var i = 0; i < parseInt(quantity); i++) {
+    for (var i = 0; i < parseInt(byId("quantity").value); i++) {
       var obj = {
         sid: byId("pid"+i).value,
-        lp: invoice,
+        lp: byId("invoice").value,
         pid,
         status: "In Stock"
       };
       
-      if(serial === "true"){
-        serial_array.push(byId("s" + i).value);
+      if(byId("serial").value === "true"){
+        serial_array.push(byId("s" + i).value)
         obj.number= byId("s" + i).value
       }
       serials.push(obj);
@@ -266,7 +266,11 @@ $(document).ready(()=>{
           if (data.exists.length > 0) alert(data.exists + " are already exists");
           else {
            
-            var product_attribute = { _id: pid, name, weight, warranty, sellingPrice,
+            var product_attribute = { _id: pid, 
+              name: byId("name").value, 
+              weight: byId("weight").value, 
+              warranty: byId("warranty").value,
+              sellingPrice: byId("sellingPrice").value,
               description: byId("description").value,
               shippingInfo: byId("shippingInfo").value
             };

@@ -1,14 +1,14 @@
-const Supplier = require("../models/supplier.model");
-var randomstring = require("randomstring");
+const Supplier = require('../models/supplier.model');
+var randomstring = require('randomstring');
 
 // get supplier registration page
-exports.supplierRegistrationPage = (req, res) => res.render("supplier/supplierReg", { date: new Date() });
+exports.supplierRegistrationPage = (req, res) => res.render('supplier/supplierReg', { date: new Date() });
 
 // save supplier info
 exports.supplierSave = (req, res) => {
   var obj = req.body.obj;
   var id = randomstring.generate(5);
-  var name = obj.cname.split("");
+  var name = obj.cname.split('');
 
   id += name[0];
   id += name[1];
@@ -20,14 +20,14 @@ exports.supplierSave = (req, res) => {
 
 // get all registered suppliers
 exports.supplierList = (req, res) => {
-  Supplier.find((err, docs) => { res.render("supplier/supplierList", { supplier: docs }) });
+  Supplier.find((err, docs) => { res.render('supplier/supplierList', { supplier: docs }) });
 };
 
 // get all registered suppliers
 exports.supplierEditPage = (req, res) => {
   Supplier.findOne({ _id: req.params.id }, (err, docs) => {
     if ( docs.address != null && docs.contactPerson != null ) {
-      res.render("supplier/supplierEdit", {
+      res.render('supplier/supplierEdit', {
         supplier: docs,
         total_address: docs.address.length,
         total_contacts: docs.contactPerson.length
@@ -48,7 +48,7 @@ exports.supplierEdit = (req, res) => {
 
 // Edit Supplier info
 exports.supplierDelete = (req, res) => {
-  Supplier.deleteOne({ _id: req.params.id }, ( err, docs ) => { res.redirect("/supplier/SupplierList"); });
+  Supplier.deleteOne({ _id: req.params.id }, ( err, docs ) =>  res.redirect('/supplier/SupplierList'));
 };
 
 // getting contanct persons of a specific supplier

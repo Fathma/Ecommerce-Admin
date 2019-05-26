@@ -68,7 +68,6 @@ exports.LocalPurchaseLPPage = (req, res, next) => {
 
 // saves local purchase
 exports.SaveLocalPurchase = async (req, res) => {
-  console.log(req.body)
   const { model1, contt, number, quantity, purchasePrice, cattN, subNn, brandN, serial_availablity } = req.body;
   var contact = contt.split(',')
   var total = Number(quantity) * Number(purchasePrice)
@@ -81,7 +80,6 @@ exports.SaveLocalPurchase = async (req, res) => {
     await SubCategory.updateOne({_id: sub[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
   }
   
-
   await Category.updateOne({_id: cat[0]}, {$addToSet:{ brands: brand[0]} },{ upsert: true })
   
   var pro = await Product.findOne({ model: model1 });
@@ -131,5 +129,5 @@ exports.SaveLocalPurchase = async (req, res) => {
         $inc: { subTotal: +total }
       }, { upsert: true });
   }
-  res.redirect("/purchase/localPurchase/" + number);
+  res.redirect(`/purchase/localPurchase/${number}`);
 };

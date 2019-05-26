@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const invoice = require('../controllers/invoice.controller');
+const invoice = require('../controllers/invoice.controller')
 
-router.get("/invoiceList", invoice.showInvoiceList);
+router.get('/invoiceList', invoice.showInvoiceList)
 
-module.exports = router;
+module.exports = router

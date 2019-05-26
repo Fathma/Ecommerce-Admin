@@ -269,8 +269,7 @@ $("form").submit(function(e) {
           }
 
           if (exists.length === 0) {
-            $.post(
-              "/products/SaveInventory",
+            $.post( "/products/SaveInventory",
               {
                 serial: data_string,
                 model:byId("model").value,

@@ -1,33 +1,71 @@
 const express = require('express')
 const router = express.Router()
-const multer = require("multer")
-const mongoose = require('mongoose')
-var path = require("path")
+const path = require('path');
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
 const product_controller = require('../controllers/product.controller')
+mongoose.Promise = global.Promise;
 
-mongoose.Promise = global.Promise
+const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
 
-const upload = multer({
-  dest: path.join(__dirname, '../public/photos')
-  // "../public/photos"
+const conn = mongoose.createConnection(mongoo);
+let gfs;
+conn.once('open', function () {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('fs');
 })
+var filename;
+
+// create storage engine
+const storage = new GridFsStorage(
+  {
+    url: mongoo,
+    file: (req, file) => {
+      return new Promise((resolve, reject) => {
+        crypto.randomBytes(16, (err, buf) => {
+          if (err) {
+            return reject(err);
+          }
+          filename = buf.toString('hex') + path.extname(file.originalname)
+          const fileInfo = {
+            filename: filename,
+            bucketName: 'fs'
+          };
+          resolve(fileInfo)
+        });
+      });
+    }
+  });
+
+const upload = multer({ storage })
+
+// mongoose.Promise = global.Promise
+
+// const upload = multer({
+//   dest: path.join(__dirname, '../public/photos')
+//   // "../public/photos"
+// })
 
 // 23/4/2019 new
-router.get("/InhouseInventory", product_controller.getInhouseInventoryPage)
-router.get("/DealerInventory", product_controller.getDealerInventoryPage)
-router.post("/regiSave", product_controller.SaveProductLP)
-router.post("/regiSaveDealer", product_controller.SaveProductDealer)
-router.post("/showfields",  product_controller.showProductRegistrationFields)
-router.post("/upload", upload.array("imagePath"), product_controller.SaveImage)
-router.post("/upload/dealer", upload.array("imagePath2"), product_controller.SaveImage2)
-router.post("/upload/update", upload.array("imagePath3"), product_controller.SaveImage3)
-router.post("/img/detete", product_controller.deteteImg)
-router.post("/checkSerials", product_controller.checkSerials)
-router.get("/Update/:_id", product_controller.getProductUpdatePage)
-router.post("/updateProduct", product_controller.updateProduct)
-router.get("/active/:id", product_controller.makeActive)
-router.get("/unactive/:id", product_controller.makeNotActive)
+router.get('/InhouseInventory', product_controller.getInhouseInventoryPage)
+router.get('/DealerInventory', product_controller.getDealerInventoryPage)
+router.post('/regiSave', product_controller.SaveProductLP)
+router.post('/regiSaveDealer', product_controller.SaveProductDealer)
+router.post('/showfields',  product_controller.showProductRegistrationFields)
+router.post('/upload', upload.array('imagePath'), product_controller.SaveImage)
+router.post('/upload/dealer', upload.array('imagePath2'), product_controller.SaveImage2)
+router.post('/upload/update', upload.array('imagePath3'), product_controller.SaveImage3)
+router.get('/image/:filename', product_controller.getImage)
+router.post('/img/detete', product_controller.deteteImg)
+router.post('/checkSerials', product_controller.checkSerials)
+router.get('/Update/:_id', product_controller.getProductUpdatePage)
+router.post('/updateProduct', product_controller.updateProduct)
+router.get('/active/:id', product_controller.makeActive)
+router.get('/unactive/:id', product_controller.makeNotActive)
 
 
 // previous 

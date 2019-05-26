@@ -59,9 +59,6 @@ exports.userregistration = async(req, res, next) => {
       }
     });
   }
-  
-  // let errors = [];
-  
 };
 
 // Logout user

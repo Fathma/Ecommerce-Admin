@@ -48,8 +48,7 @@ mongoose.Promise = global.Promise;
 //DB Connection
 mongoose.connect(dbConfig.mongoURI, err => {
   if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
-  else
-    console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
+  else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
 });
 
 app.use('/public/photos', express.static('photos'));
@@ -148,9 +147,10 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/img/:img", (req, res) => {
-  res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
-});
+// app.get("/img/:img",  (req, res) => {
+//   res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
+// });
+
 
 // About route
 app.get("/about", (req, res) => {
@@ -158,15 +158,15 @@ app.get("/about", (req, res) => {
 });
 
 // base routes
-app.use("/category", categoryRoutes);
-app.use("/users", usersRoutes);
-app.use("/orders", ordersRoutes);
-app.use("/invoice", invoiceRoutes);
-app.use("/customers", customerRoutes);
-app.use("/products", productsRoutes);
-app.use("/purchase", purchaseRoutes);
-app.use("/supplier", supplierRoutes);
-app.use("/general", generalRoutes);
+app.use("/category", ensureAuthenticated, categoryRoutes);
+app.use("/users",  usersRoutes);
+app.use("/orders", ensureAuthenticated, ordersRoutes);
+app.use("/invoice", ensureAuthenticated, invoiceRoutes);
+app.use("/customers", ensureAuthenticated, customerRoutes);
+app.use("/products", ensureAuthenticated, productsRoutes);
+app.use("/purchase", ensureAuthenticated, purchaseRoutes);
+app.use("/supplier", ensureAuthenticated, supplierRoutes);
+app.use("/general", ensureAuthenticated, generalRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
