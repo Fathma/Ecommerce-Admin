@@ -1,3 +1,5 @@
+// author: Fathma siddique
+// description: the file has all the category related controllers/ functions
 const Brand = require('../models/brand.model')
 const subCategory = require('../models/subCategory.model')
 const Cat = require('../models/category.model')

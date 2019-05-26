@@ -1,3 +1,6 @@
+// author: Fathma siddique
+// lastmodified: 26/5/2019
+// description: the file has all the general related controllers/ functions
 const allFuctions = require('../functions/allFuctions')
 
 // get low quantity for notification
