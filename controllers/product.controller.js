@@ -14,7 +14,7 @@ const Grid = require('gridfs-stream')
 
 mongoose.Promise = global.Promise;
 
-const mongoo = 'mongodb://jihad:jihad1234@ds115353.mlab.com:15353/e-commerce_db';
+const mongoo = 'mongodb://jihad:abc1234@ds343985.mlab.com:43985/e-commerce_db_v1';
 
 const conn = mongoose.createConnection(mongoo);
 let gfs;
