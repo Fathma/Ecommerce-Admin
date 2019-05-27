@@ -111,8 +111,10 @@ var savingImage = async (req)=>{
 //fetching image 
 exports.getImage= (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    const readstream = gfs.createReadStream(file.filename);
-    readstream.pipe(res);
+    if(file.filename){
+      const readstream = gfs.createReadStream(file.filename);
+      readstream.pipe(res);
+    }
   })
 }
 
