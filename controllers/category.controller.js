@@ -26,11 +26,11 @@ exports.addSubCategory = (req, res) => {
         { upsert: true },
         function( err, docs ) {
           if ( err ) { res.send( err ) }
-          res.redirect('/category/Entry')
+          res.send({})
         }
       )
     } else {
-      res.redirect('/category/Entry')
+      res.send({})
     }
   })
 }
@@ -38,7 +38,7 @@ exports.addSubCategory = (req, res) => {
 // Saving Brand
 exports.addBrand = ( req, res ) => {
   var brand = { name: req.body.brand }
-  new Brand( brand ).save().then( brand => res.redirect('/category/Entry'))
+  new Brand( brand ).save().then( brand => res.send({}))
 }
 
 // getting sub categories on the basis of category
