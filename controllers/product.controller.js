@@ -70,7 +70,7 @@ exports.checkSerials = async(req, res)=>{
 
 // saves image in folder
 exports.SaveImage = async (req, res) => {
-  await savingImageDB(req)
+  await savingImage(req)
   // await savingImage(req)
   res.redirect('/products/InhouseInventory')
 }
