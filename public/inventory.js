@@ -19,7 +19,7 @@ $(document).ready(()=>{
       });
     }
   });
-
+  byId("save_img").disabled = true;
   // creates dropdown for product field
   function configureDropDownL4(ddl2, data) {
     var options;
@@ -35,11 +35,10 @@ $(document).ready(()=>{
 
     var pre = parseInt(byId("img_number").value);
 
-    if($("#imagePath")[0].files.length + pre > 5) {
+    if($("#imagePath")[0].files.length > 5) {
       alert("Warning !!! You can't select more than 5 images");
-      byId("save_img").disabled = true;
     } 
-    else byId("save_img").disabled = false;
+    // else byId("save_img").disabled = false;
   });
 
   var remove_child = (div)=>{
@@ -280,6 +279,7 @@ $(document).ready(()=>{
             $.post("/products/regiSave",{ data: product_attribute, serials: serials }, (data)=>{
               alert("Now Submit image")
               window.location.href="#image_sec1";
+              byId("save_img").disabled = false;
             });
           }
         }
