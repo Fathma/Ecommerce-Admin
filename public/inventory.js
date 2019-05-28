@@ -229,7 +229,7 @@ $(document).ready(()=>{
   $("#save_inventory").click(function(e) {
     var pre = parseInt(byId("img_number").value);
     if(pre === 0 && $("#imagePath")[0].files.length === 0) {
-      alert("please select image!")
+      alert("you have to select the image first!")
       window.location.href="#image_sec1";
     }
     else{
@@ -278,7 +278,7 @@ $(document).ready(()=>{
             product_attribute.features = get_features(new_feat);
   
             $.post("/products/regiSave",{ data: product_attribute, serials: serials }, (data)=>{
-              alert("Now Submit the image")
+              alert("Now Submit image")
               window.location.href="#image_sec1";
             });
           }

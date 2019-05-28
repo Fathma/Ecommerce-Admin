@@ -1,4 +1,5 @@
 // author : fathma Siddique
+// lastmodified : 27/5/2019
 // description : all the product related controllers/funtions are written in here 
 
 //Imports
@@ -26,7 +27,6 @@ conn.once('open', function () {
 // get Product update page
 exports.getProductUpdatePage = async(req, res)=>{
   let product = await Product.findOne({ _id: req.params._id })
-  console.log(product)
   res.render("products/update",{ product, feature_total: product.features.length })
 }
 
@@ -49,7 +49,6 @@ exports.SaveProductLP = async(req, res)=>{
 exports.updateProduct = async(req, res)=>{
   var data = req.body.data
   await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
-  // await Serial.insertMany(req.body.serials)
   res.send({})
 }
 
@@ -71,7 +70,6 @@ exports.checkSerials = async(req, res)=>{
 // saves image in folder
 exports.SaveImage = async (req, res) => {
   await savingImage(req)
-  // await savingImage(req)
   res.redirect('/products/InhouseInventory')
 }
 // saves image in folder
@@ -82,8 +80,6 @@ exports.SaveImage2 = async (req, res) => {
 
 // saves image in folder
 exports.SaveImage3 = async (req, res) => {
-  
-  // req.files.map(file => Product.update({ _id: req.body.pid },{ $addToSet: { image: file.filename } },{ upsert: true }))
   await savingImage(req)
   res.redirect(`/products/Update/${req.body.pid}`)
 }
@@ -101,6 +97,7 @@ exports.deteteImg = (req, res)=>{
   })
 }
 
+// saves link with image filenames in database
 var savingImage = async (req)=>{
   await req.files.map(async image =>{
     var link = `https://ecom-admin.herokuapp.com/products/image/${image.filename}`

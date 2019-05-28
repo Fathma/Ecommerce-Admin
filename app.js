@@ -147,11 +147,6 @@ app.get("/", (req, res) => {
   }
 });
 
-// app.get("/img/:img",  (req, res) => {
-//   res.sendFile(req.params.img, { root: path.join(__dirname, './public/photos') })
-// });
-
-
 // About route
 app.get("/about", (req, res) => {
   res.render("about");
@@ -171,6 +166,4 @@ app.use("/general", ensureAuthenticated, generalRoutes);
 //Port For the Application
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log("The server is live on http://127.0.0.1:3000/");
-});
+app.listen(port, () => console.log("The server is live on http://127.0.0.1:3000/"));
