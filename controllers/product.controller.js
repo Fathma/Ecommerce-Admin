@@ -54,9 +54,9 @@ exports.updateProduct = async(req, res)=>{
 
 // checks whether any of the given serials already exists or not
 exports.checkSerials = async(req, res)=>{
+
   var arr = req.body.serial_array
   var exists = [];
-
   var serials = await Serial.find({ pid: req.body.pid })
   
   serials.map( serial =>{
@@ -64,6 +64,7 @@ exports.checkSerials = async(req, res)=>{
       exists.push(serial.number)
     }
   })
+  
   res.send({ exists })
 }
 
@@ -98,7 +99,7 @@ exports.deteteImg = (req, res)=>{
 }
 
 // saves link with image filenames in database
-var savingImage = async (req)=>{
+var savingImage = async req =>{
   await req.files.map(async image =>{
     var link = `https://ecom-admin.herokuapp.com/products/image/${image.filename}`
     await Product.update({ _id: req.body.pid },{ $addToSet: { image: link } },{ upsert: true })
@@ -109,8 +110,8 @@ var savingImage = async (req)=>{
 exports.getImage= (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
     if(file.filename){
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
+      const readstream = gfs.createReadStream(file.filename)
+      readstream.pipe(res)
     }
   })
 }

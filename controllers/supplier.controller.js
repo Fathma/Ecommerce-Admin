@@ -19,9 +19,7 @@ exports.supplierSave = (req, res) => {
 };
 
 // get all registered suppliers
-exports.supplierList = (req, res) => {
-  Supplier.find((err, docs) => { res.render('supplier/supplierList', { supplier: docs }) });
-};
+exports.supplierList = async(req, res) => res.render('supplier/supplierList', { supplier: await Supplier.find() }) ;
 
 // get all registered suppliers
 exports.supplierEditPage = (req, res) => {

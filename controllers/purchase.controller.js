@@ -7,10 +7,7 @@ const SubCategory = require('../models/subCategory.model');
 exports.LocalPurchasePage = (req, res) => res.render('purchase/localPurchase');
 
 // get supplier registration page
-exports.getLPList = async (req, res) => {
-  var lp = await LP.find().populate('supplier');
-  res.render('purchase/allPurchase', { lp })
-};
+exports.getLPList = async (req, res) => res.render('purchase/allPurchase', { lp: await LP.find().populate('supplier') })
 
 // fetching products of a specific local purchase 
 exports.getProducts = (req, res) => {
@@ -30,13 +27,11 @@ exports.getProducts = (req, res) => {
       populate: { path: 'subcategory' },
     })
     .populate('supplier')
-    .exec((err, doc) => {
-      res.send(doc);
-    });
+    .exec((err, doc) => res.send(doc))
 };
 
 // get supplier registration page
-exports.LocalPurchaseLPPage = (req, res, next) => {
+exports.LocalPurchaseLPPage = (req, res) => {
 
   LP.findOne({ number: req.params.invc })
     .populate('products.product')
