@@ -407,7 +407,6 @@ exports.makeNotActive = (req, res, next) => {
 
 // makes product online
 exports.makeActive = (req, res, next) => {
-  console.log(req.params.id)
   var obj = { isActive: true };
   allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
     res.redirect('/products/viewProducts');

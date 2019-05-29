@@ -19,7 +19,7 @@ $(document).ready(()=>{
       });
     }
   });
-  byId("save_img").disabled = true;
+  // byId("save_img").disabled = true;
   // creates dropdown for product field
   function configureDropDownL4(ddl2, data) {
     var options;
