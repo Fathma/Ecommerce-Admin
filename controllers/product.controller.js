@@ -27,7 +27,7 @@ conn.once('open', function () {
 // get Product update page
 exports.getProductUpdatePage = async(req, res)=>{
   let product = await Product.findOne({ _id: req.params._id })
-  res.render("products/update",{ product, feature_total: product.features.length })
+  res.render('products/update',{ product, feature_total: product.features.length })
 }
 
 // saving product for dealer products
@@ -88,7 +88,7 @@ exports.SaveImage3 = async (req, res) => {
 exports.deteteImg = (req, res)=>{
   filename = req.body.img.split('image/')[1];
   
-  Product.updateOne({ _id: req.body.id }, { $pull: { image: req.body.img}},{upsert: true}, (err, docs)=>{
+  Product.updateOne({ _id: req.body.id }, { $pull: { image: req.body.img }},{ upsert: true }, ( err, docs )=>{
     if(err) console.log(err);
     else {
       gfs.remove({ filename }, (err) => {
@@ -161,17 +161,13 @@ exports.showProductRegistrationFields =async (req, res, next) => {
         })
       }
     // checks whether the model already exists or not
-    Product.findOne({ model: model }, function(err, result){
+    Product.findOne({ model: model }, ( err, result )=>{
       if( result === null ){
-        new Product(product).save().then((product)=>{
-          res.render('products/dealerProduct',{product,features, feature_total: features.length })
-        })
-      }else{
-        res.render('products/dealerProduct',{product:result,features, feature_total: features.length})
+        new Product( product ).save().then( product => res.render('products/dealerProduct',{ product, features, feature_total: features.length }))
       }
+      else res.render('products/dealerProduct',{ product: result, features, feature_total: features.length })
     })
-    
-    })
+  })
 };
 
 // view total stock information
@@ -397,7 +393,7 @@ exports.getEditpage = (req, res, next) => {
 };
 
 // returns product offline stock
-exports.makeNotActive = (req, res, next) => {
+exports.makeNotActive = (req, res) => {
   console.log(req.params.id)
   var obj = { isActive: false };
   allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
@@ -406,15 +402,33 @@ exports.makeNotActive = (req, res, next) => {
 };
 
 // makes product online
-exports.makeActive = (req, res, next) => {
+exports.makeActive = (req, res) => {
   var obj = { isActive: true };
   allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
     res.redirect('/products/viewProducts');
   });
 };
 
+// make product available
+exports.makeAvailable = (req, res)=>{
+  console.log(req.params.id)
+  var obj = { availablity: true };
+  allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
+    res.redirect('/products/viewProducts');
+  });
+}
+
+// make product not available
+exports.makeNotAvailable = (req, res)=>{
+  console.log(req.params.id)
+  var obj = { availablity: false };
+  allFuctions.changeStatus({ _id: req.params.id }, obj, res, (docs)=>{
+    res.redirect('/products/viewProducts');
+  });
+}
+
 // updateing stock quantity and price of prducts with no serial
-exports.stockEditNoSerial =(req, res, next) => {
+exports.stockEditNoSerial =(req, res) => {
   var pre_Q = parseInt(req.body.pre_all_Q);
   var quan = parseInt(req.body.quantity);
   var obj ={

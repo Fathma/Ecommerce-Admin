@@ -93,10 +93,8 @@ var changeStatus = ( model, _id, bool )=> model.update({ _id }, { $set: { enable
 
 // eidt category
 exports.edit_cat =async(req, res)=>{
-  console.log('sdfsdfsdfsfs')
   await Cat.find({ _id }, { $set: { name: req.body.name }}, { upsert: true})
   res.send({})
-
 }
 
 exports.categoryList = async( req, res )=> res.render('parents/categoryList', { category: await Cat.find()})
