@@ -23,11 +23,9 @@
                 <td>
                     <strong>{{this.productName}}</strong>
                 </td>
-
                 <td>
                     <strong>{{this.model}}</strong>
                 </td>
-
                 <td>
                     {{# if this.isActive}}
                    <strong>Enabled</strong>
@@ -42,14 +40,13 @@
                     <strong>Not Available</strong>
                     {{/if}}
                 </td>
-
                 <td>
                     {{# if this.availablity}}
                     <a href="/products/notAvailable/{{this._id}}" class="btn btn-default ">Not Available</a>
                     {{else}}
                     <a href="/products/Available/{{this._id}}" class="btn btn-default">Available</a>
                     {{/if}}
-                     {{# if this.isActive}}
+                    {{# if this.isActive}}
                     <a href="/products/unactive/{{this._id}}" class="btn btn-default ">Disable</a>
                     {{else}}
                     <a href="/products/active/{{this._id}}" class="btn btn-default">Enable</a>

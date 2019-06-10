@@ -1,6 +1,7 @@
 
 $(document).ready(()=>{
   var products = [];
+  var serial_lp = [];
   var byId = ( id )=>{ return document.getElementById( id ); };
  
   // getting invoice(local purchase) details on basis of selected invoice number
@@ -11,11 +12,13 @@ $(document).ready(()=>{
 
     if (invoice.value != "0") {
       $.get("/purchase/getProducts/" + invoice.value, {}, (data)=>{
-        var date = data.date.split("T");
-        byId("supplier").value = data.supplier.cname;
+        console.log(data)
+        var date = data.lp.date.split("T");
+        byId("supplier").value = data.lp.supplier.cname;
         byId("date").value = date[0];
-        configureDropDownL4( byId("products_invoice"), data.products );
-        products = data.products;
+        configureDropDownL4( byId("products_invoice"), data.lp.products );
+        products = data.lp.products;
+        serial_lp = data.serials;
       });
     }
   });
@@ -49,94 +52,101 @@ $(document).ready(()=>{
   $("#products_invoice").change((e)=>{
     var id = byId("products_invoice").value;
     byId("subcategory").value = "";
-
+    
     // creating label and input fields for previous features
     var product = products.filter(product=> product.product._id == id)
     const {_id, name, productName, pid, category,subcategory,brand, model, weight, warranty, description, image }= product[0].product
-    const { shippingInfo, serial_availablity, features}= product[0].product;
-    const {quantity,purchasePrice}= product[0];
-
-    byId("pname").value = productName
-    byId("pid").value = _id
-    byId("img_number").value = image.length
-
-    if(image.length >= 5)  byId("save_img").disabled = true;
-   
-    // create space for image
-    remove_child(byId("all_img"))
-    // image.map(image=>{
-    //   var col = create_div("col-md-2", "outc1r1c1", 1);
-    //   var img = document.createElement("img");
-    //   img.style.width= '100px';
-    //   img.style.height= '100px';
-    //   img.src = "/photos/"+image;
-      
-    //   var row = create_div("row", "row1", 1);
-    //   var col1 = create_div("col-md-12", "col1", 1);
-    //   var col2 = create_div("col-md-12", "col1", 1);
-    //   var btn = document.createElement("button");
-    //   btn.innerHTML="x";
-
-    //   col1.appendChild(img)
-    //   col2.appendChild(btn)
-    //   row.appendChild(col1)
-    //   row.appendChild(col2)
-    //   col.appendChild(row)
-
-    //   byId("all_img").appendChild(col);
-    // })
+    var serial = serial_lp.filter(serial=> serial.pid ==_id)
+    if(serial.length > 0){
+      alert("This product is already defined for the given lp number!")
+      byId("save_inventory").disabled = true;
+    }else{
+      byId("save_inventory").disabled = false;
+      const { shippingInfo, serial_availablity, features}= product[0].product;
+      const {quantity,purchasePrice}= product[0];
+     
+      byId("pname").value = productName
+      byId("pid").value = _id
+      byId("img_number").value = image.length
   
-    byId( 'unitPrice' ).value = purchasePrice;
-    byId("category").value = category.name;
-
-    if (subcategory) {
-      byId("subcategory").value = subcategory.name;
-    }
-    byId("brand").value = brand.name;
-    byId("name").value = name;
-    byId("model").value = model;
-    byId("quantity").value =quantity;
-    byId("weight").value = weight;
-    byId("warranty").value = warranty;
-    byId("description").value = description;
-    byId("shippingInfo").value = shippingInfo;
-    byId("serial").value = serial_availablity;
-
-    var nums = features.length;
-    byId("new_feat").value = nums;
-
-    remove_child(byId("add"))
-
-    // creates the div containing label and one helping input containing label text
-    for (var i = 0; i < nums; i++) {
-      var label = createLabel("v", i, features[i].label);
-      var input1 = createInputfield("hidden","new_feat_",i, features[i].label);
-      var input = createInputfield("text","v",i, features[i].value);
-
-      create_row_feature(nums,label, input, input1)
-    }
-
-    remove_child(byId("space"))
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-    var yyyy = today.getFullYear();
-    today = `${yyyy}-${mm}-${dd}` ;
-
-    byId("new_feat").value = nums;
+      if(image.length >= 5)  byId("save_img").disabled = true;
+      // create space for image
+      remove_child(byId("all_img"))
+      // image.map(image=>{
+      //   var col = create_div("col-md-2", "outc1r1c1", 1);
+      //   var img = document.createElement("img");
+      //   img.style.width= '100px';
+      //   img.style.height= '100px';
+      //   img.src = "/photos/"+image;
+        
+      //   var row = create_div("row", "row1", 1);
+      //   var col1 = create_div("col-md-12", "col1", 1);
+      //   var col2 = create_div("col-md-12", "col1", 1);
+      //   var btn = document.createElement("button");
+      //   btn.innerHTML="x";
   
-    for (var i = 0; i < quantity; i++) {
-      var label1 = createLabel("pid", i, "PID" + (i + 1));
-      var input1 = createInputfield("text", "pid", i, `${pid}-${today}-${randomString(4)}`);
-      create_row(i, label1, input1);
-
-      if (serial_availablity) {
-        var label = createLabel("v", i, "Serial" + (i + 1));
-        var input = createInputfield("text", "s", i, "");
-        create_row(i, label, input);
+      //   col1.appendChild(img)
+      //   col2.appendChild(btn)
+      //   row.appendChild(col1)
+      //   row.appendChild(col2)
+      //   col.appendChild(row)
+  
+      //   byId("all_img").appendChild(col);
+      // })
+    
+      byId( 'unitPrice' ).value = purchasePrice;
+      byId("category").value = category.name;
+  
+      if (subcategory) {
+        byId("subcategory").value = subcategory.name;
+      }
+      byId("brand").value = brand.name;
+      byId("name").value = name;
+      byId("model").value = model;
+      byId("quantity").value =quantity;
+      byId("weight").value = weight;
+      byId("warranty").value = warranty;
+      byId("description").value = description;
+      byId("shippingInfo").value = shippingInfo;
+      byId("serial").value = serial_availablity;
+  
+      var nums = features.length;
+      byId("new_feat").value = nums;
+  
+      remove_child(byId("add"))
+  
+      // creates the div containing label and one helping input containing label text
+      for (var i = 0; i < nums; i++) {
+        var label = createLabel("v", i, features[i].label);
+        var input1 = createInputfield("hidden","new_feat_",i, features[i].label);
+        var input = createInputfield("text","v",i, features[i].value);
+  
+        create_row_feature(nums,label, input, input1)
+      }
+  
+      remove_child(byId("space"))
+  
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+      today = `${yyyy}-${mm}-${dd}` ;
+  
+      byId("new_feat").value = nums;
+    
+      for (var i = 0; i < quantity; i++) {
+        var label1 = createLabel("pid", i, "PID" + (i + 1));
+        var input1 = createInputfield("text", "pid", i, `${pid}-${today}-${randomString(4)}`);
+        create_row(i, label1, input1);
+  
+        if (serial_availablity) {
+          var label = createLabel("v", i, "Serial" + (i + 1));
+          var input = createInputfield("text", "s", i, "");
+          create_row(i, label, input);
+        }
       }
     }
+    
   });
   
   // byId("new_feat").value=0;
@@ -249,6 +259,7 @@ $(document).ready(()=>{
         pid,
         status: "In Stock"
       };
+     
       
       if(byId("serial").value === "true"){
         serial_array.push(byId("s" + i).value)
@@ -256,6 +267,7 @@ $(document).ready(()=>{
       }
       serials.push(obj);
     }
+    console.log(serials)
 
     if (ArrNoDupe(serial_array).length != serial_array.length) alert("serial numbers has to be unique!"); 
     else {
