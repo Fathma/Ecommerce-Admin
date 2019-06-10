@@ -28,21 +28,21 @@ exports.getProducts = (req, res) => {
       populate: { path: 'subcategory' },
     })
     .populate('supplier')
-    // .exec((err, doc) => res.send(doc))
-    .exec(async (err, doc) => 
-    {
+    .exec((err, doc) => res.send(doc))
+    // .exec(async (err, doc) => 
+    // {
      
-      var doc_serial = { lp: doc, serials: [] }
+    //   var doc_serial = { lp: doc, serials: [] }
       
-      for(var i=0; i< doc.products.length; i++){
-        var docs = await Serials.find({ pid: doc.products[i].product._id })
-        doc_serial.serials.splice(doc_serial.serials.length-1, 0, ...docs)
+    //   for(var i=0; i< doc.products.length; i++){
+    //     var docs = await Serials.find({ pid: doc.products[i].product._id })
+    //     doc_serial.serials.splice(doc_serial.serials.length-1, 0, ...docs)
        
-          // doc_serial.serials.push(docs)
+    //       // doc_serial.serials.push(docs)
         
-      }
-      res.send(doc_serial)
-    })
+    //   }
+    //   res.send(doc_serial)
+    // })
 };
 
 // get supplier registration page

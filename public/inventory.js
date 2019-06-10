@@ -12,13 +12,20 @@ $(document).ready(()=>{
 
     if (invoice.value != "0") {
       $.get("/purchase/getProducts/" + invoice.value, {}, (data)=>{
-        console.log(data)
-        var date = data.lp.date.split("T");
-        byId("supplier").value = data.lp.supplier.cname;
+        
+        var date = data.date.split("T");
+        byId("supplier").value = data.supplier.cname;
         byId("date").value = date[0];
-        configureDropDownL4( byId("products_invoice"), data.lp.products );
-        products = data.lp.products;
-        serial_lp = data.serials;
+        configureDropDownL4( byId("products_invoice"), data.products );
+        products = data.products;
+        // serial_lp = data.serials;
+
+        // var date = data.lp.date.split("T");
+        // byId("supplier").value = data.lp.supplier.cname;
+        // byId("date").value = date[0];
+        // configureDropDownL4( byId("products_invoice"), data.lp.products );
+        // products = data.lp.products;
+        // serial_lp = data.serials;
       });
     }
   });
