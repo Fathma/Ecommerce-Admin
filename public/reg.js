@@ -27,6 +27,17 @@ $(document).ready(function() {
         location.reload(true);
       });
     });
+
+    $("#edit_cat").on("click", function(e) {
+      // e.preventDefault();
+      
+      var name = byId("name").value;
+      var _id = byId("id").value;
+      $.post( "/category/category/edit", { name, _id }, function(data) {
+          location.reload(true);
+        }
+      );
+    });
   });
 
   // setting brand dropdown values on the besis of selected subcategory

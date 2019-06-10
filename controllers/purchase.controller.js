@@ -2,6 +2,7 @@ const LP = require('../models/localPurchase.model');
 const Product = require('../models/Product');
 const Category = require('../models/category.model');
 const SubCategory = require('../models/subCategory.model');
+const Serials = require('../models/serials.model');
 
 // get supplier registration page
 exports.LocalPurchasePage = (req, res) => res.render('purchase/localPurchase');
@@ -27,7 +28,21 @@ exports.getProducts = (req, res) => {
       populate: { path: 'subcategory' },
     })
     .populate('supplier')
-    .exec((err, doc) => res.send(doc))
+    // .exec((err, doc) => res.send(doc))
+    .exec(async (err, doc) => 
+    {
+     
+      var doc_serial = { lp: doc, serials: [] }
+      
+      for(var i=0; i< doc.products.length; i++){
+        var docs = await Serials.find({ pid: doc.products[i].product._id })
+        doc_serial.serials.splice(doc_serial.serials.length-1, 0, ...docs)
+       
+          // doc_serial.serials.push(docs)
+        
+      }
+      res.send(doc_serial)
+    })
 };
 
 // get supplier registration page

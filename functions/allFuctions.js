@@ -19,8 +19,9 @@ exports.find = (obj, cb) => {
 
 // update function
 exports.changeStatus = (condition,  object, res, cb) => {
-  Product.findOneAndUpdate(condition,{ $set: object },{ upsert: true }, function(err, docs) {
+  Product.update(condition,{ $set: object },{ upsert: true }, function(err, docs) {
       if (err) { console.log(err); }
+      console.log(docs)
       cb(docs)
     }
   );
