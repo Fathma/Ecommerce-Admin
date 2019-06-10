@@ -65,8 +65,6 @@ router.get('/Update/:_id', product_controller.getProductUpdatePage)
 router.post('/updateProduct', product_controller.updateProduct)
 router.get('/active/:id', product_controller.makeActive)
 router.get('/unactive/:id', product_controller.makeNotActive)
-router.get('/Available/:id', product_controller.makeAvailable)
-router.get('/notAvailable/:id', product_controller.makeNotAvailable)
 
 
 // previous 

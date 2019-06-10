@@ -27,7 +27,7 @@ exports.getProducts = (req, res) => {
       populate: { path: 'subcategory' },
     })
     .populate('supplier')
-    .exec((err, doc) =>{res.send(doc)} )
+    .exec((err, doc) => res.send(doc))
 };
 
 // get supplier registration page

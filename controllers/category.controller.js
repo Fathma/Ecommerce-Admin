@@ -24,8 +24,8 @@ exports.addSubCategory = (req, res) => {
         { _id: req.body.cate },
         { $addToSet: { subCategories: subcategory._id } },
         { upsert: true },
-        ( err, docs )=> {
-          if ( err ) res.send( err ) 
+        function( err, docs ) {
+          if ( err ) { res.send( err ) }
           res.send({})
         }
       )
@@ -58,47 +58,16 @@ exports.getSub = (req, res) => {
 }
 
 // returns subcategories of and given subcategories 
-exports.getBrand = ( req, res )=> {
+exports.getBrand = ( req, res )=>{
   subCategory.find({ name: req.params.subcat })
   .populate('brands')
   .exec(( err, docs )=> res.json( docs ))
 }
 
 // returns subcategories of and given subcategories 
-exports.getBrand2 = ( req, res )=> {
+exports.getBrand2 = ( req, res )=>{
   Cat.find({ name: req.params.cat })
   .populate('brands')
   .exec((err, docs)=> res.json(docs))
 }
-
-// changes categorys' status
-exports.changeStatus_Subcat = async(req, res) => {
-  await changeStatus(subCategory, req.params.id, req.params.value)
-  res.redirect('/category/subCategoryList')
-};
-
-// changes subcategorys' status
-exports.changeStatus_cat = async(req, res) => {
-  await changeStatus(Cat, req.params.id, req.params.value)
-  res.redirect('/category/categoryList')
-};
-
-// changes brands' status
-exports.changeStatus_brand = async(req, res) => {
-  await changeStatus(Cat, req.params.id, req.params.value)
-  res.redirect('/category/brandList')
-};
-
-var changeStatus = ( model, _id, bool )=> model.update({ _id }, { $set: { enabled: bool} }, { upsert: true })
-
-// eidt category
-exports.edit_cat =async(req, res)=>{
-  await Cat.find({ _id }, { $set: { name: req.body.name }}, { upsert: true})
-  res.send({})
-}
-
-exports.categoryList = async( req, res )=> res.render('parents/categoryList', { category: await Cat.find()})
-exports.subCategoryList = async( req, res )=> res.render('parents/subCategoryList', { subCategory: await subCategory.find().populate('category')})
-exports.brandList = async( req, res )=> res.render('parents/brandList', { brand: await Brand.find()})
-
 

@@ -22,9 +22,6 @@ var moment = require("moment");
 var expressValidator = require('express-validator');
 moment().format();
 
-
-
-
 // role
 const { ensureAuthenticated } = require("./helpers/auth");
 const { Super } = require("./helpers/rolecheck");
@@ -54,6 +51,7 @@ mongoose.connect(dbConfig.mongoURI, err => {
   else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
 });
 
+app.use('/public/photos', express.static('photos'));
 HandlebarsIntl.registerWith(Handlebars);
 
 app.use(morgan("dev"));
@@ -147,6 +145,11 @@ app.get("/", (req, res) => {
   } else {
     res.redirect("/users/login");
   }
+});
+
+// About route
+app.get("/about", (req, res) => {
+  res.render("about");
 });
 
 // base routes
