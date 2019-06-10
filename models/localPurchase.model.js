@@ -11,7 +11,7 @@ var LocalPurchaseSchema = new Schema({
     dealer: { type: String },
     products:[{
         product: { type: Schema.Types.ObjectId, ref: 'Product' },
-        // serial:[{ type: String }],
+        serial:[{ type: String }],
         quantity:{ type: Number},
         purchasePrice:{ type: Number},
         total:{ type: Number}

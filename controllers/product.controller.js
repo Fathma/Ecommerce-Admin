@@ -40,7 +40,6 @@ exports.SaveProductDealer = async(req, res)=>{
 // saving product for local purchase products
 exports.SaveProductLP = async(req, res)=>{
   var data = req.body.data
-  console.log(req.body.serials)
 
   await Product.update({ _id: data._id },{ $set: data },{ upsert: true })
   await Serial.insertMany(req.body.serials)
