@@ -1,7 +1,7 @@
 
 $(document).ready(()=>{
   var products = [];
-  var serial_lp = [];
+  // var serial_lp = [];
   var byId = ( id )=>{ return document.getElementById( id ); };
  
   // getting invoice(local purchase) details on basis of selected invoice number
