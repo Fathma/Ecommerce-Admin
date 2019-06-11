@@ -1,49 +1,49 @@
 const express = require("express");
-const handlebars = require("express-handlebars");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const flash = require("connect-flash");
-const session = require("express-session");
-const passport = require("passport");
-const dbConfig = require("./config/database");
-var Category = require("./models/category.model");
-var Product = require("./models/Product");
-var LocalPurchase = require("./models/localPurchase.model");
-var Supplier = require("./models/supplier.model");
-var SubCategory = require("./models/subCategory.model");
-var Brand = require("./models/brand.model");
-const morgan = require("morgan");
-var path = require("path");
-var mongoStore = require("connect-mongo")(session);
-const methodOverride = require("method-override");
-var HandlebarsIntl = require("handlebars-intl");
-var Handlebars = require("handlebars");
-var moment = require("moment");
-var expressValidator = require('express-validator');
-moment().format();
+// const handlebars = require("express-handlebars");
+// const mongoose = require("mongoose");
+// const bodyParser = require("body-parser");
+// const flash = require("connect-flash");
+// const session = require("express-session");
+// const passport = require("passport");
+// const dbConfig = require("./config/database");
+// var Category = require("./models/category.model");
+// var Product = require("./models/Product");
+// var LocalPurchase = require("./models/localPurchase.model");
+// var Supplier = require("./models/supplier.model");
+// var SubCategory = require("./models/subCategory.model");
+// var Brand = require("./models/brand.model");
+// const morgan = require("morgan");
+// var path = require("path");
+// var mongoStore = require("connect-mongo")(session);
+// const methodOverride = require("method-override");
+// var HandlebarsIntl = require("handlebars-intl");
+// var Handlebars = require("handlebars");
+// var moment = require("moment");
+// var expressValidator = require('express-validator');
+// moment().format();
 
 // // role
-const { ensureAuthenticated } = require("./helpers/auth");
+// const { ensureAuthenticated } = require("./helpers/auth");
 // const { Super } = require("./helpers/rolecheck");
 // const { SuperPublisher } = require("./helpers/rolecheck");
 const app = express();
 
 // // Load routes controller
-const ordersRoutes = require("./routes/orders.routes");
-const categoryRoutes = require("./routes/category.routes");
-const usersRoutes = require("./routes/users.routes");
-const productsRoutes = require("./routes/products.routes");
-const customerRoutes = require("./routes/customer.routes");
-const invoiceRoutes = require("./routes/invoice.routes");
-const purchaseRoutes = require("./routes/purchase.routes");
-const supplierRoutes = require("./routes/supplier.routes");
-const generalRoutes = require("./routes/general.routes");
+// const ordersRoutes = require("./routes/orders.routes");
+// const categoryRoutes = require("./routes/category.routes");
+// const usersRoutes = require("./routes/users.routes");
+// const productsRoutes = require("./routes/products.routes");
+// const customerRoutes = require("./routes/customer.routes");
+// const invoiceRoutes = require("./routes/invoice.routes");
+// const purchaseRoutes = require("./routes/purchase.routes");
+// const supplierRoutes = require("./routes/supplier.routes");
+// const generalRoutes = require("./routes/general.routes");
 
-// Passport config
-require("./config/passport")(passport);
+// // Passport config
+// require("./config/passport")(passport);
 
-// Map global promise
-mongoose.Promise = global.Promise;
+// // Map global promise
+// mongoose.Promise = global.Promise;
 
 // //DB Connection
 // mongoose.connect(dbConfig.mongoURI, err => {
