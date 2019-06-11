@@ -84,27 +84,27 @@ app.use(bodyParser.json());
 //Static Folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// // Express session middleware
-// app.use(
-//   session({
-//     secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
-//     resave: false,
-//     saveUninitialized: false,
-//     store: new mongoStore({ mongooseConnection: mongoose.connection }),
-//     cookie: { maxAge: 180 * 60 * 1000 }
-//   })
-// );
+// Express session middleware
+app.use(
+  session({
+    secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
+    resave: false,
+    saveUninitialized: false,
+    store: new mongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: { maxAge: 180 * 60 * 1000 }
+  })
+);
 
-// // Passport middleware
-// app.use(passport.initialize());
-// app.use(passport.session());
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
-// app.use(flash());
+app.use(flash());
 
-// Handlebars.registerHelper("formatTime", function(date, format) {
-//   var mmnt = moment(date);
-//   return mmnt.format(format);
-// });
+Handlebars.registerHelper("formatTime", function(date, format) {
+  var mmnt = moment(date);
+  return mmnt.format(format);
+});
 
 // // middleware
 // app.use(function(req, res, next) {
