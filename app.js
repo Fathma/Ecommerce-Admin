@@ -149,7 +149,7 @@ app.get("/", (req, res) => {
 
 // base routes
 // app.use("/category",ensureAuthenticated,  categoryRoutes);
-app.use("/users",   usersRoutes);
+// app.use("/users",   usersRoutes);
 // app.use("/orders", ensureAuthenticated, ordersRoutes);
 // app.use("/invoice", ensureAuthenticated, invoiceRoutes);
 // app.use("/customers", ensureAuthenticated, customerRoutes);
