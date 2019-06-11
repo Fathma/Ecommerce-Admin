@@ -20,7 +20,7 @@ var HandlebarsIntl = require("handlebars-intl");
 var Handlebars = require("handlebars");
 var moment = require("moment");
 var expressValidator = require('express-validator');
-moment().format();
+// moment().format();
 
 // // // role
 // const { ensureAuthenticated } = require("./helpers/auth");
@@ -139,7 +139,7 @@ const generalRoutes = require("./routes/general.routes");
 // });
 
 app.get("/", (req, res) => {
-  res.send({ mgs: "working"})
+  res.send({ mgs: "working" })
   // if (req.user) {
   //   res.redirect("/general/showDashboard");
   // } else {
@@ -156,7 +156,7 @@ app.use("/users",   usersRoutes);
 // app.use("/products",  productsRoutes);
 // app.use("/purchase",   purchaseRoutes);
 // app.use("/supplier",   supplierRoutes);
-app.use("/general",  generalRoutes);
+// app.use("/general",  generalRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
