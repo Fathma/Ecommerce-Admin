@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
-// const dbConfig = require("./config/database");
+const dbConfig = require("./config/database");
 var Category = require("./models/category.model");
 var Product = require("./models/Product");
 var LocalPurchase = require("./models/localPurchase.model");
@@ -31,58 +31,58 @@ const app = express();
 // // Load routes controller
 // const ordersRoutes = require("./routes/orders.routes");
 // const categoryRoutes = require("./routes/category.routes");
-// const usersRoutes = require("./routes/users.routes");
+const usersRoutes = require("./routes/users.routes");
 // const productsRoutes = require("./routes/products.routes");
 // const customerRoutes = require("./routes/customer.routes");
 // const invoiceRoutes = require("./routes/invoice.routes");
 // const purchaseRoutes = require("./routes/purchase.routes");
 // const supplierRoutes = require("./routes/supplier.routes");
-// const generalRoutes = require("./routes/general.routes");
+const generalRoutes = require("./routes/general.routes");
 
-// // Passport config
-// require("./config/passport")(passport);
+// Passport config
+require("./config/passport")(passport);
 
-// // Map global promise
-// mongoose.Promise = global.Promise;
+// Map global promise
+mongoose.Promise = global.Promise;
 
-// //DB Connection
-// mongoose.connect(dbConfig.mongoURI, err => {
-//   if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
-//   else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
-// });
+//DB Connection
+mongoose.connect(dbConfig.mongoURI, err => {
+  if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
+  else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
+});
 
-// HandlebarsIntl.registerWith(Handlebars);
+HandlebarsIntl.registerWith(Handlebars);
 
-// app.use(morgan("dev"));
+app.use(morgan("dev"));
 
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(expressValidator());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressValidator());
 
-// const hbs = handlebars.create({
-//   defaultLayout: "main",
-//   // custom helpers for 'if(something1 === something2){ do something }'
-//   helpers: {
-//     equality: function(value1, value2, block) {
-//       if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
-//       } else {
-//         if (value1.toString() == value2.toString()) {
-//           return block.fn(true);
-//         } else return block.inverse(false);
-//       }
-//     }
-//   }
-// });
+const hbs = handlebars.create({
+  defaultLayout: "main",
+  // custom helpers for 'if(something1 === something2){ do something }'
+  helpers: {
+    equality: function(value1, value2, block) {
+      if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
+      } else {
+        if (value1.toString() == value2.toString()) {
+          return block.fn(true);
+        } else return block.inverse(false);
+      }
+    }
+  }
+});
 
-// app.engine("handlebars", hbs.engine);
-// app.set("view engine", "handlebars");
-// app.use(methodOverride("_method"));
+app.engine("handlebars", hbs.engine);
+app.set("view engine", "handlebars");
+app.use(methodOverride("_method"));
 
-// // Body parser middleware
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+// Body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-// //Static Folder
-// app.use(express.static(path.join(__dirname, "public")));
+//Static Folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // // Express session middleware
 // app.use(
@@ -139,24 +139,24 @@ const app = express();
 // });
 
 app.get("/", (req, res) => {
-  res.send({ msg : "done" })
-  // if (req.user) {
-  //   res.redirect("/general/showDashboard");
-  // } else {
-  //   res.redirect("/users/login");
-  // }
+ 
+  if (req.user) {
+    res.redirect("/general/showDashboard");
+  } else {
+    res.redirect("/users/login");
+  }
 });
 
 // base routes
 // app.use("/category",ensureAuthenticated,  categoryRoutes);
-// app.use("/users",   usersRoutes);
+app.use("/users",   usersRoutes);
 // app.use("/orders", ensureAuthenticated, ordersRoutes);
 // app.use("/invoice", ensureAuthenticated, invoiceRoutes);
 // app.use("/customers", ensureAuthenticated, customerRoutes);
 // app.use("/products", ensureAuthenticated, productsRoutes);
 // app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
 // app.use("/supplier", ensureAuthenticated,  supplierRoutes);
-// app.use("/general", ensureAuthenticated, generalRoutes);
+app.use("/general",  generalRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
