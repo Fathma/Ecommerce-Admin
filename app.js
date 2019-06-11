@@ -22,140 +22,141 @@ var moment = require("moment");
 var expressValidator = require('express-validator');
 moment().format();
 
-// // role
-const { ensureAuthenticated } = require("./helpers/auth");
-// const { Super } = require("./helpers/rolecheck");
-// const { SuperPublisher } = require("./helpers/rolecheck");
+// // // role
+// const { ensureAuthenticated } = require("./helpers/auth");
+// // const { Super } = require("./helpers/rolecheck");
+// // const { SuperPublisher } = require("./helpers/rolecheck");
 const app = express();
 
-// // Load routes controller
-const ordersRoutes = require("./routes/orders.routes");
-const categoryRoutes = require("./routes/category.routes");
+// // // Load routes controller
+// const ordersRoutes = require("./routes/orders.routes");
+// const categoryRoutes = require("./routes/category.routes");
 const usersRoutes = require("./routes/users.routes");
-const productsRoutes = require("./routes/products.routes");
-const customerRoutes = require("./routes/customer.routes");
-const invoiceRoutes = require("./routes/invoice.routes");
-const purchaseRoutes = require("./routes/purchase.routes");
-const supplierRoutes = require("./routes/supplier.routes");
+// const productsRoutes = require("./routes/products.routes");
+// const customerRoutes = require("./routes/customer.routes");
+// const invoiceRoutes = require("./routes/invoice.routes");
+// const purchaseRoutes = require("./routes/purchase.routes");
+// const supplierRoutes = require("./routes/supplier.routes");
 const generalRoutes = require("./routes/general.routes");
 
-// Passport config
-require("./config/passport")(passport);
+// // Passport config
+// require("./config/passport")(passport);
 
-// Map global promise
-mongoose.Promise = global.Promise;
+// // Map global promise
+// mongoose.Promise = global.Promise;
 
-//DB Connection
-mongoose.connect(dbConfig.mongoURI, err => {
-  if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
-  else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
-});
+// //DB Connection
+// mongoose.connect(dbConfig.mongoURI, err => {
+//   if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
+//   else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
+// });
 
-HandlebarsIntl.registerWith(Handlebars);
+// HandlebarsIntl.registerWith(Handlebars);
 
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressValidator());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(expressValidator());
 
-const hbs = handlebars.create({
-  defaultLayout: "main",
-  // custom helpers for 'if(something1 === something2){ do something }'
-  helpers: {
-    equality: function(value1, value2, block) {
-      if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
-      } else {
-        if (value1.toString() == value2.toString()) {
-          return block.fn(true);
-        } else return block.inverse(false);
-      }
-    }
-  }
-});
+// const hbs = handlebars.create({
+//   defaultLayout: "main",
+//   // custom helpers for 'if(something1 === something2){ do something }'
+//   helpers: {
+//     equality: function(value1, value2, block) {
+//       if (value1 === undefined ||value1 === null || value2 === undefined || value2 === null) {
+//       } else {
+//         if (value1.toString() == value2.toString()) {
+//           return block.fn(true);
+//         } else return block.inverse(false);
+//       }
+//     }
+//   }
+// });
 
-app.engine("handlebars", hbs.engine);
-app.set("view engine", "handlebars");
-app.use(methodOverride("_method"));
+// app.engine("handlebars", hbs.engine);
+// app.set("view engine", "handlebars");
+// app.use(methodOverride("_method"));
 
-// Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// // Body parser middleware
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
-//Static Folder
-app.use(express.static(path.join(__dirname, "public")));
+// //Static Folder
+// app.use(express.static(path.join(__dirname, "public")));
 
-// Express session middleware
-app.use(
-  session({
-    secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
-    resave: false,
-    saveUninitialized: false,
-    store: new mongoStore({ mongooseConnection: mongoose.connection }),
-    cookie: { maxAge: 180 * 60 * 1000 }
-  })
-);
+// // Express session middleware
+// app.use(
+//   session({
+//     secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
+//     resave: false,
+//     saveUninitialized: false,
+//     store: new mongoStore({ mongooseConnection: mongoose.connection }),
+//     cookie: { maxAge: 180 * 60 * 1000 }
+//   })
+// );
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+// // Passport middleware
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-app.use(flash());
+// app.use(flash());
 
-Handlebars.registerHelper("formatTime", function(date, format) {
-  var mmnt = moment(date);
-  return mmnt.format(format);
-});
+// Handlebars.registerHelper("formatTime", function(date, format) {
+//   var mmnt = moment(date);
+//   return mmnt.format(format);
+// });
 
-// middleware
-app.use(function(req, res, next) {
-  Category.find()
-    .populate("subCategories")
-    .exec(function(err, categories) {
-      if (err) return next(err);
-      res.locals.S_categories = categories;
-      next();
-    });
-});
+// // middleware
+// app.use(function(req, res, next) {
+//   Category.find()
+//     .populate("subCategories")
+//     .exec(function(err, categories) {
+//       if (err) return next(err);
+//       res.locals.S_categories = categories;
+//       next();
+//     });
+// });
 
-// Gloabl variables
-app.use(function(req, res, next) {
-  // res.locals.success_msg = req.flash("success_msg");
-  // res.locals.error_msg = req.flash("error_msg");
-  // res.locals.error = req.flash("error");
-  res.locals.user = req.user || null;
-  res.locals.session = req.session;
-  next();
-});
+// // Gloabl variables
+// app.use(function(req, res, next) {
+//   // res.locals.success_msg = req.flash("success_msg");
+//   // res.locals.error_msg = req.flash("error_msg");
+//   // res.locals.error = req.flash("error");
+//   res.locals.user = req.user || null;
+//   res.locals.session = req.session;
+//   next();
+// });
 
-// middleware
-app.use(async (req, res, next)=>{
-  res.locals.cat = await Category.find()
-  res.locals.categories = await SubCategory.find()
-  res.locals.brand = await Brand.find()
-  res.locals.Product = await Product.find()
-  res.locals.Supplier = await Supplier.find()
-  res.locals.LocalPurchase = await LocalPurchase.find()
-  next();
-});
+// // middleware
+// app.use(async (req, res, next)=>{
+//   res.locals.cat = await Category.find()
+//   res.locals.categories = await SubCategory.find()
+//   res.locals.brand = await Brand.find()
+//   res.locals.Product = await Product.find()
+//   res.locals.Supplier = await Supplier.find()
+//   res.locals.LocalPurchase = await LocalPurchase.find()
+//   next();
+// });
 
 app.get("/", (req, res) => {
-  if (req.user) {
-    res.redirect("/general/showDashboard");
-  } else {
-    res.redirect("/users/login");
-  }
+  res.send({ mgs: "working"})
+  // if (req.user) {
+  //   res.redirect("/general/showDashboard");
+  // } else {
+  //   res.redirect("/users/login");
+  // }
 });
 
 // base routes
-app.use("/category",ensureAuthenticated,  categoryRoutes);
+// app.use("/category",   categoryRoutes);
 app.use("/users",   usersRoutes);
-app.use("/orders", ensureAuthenticated, ordersRoutes);
-app.use("/invoice", ensureAuthenticated, invoiceRoutes);
-app.use("/customers", ensureAuthenticated, customerRoutes);
-app.use("/products", ensureAuthenticated, productsRoutes);
-app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
-app.use("/supplier", ensureAuthenticated,  supplierRoutes);
-app.use("/general", ensureAuthenticated, generalRoutes);
+// app.use("/orders",  ordersRoutes);
+// app.use("/invoice",  invoiceRoutes);
+// app.use("/customers",  customerRoutes);
+// app.use("/products",  productsRoutes);
+// app.use("/purchase",   purchaseRoutes);
+// app.use("/supplier",   supplierRoutes);
+app.use("/general",  generalRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
