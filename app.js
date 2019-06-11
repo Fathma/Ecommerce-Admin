@@ -36,7 +36,7 @@ const productsRoutes = require("./routes/products.routes");
 const customerRoutes = require("./routes/customer.routes");
 const invoiceRoutes = require("./routes/invoice.routes");
 // const purchaseRoutes = require("./routes/purchase.routes");
-// const supplierRoutes = require("./routes/supplier.routes");
+const supplierRoutes = require("./routes/supplier.routes");
 const generalRoutes = require("./routes/general.routes");
 
 // Passport config
@@ -155,7 +155,7 @@ app.use("/invoice",  invoiceRoutes);
 app.use("/customers",  customerRoutes);
 app.use("/products",  productsRoutes);
 // app.use("/purchase",   purchaseRoutes);
-// app.use("/supplier",   supplierRoutes);
+app.use("/supplier",   supplierRoutes);
 app.use("/general",  generalRoutes);
 
 //Port For the Application
