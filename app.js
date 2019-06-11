@@ -23,7 +23,7 @@ var expressValidator = require('express-validator');
 moment().format();
 
 // // role
-// const { ensureAuthenticated } = require("./helpers/auth");
+const { ensureAuthenticated } = require("./helpers/auth");
 // const { Super } = require("./helpers/rolecheck");
 // const { SuperPublisher } = require("./helpers/rolecheck");
 const app = express();
@@ -148,15 +148,15 @@ app.get("/", (req, res) => {
 });
 
 // base routes
-app.use("/category",  categoryRoutes);
+app.use("/category", ensureAuthenticated, categoryRoutes);
 app.use("/users",   usersRoutes);
-app.use("/orders",  ordersRoutes);
-app.use("/invoice",  invoiceRoutes);
-app.use("/customers",  customerRoutes);
-app.use("/products",  productsRoutes);
-app.use("/purchase",   purchaseRoutes);
-app.use("/supplier",   supplierRoutes);
-app.use("/general",  generalRoutes);
+app.use("/orders", ensureAuthenticated, ordersRoutes);
+app.use("/invoice", ensureAuthenticated,  invoiceRoutes);
+app.use("/customers", ensureAuthenticated, customerRoutes);
+app.use("/products", ensureAuthenticated, productsRoutes);
+app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
+app.use("/supplier", ensureAuthenticated,  supplierRoutes);
+app.use("/general", ensureAuthenticated, generalRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
