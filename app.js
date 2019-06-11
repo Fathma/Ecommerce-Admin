@@ -106,16 +106,16 @@ Handlebars.registerHelper("formatTime", function(date, format) {
   return mmnt.format(format);
 });
 
-// // middleware
-// app.use(function(req, res, next) {
-//   Category.find()
-//     .populate("subCategories")
-//     .exec(function(err, categories) {
-//       if (err) return next(err);
-//       res.locals.S_categories = categories;
-//       next();
-//     });
-// });
+// middleware
+app.use(function(req, res, next) {
+  Category.find()
+    .populate("subCategories")
+    .exec(function(err, categories) {
+      if (err) return next(err);
+      res.locals.S_categories = categories;
+      next();
+    });
+});
 
 // // Gloabl variables
 // app.use(function(req, res, next) {
@@ -127,16 +127,16 @@ Handlebars.registerHelper("formatTime", function(date, format) {
 //   next();
 // });
 
-// // middleware
-// app.use(async (req, res, next)=>{
-//   res.locals.cat = await Category.find()
-//   res.locals.categories = await SubCategory.find()
-//   res.locals.brand = await Brand.find()
-//   res.locals.Product = await Product.find()
-//   res.locals.Supplier = await Supplier.find()
-//   res.locals.LocalPurchase = await LocalPurchase.find()
-//   next();
-// });
+// middleware
+app.use(async (req, res, next)=>{
+  res.locals.cat = await Category.find()
+  res.locals.categories = await SubCategory.find()
+  res.locals.brand = await Brand.find()
+  res.locals.Product = await Product.find()
+  res.locals.Supplier = await Supplier.find()
+  res.locals.LocalPurchase = await LocalPurchase.find()
+  next();
+});
 
 app.get("/", (req, res) => {
  
