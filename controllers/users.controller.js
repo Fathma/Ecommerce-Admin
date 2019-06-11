@@ -7,7 +7,7 @@ const Validation = require('../validations/validations')
 const User = require('../models/User')
 
 // User login route
-exports.loginPage = (req, res) => res.render('users/login')
+exports.loginPage = (req, res, next) => res.render('users/login')
 
 // User register route
 exports.registrationPage = (req, res) => res.render('users/register')

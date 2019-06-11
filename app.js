@@ -22,13 +22,13 @@ var moment = require("moment");
 var expressValidator = require('express-validator');
 moment().format();
 
-// role
+// // role
 const { ensureAuthenticated } = require("./helpers/auth");
-const { Super } = require("./helpers/rolecheck");
-const { SuperPublisher } = require("./helpers/rolecheck");
+// const { Super } = require("./helpers/rolecheck");
+// const { SuperPublisher } = require("./helpers/rolecheck");
 const app = express();
 
-// Load routes controller
+// // Load routes controller
 const ordersRoutes = require("./routes/orders.routes");
 const categoryRoutes = require("./routes/category.routes");
 const usersRoutes = require("./routes/users.routes");
@@ -147,14 +147,14 @@ app.get("/", (req, res) => {
 });
 
 // base routes
-app.use("/category", ensureAuthenticated, categoryRoutes);
-app.use("/users",  usersRoutes);
+app.use("/category",ensureAuthenticated,  categoryRoutes);
+app.use("/users",   usersRoutes);
 app.use("/orders", ensureAuthenticated, ordersRoutes);
 app.use("/invoice", ensureAuthenticated, invoiceRoutes);
 app.use("/customers", ensureAuthenticated, customerRoutes);
 app.use("/products", ensureAuthenticated, productsRoutes);
-app.use("/purchase", ensureAuthenticated, purchaseRoutes);
-app.use("/supplier", ensureAuthenticated, supplierRoutes);
+app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
+app.use("/supplier", ensureAuthenticated,  supplierRoutes);
 app.use("/general", ensureAuthenticated, generalRoutes);
 
 //Port For the Application
