@@ -29,12 +29,12 @@ moment().format();
 const app = express();
 
 // // Load routes controller
-// const ordersRoutes = require("./routes/orders.routes");
-// const categoryRoutes = require("./routes/category.routes");
+const ordersRoutes = require("./routes/orders.routes");
+const categoryRoutes = require("./routes/category.routes");
 const usersRoutes = require("./routes/users.routes");
 // const productsRoutes = require("./routes/products.routes");
-// const customerRoutes = require("./routes/customer.routes");
-// const invoiceRoutes = require("./routes/invoice.routes");
+const customerRoutes = require("./routes/customer.routes");
+const invoiceRoutes = require("./routes/invoice.routes");
 // const purchaseRoutes = require("./routes/purchase.routes");
 // const supplierRoutes = require("./routes/supplier.routes");
 const generalRoutes = require("./routes/general.routes");
@@ -148,14 +148,14 @@ app.get("/", (req, res) => {
 });
 
 // base routes
-// app.use("/category",ensureAuthenticated,  categoryRoutes);
+app.use("/category",  categoryRoutes);
 app.use("/users",   usersRoutes);
-// app.use("/orders", ensureAuthenticated, ordersRoutes);
-// app.use("/invoice", ensureAuthenticated, invoiceRoutes);
-// app.use("/customers", ensureAuthenticated, customerRoutes);
-// app.use("/products", ensureAuthenticated, productsRoutes);
-// app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
-// app.use("/supplier", ensureAuthenticated,  supplierRoutes);
+app.use("/orders",  ordersRoutes);
+app.use("/invoice",  invoiceRoutes);
+app.use("/customers",  customerRoutes);
+// app.use("/products",  productsRoutes);
+// app.use("/purchase",   purchaseRoutes);
+// app.use("/supplier",   supplierRoutes);
 app.use("/general",  generalRoutes);
 
 //Port For the Application
