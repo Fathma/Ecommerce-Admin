@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
-const Validation = require('../validations/validations')
+const Validation = require('../helpers/validations')
 
 // Load user model
 

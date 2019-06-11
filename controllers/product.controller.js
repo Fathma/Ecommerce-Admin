@@ -1,5 +1,5 @@
 // author : fathma Siddique
-// lastmodified : 27/5/2019
+// lastmodified : 11/6/2019
 // description : all the product related controllers/funtions are written in here 
 
 //Imports
@@ -9,7 +9,7 @@ const Category = require('../models/category.model')
 const SubCategory = require('../models/subCategory.model')
 const Inventory = require('../models/inventory.model')
 const Serial = require('../models/serials.model')
-const allFuctions = require('../functions/allFuctions')
+const allFuctions = require('../helpers/allFuctions')
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
 

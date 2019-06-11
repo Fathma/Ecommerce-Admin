@@ -1,7 +1,7 @@
 // author: Fathma siddique
 // lastmodified: 26/5/2019
 // description: the file has all the general related controllers/ functions
-const allFuctions = require('../functions/allFuctions')
+const allFuctions = require('../helpers/allFuctions')
 
 // get low quantity for notification
 exports.lowLiveQuantity=async (req, res, next) => {

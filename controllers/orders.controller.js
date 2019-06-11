@@ -1,8 +1,8 @@
-const allFuctions = require('../functions/allFuctions')
+const allFuctions = require('../helpers/allFuctions')
 const Invoice = require('../models/invoice.model')
 const Product = require('../models/Product')
 const Order = require('../models/customerOrder')
-const Email = require('../Email/email')
+const Email = require('../helpers/email')
 
 // view list of customers
 exports.showOrdersPage = (req, res) => {
