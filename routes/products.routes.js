@@ -8,6 +8,7 @@ const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 
 const product_controller = require('../controllers/product.controller')
+const { ensureAuthenticated } = require("../helpers/auth");
 mongoose.Promise = global.Promise;
 
 const mongoo = 'mongodb://jihad:abc1234@ds343985.mlab.com:43985/e-commerce_db_v1';
@@ -50,23 +51,23 @@ const upload = multer({ storage })
 // })
 
 // 23/4/2019 new
-router.get('/InhouseInventory', product_controller.getInhouseInventoryPage)
-router.get('/DealerInventory', product_controller.getDealerInventoryPage)
-router.post('/regiSave', product_controller.SaveProductLP)
-router.post('/regiSaveDealer', product_controller.SaveProductDealer)
-router.post('/showfields',  product_controller.showProductRegistrationFields)
-router.post('/upload', upload.array('imagePath'), product_controller.SaveImage)
-router.post('/upload/dealer', upload.array('imagePath2'), product_controller.SaveImage2)
-router.post('/upload/update', upload.array('imagePath3'), product_controller.SaveImage3)
+router.get('/InhouseInventory', ensureAuthenticated, product_controller.getInhouseInventoryPage)
+router.get('/DealerInventory', ensureAuthenticated, product_controller.getDealerInventoryPage)
+router.post('/regiSave', ensureAuthenticated, product_controller.SaveProductLP)
+router.post('/regiSaveDealer', ensureAuthenticated, product_controller.SaveProductDealer)
+router.post('/showfields', ensureAuthenticated, product_controller.showProductRegistrationFields)
+router.post('/upload', ensureAuthenticated, upload.array('imagePath'), product_controller.SaveImage)
+router.post('/upload/dealer', ensureAuthenticated, upload.array('imagePath2'), product_controller.SaveImage2)
+router.post('/upload/update', ensureAuthenticated, upload.array('imagePath3'), product_controller.SaveImage3)
 router.get('/image/:filename', product_controller.getImage)
-router.post('/img/detete', product_controller.deteteImg)
-router.post('/checkSerials', product_controller.checkSerials)
-router.get('/Update/:_id', product_controller.getProductUpdatePage)
-router.post('/updateProduct', product_controller.updateProduct)
-router.get('/active/:id', product_controller.makeActive)
-router.get('/unactive/:id', product_controller.makeNotActive)
-router.get('/Available/:id', product_controller.makeAvailable)
-router.get('/notAvailable/:id', product_controller.makeNotAvailable)
+router.post('/img/detete', ensureAuthenticated, product_controller.deteteImg)
+router.post('/checkSerials', ensureAuthenticated, product_controller.checkSerials)
+router.get('/Update/:_id', ensureAuthenticated, product_controller.getProductUpdatePage)
+router.post('/updateProduct', ensureAuthenticated, product_controller.updateProduct)
+router.get('/active/:id', ensureAuthenticated, product_controller.makeActive)
+router.get('/unactive/:id', ensureAuthenticated, product_controller.makeNotActive)
+router.get('/Available/:id', ensureAuthenticated, product_controller.makeAvailable)
+router.get('/notAvailable/:id', ensureAuthenticated, product_controller.makeNotAvailable)
 
 
 // previous 

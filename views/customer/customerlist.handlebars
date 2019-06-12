@@ -22,7 +22,9 @@
                         <div class="col-md-2 ">
                             <strong>Active</strong>
                         </div>
-                      
+                       <div class="col-md-2 ">
+                            <strong>Action</strong>
+                        </div>
                         
                     </div>
                 </li>
@@ -41,10 +43,12 @@
                         <div class="col-md-2 ">
                             <strong>{{this.contact}}</strong>
                         </div>
-                         <div class="col-md-2 ">
+                        <div class="col-md-2 ">
                             <strong>{{this.isActive}}</strong>
                         </div>
-                       
+                        <div class="col-md-2 ">
+                            <a href="/customers/single/{{this._id}}">{{this._id}}</a>
+                        </div>
                     </div>
                 </li>
                 {{/each }}

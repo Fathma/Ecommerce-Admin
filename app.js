@@ -153,7 +153,7 @@ app.use("/users",   usersRoutes);
 app.use("/orders", ensureAuthenticated, ordersRoutes);
 app.use("/invoice", ensureAuthenticated,  invoiceRoutes);
 app.use("/customers", ensureAuthenticated, customerRoutes);
-app.use("/products", ensureAuthenticated, productsRoutes);
+app.use("/products",  productsRoutes);
 app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
 app.use("/supplier", ensureAuthenticated,  supplierRoutes);
 app.use("/general", ensureAuthenticated, generalRoutes);
