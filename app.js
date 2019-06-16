@@ -139,7 +139,7 @@ app.use(async (req, res, next)=>{
 });
 
 app.get("/", (req, res) => {
- 
+  // Email.sendEmail( 'devtestjihad@gmail.com', ['siddiquefathma@gmail.com', 'siddiquefathma@gmail.com'], 'ECL update', '<h2>' + 'testing' + '</h2>' )
   if (req.user) {
     res.redirect("/general/showDashboard");
   } else {

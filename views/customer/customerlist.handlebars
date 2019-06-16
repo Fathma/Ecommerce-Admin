@@ -3,6 +3,7 @@
     <div class="register-logo">
         <a href="#"><b>Registered</b>Customers</a>
     </div>
+     <a href="/customers/email/page">Email All</a>
     {{# if customer}}
     <div class="row">
         <div class="col-sm-12 col-md-10 col-md-offset-1 col-sm-offset-1">
@@ -47,7 +48,8 @@
                             <strong>{{this.isActive}}</strong>
                         </div>
                         <div class="col-md-2 ">
-                            <a href="/customers/single/{{this._id}}">{{this._id}}</a>
+                            <a href="/customers/single/{{this._id}}">View</a>
+                            <a href="/customers/block/{{this._id}}">Block</a>
                         </div>
                     </div>
                 </li>

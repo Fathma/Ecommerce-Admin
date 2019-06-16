@@ -86,6 +86,7 @@ exports.SaveImage3 = async (req, res) => {
   res.redirect(`/products/Update/${req.body.pid}`)
 }
 
+// delete image url from product 
 exports.deteteImg = (req, res)=>{
   filename = req.body.img.split('image/')[1];
   
