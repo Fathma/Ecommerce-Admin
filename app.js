@@ -11,6 +11,8 @@ var Product = require("./models/Product");
 var LocalPurchase = require("./models/localPurchase.model");
 var Supplier = require("./models/supplier.model");
 var SubCategory = require("./models/subCategory.model");
+var PostCategory = require('./models/PostCategory.model')
+
 var Brand = require("./models/brand.model");
 const morgan = require("morgan");
 var path = require("path");
@@ -38,6 +40,7 @@ const invoiceRoutes = require("./routes/invoice.routes");
 const purchaseRoutes = require("./routes/purchase.routes");
 const supplierRoutes = require("./routes/supplier.routes");
 const generalRoutes = require("./routes/general.routes");
+var forumRoutes = require("./routes/forum.routes")
 
 // Passport config
 require("./config/passport")(passport);
@@ -157,6 +160,7 @@ app.use("/products",  productsRoutes);
 app.use("/purchase", ensureAuthenticated,  purchaseRoutes);
 app.use("/supplier", ensureAuthenticated,  supplierRoutes);
 app.use("/general", ensureAuthenticated, generalRoutes);
+app.use("/forum", ensureAuthenticated, forumRoutes);
 
 //Port For the Application
 const port = process.env.PORT || 3000;
