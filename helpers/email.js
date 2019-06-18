@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
-const configMailer = require('../config/configEmail');
+const keys = require('../config/keys')
 
 const transport = nodemailer.createTransport({
    service: 'gmail',
    secure: false,
    port: 25,
    auth: {
-       user: configMailer.MAILGUN_USER,
-       pass: configMailer.MAILGUN_PASS
+       user: keys.email.MAILGUN_USER,
+       pass: keys.email.MAILGUN_PASS
    },
    tls: {
        rejectUnauthorized: false
