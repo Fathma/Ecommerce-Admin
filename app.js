@@ -89,15 +89,15 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Express session middleware
-// app.use(
-//   session({
-//     secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
-//     resave: false,
-//     saveUninitialized: false,
-//     store: new mongoStore({ mongooseConnection: mongoose.connection }),
-//     cookie: { maxAge: 180 * 60 * 1000 }
-//   })
-// );
+app.use(
+  session({
+    secret: "443@#09&*Km!lfvMNSodwejOosdkdsafk(^$@^&*()0dfm43",
+    resave: false,
+    saveUninitialized: false,
+    store: new mongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: { maxAge: 180 * 60 * 1000 }
+  })
+);
 
 // Passport middleware
 app.use(passport.initialize());
