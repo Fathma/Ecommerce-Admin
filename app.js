@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
-// const dbConfig = require("./config/database");
+const dbConfig = require("./config/database");
 var Category = require("./models/category.model");
 var Product = require("./models/Product");
 var LocalPurchase = require("./models/localPurchase.model");
@@ -50,8 +50,8 @@ require("./config/passport")(passport);
 mongoose.Promise = global.Promise;
 
 //DB Connection
-mongoose.connect( keys.database.mongoURI, err => {
-  if (!err) console.log("MongoDB connection Established, " + keys.database.mongoURI);
+mongoose.connect(keys.database.mongoURI, err => {
+  if (!err) console.log("MongoDB connection Established, " + dbConfig.mongoURI);
   else console.log("Error in DB connection :" + JSON.stringify(err, undefined, 2));
 });
 
